@@ -1,3 +1,7 @@
+# CsvHelper.OpenXml.Excel
+
+[![NuGet](https://img.shields.io/nuget/v/CsvHelper.OpenXml.Excel.svg)](https://www.nuget.org/packages/CsvHelper.OpenXml.Excel)
+
 ## Introduction
 **CsvHelper.OpenXml.Excel** is a small library thinked to allow the import and export data from and to **Excel** files. The library is the facto an extension that connects and integrates two famous libraries [CsvHelper](https://github.com/JoshClose/CsvHelper) and [OpenXml](https://github.com/dotnet/Open-XML-SDK), mainly providing implementations of `IParser` and `IWriter`, of **CsvHelper**, which read and write files in xlsx format using **OpenXml**.
 

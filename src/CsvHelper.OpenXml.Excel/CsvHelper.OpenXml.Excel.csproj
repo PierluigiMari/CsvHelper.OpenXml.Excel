@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<VersionPrefix>1.0.0</VersionPrefix>
+		<VersionSuffix>alfa</VersionSuffix>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>False</GenerateDocumentationFile>
+		<Title>CsvHelper.OpenXml.Excel</Title>
+		<Authors>Pierluigi Mari</Authors>
+		<IncludeSymbols>True</IncludeSymbols>
+		<Copyright>Copyright © 2024 Pierluigi Mari</Copyright>
+		<PackageIcon>CsvHelper.OpenXml.Excel Logo Icon.png</PackageIcon>
+		<RepositoryUrl>$(ProjectUrl</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Description>A small library thinked to allow the import and export data from and to Excel files. The library is the facto an extension that connects and integrates two famous libraries CsvHelper and OpenXml, mainly providing implementations of IParser and IWriter, of CsvHelper, which read and write files in xlsx format using OpenXml.</Description>
+		<PackageTags>excel;csvhelper;openxml;export;import;xlsx</PackageTags>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\..\CsvHelper.OpenXml.Excel Logo Icon.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	  <None Include="..\..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CsvHelper" Version="33.0.1" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="3.2.0" />
+	</ItemGroup>
+
+</Project>

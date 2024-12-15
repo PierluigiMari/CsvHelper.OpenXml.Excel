@@ -1,4 +1,4 @@
-﻿namespace CsvHelper.OpenXml.Excel.Abstract;
+﻿namespace CsvHelper.OpenXml.Excel.Abstractions;
 
 using System;
 

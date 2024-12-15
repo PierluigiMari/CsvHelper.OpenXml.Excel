@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<VersionPrefix>1.0.0</VersionPrefix>
-		<VersionSuffix>alfa</VersionSuffix>
+		<VersionSuffix>beta</VersionSuffix>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>False</GenerateDocumentationFile>
@@ -21,6 +21,8 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
+		<PackageReleaseNotes>First release</PackageReleaseNotes>
+		<PackageProjectUrl>https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel</PackageProjectUrl>
 	</PropertyGroup>
 
 	<ItemGroup>

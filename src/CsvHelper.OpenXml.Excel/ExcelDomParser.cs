@@ -2,7 +2,7 @@
 
 using CsvHelper;
 using CsvHelper.Configuration;
-using CsvHelper.OpenXml.Excel.Abstract;
+using CsvHelper.OpenXml.Excel.Abstractions;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;

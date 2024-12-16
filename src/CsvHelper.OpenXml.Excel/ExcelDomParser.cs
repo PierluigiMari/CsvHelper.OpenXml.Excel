@@ -80,6 +80,7 @@ public sealed class ExcelDomParser : IExcelParser
     public string Delimiter => Configuration.Delimiter;
     public CsvContext Context { get; }
     public IParserConfiguration Configuration { get; }
+    public int RowCount { get => LastRow; }
 
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string[] GetRecord()

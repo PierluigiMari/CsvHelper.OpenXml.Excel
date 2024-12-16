@@ -42,7 +42,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     private Type? WritingFieldType = null!;
 
-    private Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)> ExcelCellMemberMapDetails = new Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)>();
+    private readonly Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)> ExcelCellMemberMapDetails = new Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)>();
 
     private string? LastSheetName;
 
@@ -75,8 +75,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         WorkbookPart = SpreadsheetDocument.WorkbookPart ?? SpreadsheetDocument.AddWorkbookPart();
 
-        if (WorkbookPart.Workbook is null)
-            WorkbookPart.Workbook = new Workbook();
+        WorkbookPart.Workbook ??= new Workbook();
 
         OpenXmlHelper.CreateWorksheetStyle(SpreadsheetDocument);
 
@@ -193,7 +192,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     #endregion
 
-    #region Public Methods
+    #region Implementation of the IExcelWriter interface members
 
     public void WriteRecord<T>(T? record, string? sheetname = null)
     {
@@ -402,7 +401,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         WritingRow = new Row();
         SheetData.Append(WritingRow);
     }
-
 
     private void InitializeWritingNewWorksheet<T>(string? sheetname)
     {

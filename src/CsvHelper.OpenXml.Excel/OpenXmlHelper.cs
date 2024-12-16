@@ -2,7 +2,6 @@
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using System;
 using System.Linq;
 
 internal class OpenXmlHelper
@@ -146,7 +145,7 @@ internal class OpenXmlHelper
 
         // Get a unique ID for the new sheet.
         uint SheetId = 1;
-        if (sheets.Elements<Sheet>().Count() > 0)
+        if (sheets.Elements<Sheet>().Any())
         {
             SheetId = sheets.Elements<Sheet>().Select<Sheet, uint>(s => s.SheetId is not null && s.SheetId.HasValue ? s.SheetId.Value : 0).Max() + 1;
         }
@@ -175,8 +174,7 @@ internal class OpenXmlHelper
     internal int InsertSharedStringItem(string text, SharedStringTablePart sharestringpart)
     {
         // If the part does not contain a SharedStringTable, create one.
-        if (sharestringpart.SharedStringTable is null)
-            sharestringpart.SharedStringTable = new SharedStringTable();
+        sharestringpart.SharedStringTable ??= new SharedStringTable();
 
         int i = 0;
 

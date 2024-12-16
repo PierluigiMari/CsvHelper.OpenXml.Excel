@@ -81,6 +81,7 @@ public sealed class ExcelSaxParser : IExcelParser
     public string Delimiter => Configuration.Delimiter;
     public CsvContext Context { get; }
     public IParserConfiguration Configuration { get; }
+    public int RowCount { get => LastRow; }
 
     public string[] GetRecord()
     {

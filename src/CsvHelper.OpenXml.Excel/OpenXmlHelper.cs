@@ -2,7 +2,9 @@
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 internal class OpenXmlHelper
 {
@@ -31,6 +33,7 @@ internal class OpenXmlHelper
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 178, FormatCode = "dd/mm/yyyy\\ h:mm:ss\\ AM/PM;@" });
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 179, FormatCode = "dd/mm/yyyy\\ h:mm\\ AM/PM;@" });
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 180, FormatCode = "0.0000E+00" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 181, FormatCode = "00000" });
 
         Font DefaultFont = new Font(); // Default font
         FontName DefaultFontName = new FontName { Val = "Calibri" };
@@ -89,6 +92,7 @@ internal class OpenXmlHelper
         CellFormat PercentageFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 10, FormatId = 0, ApplyNumberFormat = true };
         CellFormat ScientificFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 11, FormatId = 0, ApplyNumberFormat = true };
         CellFormat ScientificFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 180, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat SpecialZipCodeFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 181, FormatId = 0, ApplyNumberFormat = true };
 
         CellFormats.Append(CellFormatDefault);
         CellFormats.Append(CellFormatDefaultBold);
@@ -118,6 +122,7 @@ internal class OpenXmlHelper
         CellFormats.Append(PercentageFormatWithTwoDecimals);
         CellFormats.Append(ScientificFormatWithTwoDecimals);
         CellFormats.Append(ScientificFormatWithFourDecimals);
+        CellFormats.Append(SpecialZipCodeFormat);
 
         // Append everything to stylesheet  - Preserve the ORDER !
         WorkbookStyleSheet.Append(StylesheetNumberingFormats);
@@ -194,7 +199,7 @@ internal class OpenXmlHelper
         return i;
     }
 
-    internal string GetColumnLetter(int colindex)
+    internal string GetColumnLetters(int colindex)
     {
         int FirstLetterAsciiCodeDec = ((colindex) / 676) + 64;
         int SecondLetterAsciiCodeDec = ((colindex % 676) / 26) + 64;
@@ -205,5 +210,26 @@ internal class OpenXmlHelper
         char ThirdLetter = (char)ThirdLetterAsciiCodeDec;
 
         return string.Concat(FirstLetter, SecondLetter, ThirdLetter).Trim();
+    }
+
+    internal int GetColumnIndex(string cellreference)
+    {
+        Match RegexMatch = Regex.Match(cellreference, @"([A-Za-z]+)(\d+)");
+
+        if (!RegexMatch.Success)
+        {
+            throw new ArgumentException("Invalid cell reference format.");
+        }
+
+        string ColumnLettersPart = RegexMatch.Groups[1].Value;
+
+        int ColumnIndex = 0;
+
+        foreach (char ColumnLetter in ColumnLettersPart)
+        {
+            ColumnIndex = (ColumnIndex * 26) + (ColumnLetter - 'A' + 1);
+        }
+
+        return ColumnIndex;
     }
 }

@@ -14,11 +14,14 @@ public sealed class ExcelDomParser : IExcelParser
 {
     #region Fields
 
+    private readonly OpenXmlHelper OpenXmlHelper = new OpenXmlHelper();
+
     private string[] CurrentRecord = [];
     private readonly SpreadsheetDocument SpreadsheetDocument;
     private readonly Stream ExcelStream;
     private readonly SheetData SheetData;
     private readonly int LastRow;
+    private readonly int LastColumn;
 
     private int ExcelRow = 0;
     private int ExcelRawRow = 0;
@@ -55,6 +58,8 @@ public sealed class ExcelDomParser : IExcelParser
 
         LastRow = SheetData.Elements<Row>().Count(r => !string.IsNullOrEmpty(r.InnerText)) - 1;
 
+        LastColumn = SheetData.FirstChild?.ChildElements.Count ?? 0;
+
         Count = SheetData.Elements<Row>().Select(row => row.Elements<Cell>().Count()).Max();
 
         Configuration = configuration ?? new CsvConfiguration(CultureInfo.InvariantCulture);
@@ -85,9 +90,29 @@ public sealed class ExcelDomParser : IExcelParser
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string[] GetRecord()
     {
-        Row SheetRow = SheetData.Elements<Row>().ElementAt(Row);
+        Row CurrentRow = SheetData.Elements<Row>().ElementAt(Row);
 
-        return SheetRow.Elements<Cell>().Select(c => GetCellValue(SpreadsheetDocument, c)).ToArray();
+        string[] RecordValues;
+
+        int RowCellCount = CurrentRow.Elements<Cell>().Count();
+
+        if (RowCellCount < LastColumn)
+        {
+            RecordValues = new string[LastColumn];
+
+            for (int i = 0; i < RowCellCount; i++)
+            {
+                int? ColumnIndex = OpenXmlHelper.GetColumnIndex(CurrentRow.Elements<Cell>().ElementAt(i).CellReference!);
+
+                RecordValues[ColumnIndex!.Value - 1] = GetCellValue(SpreadsheetDocument, CurrentRow.Elements<Cell>().ElementAt(i));
+            }
+        }
+        else
+        {
+            RecordValues = CurrentRow.Elements<Cell>().Select(c => GetCellValue(SpreadsheetDocument, c)).ToArray();
+        }
+
+        return RecordValues;
     }
 
     public bool Read()

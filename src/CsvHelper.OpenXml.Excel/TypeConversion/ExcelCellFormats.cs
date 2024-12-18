@@ -29,5 +29,6 @@ public enum ExcelCellFormats : int
     PercentageWithoutDecimals = 24,
     PercentageWithTwoDecimals = 25,
     ScientificWithTwoDecimalsDefault = 26,
-    ScientificWithFourDecimals = 27
+    ScientificWithFourDecimals = 27,
+    SpecialZipCode = 28
 }

@@ -438,14 +438,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         if (ExcelCellMemberMapDetails[ExcelColumnIndex].CellLength < value.Length)
             ExcelCellMemberMapDetails[ExcelColumnIndex] = (ExcelCellMemberMapDetails[ExcelColumnIndex].FieldTypeName, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat, value.Length);
 
-        Cell Cell = new Cell() { CellReference = $"{OpenXmlHelper.GetColumnLetter(ExcelColumnIndex)}{ExcelRowIndex}" };
+        Cell Cell = new Cell() { CellReference = $"{OpenXmlHelper.GetColumnLetters(ExcelColumnIndex)}{ExcelRowIndex}" };
         WritingRow.Append(Cell);
 
         if (WritingFieldType is not null)
         {
             Action WriteSpecificTypeInCell = WritingFieldType.Name switch
             {
-                nameof(String) or nameof(Guid) => () => WriteStringOrGuidToCell(value, Cell),
+                nameof(String) or nameof(Guid) => () => WriteStringOrGuidToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
                 nameof(DateOnly) => () => WriteDateOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
                 nameof(TimeOnly) => () => WriteTimeOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
                 nameof(DateTime) => () => WriteDateTimeToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
@@ -460,16 +460,20 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         }
         else
         {
-            WriteStringOrGuidToCell(value, Cell, true);
+            WriteStringOrGuidToCell(value, Cell, null, true);
         }
 
         WritingFieldType = null;
 
-        void WriteStringOrGuidToCell(string value, Cell Cell, bool isheadercell = false)
+        void WriteStringOrGuidToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat, bool isheadercell = false)
         {
             if (int.TryParse(value, out _))
             {
                 Cell.CellValue = new CellValue(value);
+
+                if (ExcelCellFormat is not null)
+                    Cell.StyleIndex = (uint)ExcelCellFormat;
+
             }
             else
             {

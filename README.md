@@ -164,7 +164,8 @@ public enum ExcelCellFormats
     PercentageWithoutDecimals, //Format like "0%"
     PercentageWithTwoDecimals, //Format like "0.00%"
     ScientificWithTwoDecimalsDefault, //Format like "0.00E+00" - Default for "Double" type
-    ScientificWithFourDecimals //Format like "0.0000E+00"
+    ScientificWithFourDecimals, //Format like "0.0000E+00"
+    SpecialZipCode //Format like "00000"
 }
 ```
 

@@ -15,11 +15,14 @@ public sealed class ExcelSaxParser : IExcelParser
 {
     #region Fields
 
+    private readonly OpenXmlHelper OpenXmlHelper = new OpenXmlHelper();
+
     private string[] CurrentRecord = [];
     private readonly SpreadsheetDocument SpreadsheetDocument;
     private readonly Stream ExcelStream;
     private readonly OpenXmlPartReader PartReader;
     private readonly int LastRow;
+    private readonly int LastColumn;
 
     private int ExcelRow = 0;
     private int ExcelRawRow = 0;
@@ -54,6 +57,8 @@ public sealed class ExcelSaxParser : IExcelParser
 
         LastRow = WorksheetPart.Worksheet.Elements<SheetData>().First().Elements<Row>().Count(r => !string.IsNullOrEmpty(r.InnerText)) - 1;
 
+        LastColumn = WorksheetPart.Worksheet.Elements<SheetData>().First().FirstChild?.ChildElements.Count ?? 0;
+
         Count = WorksheetPart.Worksheet.Elements<SheetData>().First().Elements<Row>().Select(row => row.Elements<Cell>().Count()).Max();
 
         PartReader = new OpenXmlPartReader(WorksheetPart);
@@ -87,7 +92,27 @@ public sealed class ExcelSaxParser : IExcelParser
     {
         Row CurrentRow = (Row)PartReader.LoadCurrentElement()!;
 
-        return CurrentRow.Elements<Cell>().Select(c => GetCellValue(SpreadsheetDocument, c)).ToArray();
+        string[] RecordValues;
+
+        int RowCellCount = CurrentRow.Elements<Cell>().Count();
+
+        if (RowCellCount < LastColumn)
+        {
+            RecordValues = new string[LastColumn];
+
+            for (int i = 0; i < RowCellCount; i++)
+            {
+                int? ColumnIndex = OpenXmlHelper.GetColumnIndex(CurrentRow.Elements<Cell>().ElementAt(i).CellReference!);
+
+                RecordValues[ColumnIndex!.Value - 1] = GetCellValue(SpreadsheetDocument, CurrentRow.Elements<Cell>().ElementAt(i));
+            }
+        }
+        else
+        {
+            RecordValues = CurrentRow.Elements<Cell>().Select(c => GetCellValue(SpreadsheetDocument, c)).ToArray();
+        }
+
+        return RecordValues;
     }
 
     public bool Read()

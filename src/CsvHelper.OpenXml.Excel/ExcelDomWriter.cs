@@ -10,6 +10,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -94,14 +95,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     public override void WriteField<T>(T? field, ITypeConverter converter) where T : default
     {
-        WritingFieldType = typeof(T);
+        WritingFieldType = typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(typeof(T)) : typeof(T);
 
         base.WriteField(field, converter);
     }
 
     public override void WriteConvertedField(string? field, Type fieldType)
     {
-        WritingFieldType = fieldType;
+        WritingFieldType = fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(fieldType) : fieldType;
 
         base.WriteConvertedField(field, fieldType);
     }
@@ -200,7 +201,10 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         {
             InitializeWritingNewWorksheet<T>(sheetname);
 
-            WriteHeader<T>();
+            if (typeof(T) == typeof(ExpandoObject))
+                WriteDynamicHeader(record as ExpandoObject);
+            else
+                WriteHeader<T>();
 
             NextRecord();
         }
@@ -317,6 +321,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         base.WriteRecords(records);
 
+        SheetData.RemoveChild(WritingRow);
+
         AutoFitColumns();
     }
 
@@ -344,6 +350,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         LastSheetName = sheetname;
 
         await base.WriteRecordsAsync(records, cancellationToken);
+
+        SheetData.RemoveChild(WritingRow);
 
         AutoFitColumns();
     }
@@ -373,6 +381,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         LastSheetName = sheetname;
 
         await base.WriteRecordsAsync(records, cancellationToken);
+
+        SheetData.RemoveChild(WritingRow);
 
         AutoFitColumns();
     }
@@ -404,25 +414,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     private void InitializeWritingNewWorksheet<T>(string? sheetname)
     {
-        WorksheetPart = OpenXmlHelper.InsertWorksheet(WorkbookPart, string.IsNullOrEmpty(sheetname) ? null : sheetname);
-
-        //WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
-
-        SheetData = WorksheetPart.Worksheet.GetFirstChild<SheetData>()!;
-
-        ClassMap? ClassMap = Context.Maps[typeof(T)];
-        if (ClassMap is not null)
-        {
-            IEnumerable<MemberMapData> MemberMapData = ClassMap.MemberMaps.Select(x => x.Data);
-
-            foreach (MemberMapData MemberMapDataItem in MemberMapData)
-            {
-                ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null, 0));
-            }
-        }
-
-        WritingRow = new Row();
-        SheetData.Append(WritingRow);
+        InitializeWritingNewWorksheet(typeof(T), sheetname);
     }
 
     private void WriteToCell(string? value)
@@ -435,35 +427,50 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             return;
         }
 
-        if (ExcelCellMemberMapDetails[ExcelColumnIndex].CellLength < value.Length)
+        if (ExcelCellMemberMapDetails.Count > 0 && ExcelCellMemberMapDetails[ExcelColumnIndex].CellLength < value.Length)
             ExcelCellMemberMapDetails[ExcelColumnIndex] = (ExcelCellMemberMapDetails[ExcelColumnIndex].FieldTypeName, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat, value.Length);
 
         Cell Cell = new Cell() { CellReference = $"{OpenXmlHelper.GetColumnLetters(ExcelColumnIndex)}{ExcelRowIndex}" };
         WritingRow.Append(Cell);
 
-        if (WritingFieldType is not null)
-        {
-            Action WriteSpecificTypeInCell = WritingFieldType.Name switch
-            {
-                nameof(String) or nameof(Guid) => () => WriteStringOrGuidToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                nameof(DateOnly) => () => WriteDateOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                nameof(TimeOnly) => () => WriteTimeOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                nameof(DateTime) => () => WriteDateTimeToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                nameof(Int32) => () => WriteIntTocell(value, Cell),
-                nameof(Decimal) => () => WriteDecimalToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                nameof(Double) => () => WriteDoubleToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                nameof(Boolean) => () => WriteBoolToCell(value, Cell),
-                _ => throw new NotImplementedException($"Writing of the specific type {WritingFieldType.Name} not yet implemented!")
-            };
-
-            WriteSpecificTypeInCell();
-        }
-        else
-        {
-            WriteStringOrGuidToCell(value, Cell, null, true);
-        }
+        WriteSpecificTypeInCell(value, Cell);
 
         WritingFieldType = null;
+
+        void WriteSpecificTypeInCell(string value, Cell cell)
+        {
+            if (WritingFieldType is not null)
+            {
+                Action WriteAction = (WritingFieldType.Name, ExcelCellMemberMapDetails.Count) switch
+                {
+                    (nameof(String) or nameof(Guid), > 0) => () => WriteStringOrGuidToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
+                    (nameof(DateOnly), > 0) => () => WriteDateOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
+                    (nameof(TimeOnly), > 0) => () => WriteTimeOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
+                    (nameof(DateTime), > 0) => () => WriteDateTimeToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
+                    (nameof(Int32), > 0) => () => WriteIntTocell(value, Cell),
+                    (nameof(Decimal), > 0) => () => WriteDecimalToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
+                    (nameof(Double), > 0) => () => WriteDoubleToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
+                    (nameof(Boolean), > 0) => () => WriteBoolToCell(value, Cell),
+
+                    (nameof(String) or nameof(Guid), 0) => () => WriteStringOrGuidToCell(value, Cell, null),
+                    (nameof(DateOnly), 0) => () => WriteDateOnlyToCell(value, Cell, null),
+                    (nameof(TimeOnly), 0) => () => WriteTimeOnlyToCell(value, Cell, null),
+                    (nameof(DateTime), 0) => () => WriteDateTimeToCell(value, Cell, null),
+                    (nameof(Int32), 0) => () => WriteIntTocell(value, Cell),
+                    (nameof(Decimal), 0) => () => WriteDecimalToCell(value, Cell, null),
+                    (nameof(Double), 0) => () => WriteDoubleToCell(value, Cell, null),
+                    (nameof(Boolean), 0) => () => WriteBoolToCell(value, Cell),
+
+                    _ => throw new NotImplementedException($"Writing of the specific type {WritingFieldType.Name} not yet implemented!")
+                };
+
+                WriteAction();
+            }
+            else
+            {
+                WriteStringOrGuidToCell(value, Cell, null, true);
+            }
+        }
 
         void WriteStringOrGuidToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat, bool isheadercell = false)
         {
@@ -583,6 +590,9 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     private void AutoFitColumns()
     {
+        if (ExcelCellMemberMapDetails.Count == 0)
+            return;
+
         WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
 
         Columns columns = WorksheetPart.Worksheet.GetFirstChild<Columns>()!;

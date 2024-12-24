@@ -181,18 +181,11 @@ public sealed class ExcelSaxParser : IExcelParser
 
     private async ValueTask DisposeAsyncCore()
     {
-        await ValueTask.FromResult(() =>
-        {
-            PartReader.Dispose();
+        PartReader.Dispose();
 
-        });
+        SpreadsheetDocument.Dispose();
 
-        await ValueTask.FromResult(() =>
-        {
-            SpreadsheetDocument.Dispose();
-
-        });
-        await ExcelStream.DisposeAsync();
+        await ExcelStream.DisposeAsync().ConfigureAwait(false);
     }
 
     public async ValueTask DisposeAsync()

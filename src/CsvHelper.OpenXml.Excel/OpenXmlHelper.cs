@@ -1,9 +1,14 @@
-﻿namespace CsvHelper.OpenXml.Excel;
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("CsvHelper.OpenXml.Excel.Tests")]
+
+namespace CsvHelper.OpenXml.Excel;
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 internal class OpenXmlHelper
@@ -123,7 +128,7 @@ internal class OpenXmlHelper
 
     internal SharedStringTablePart GetSharedStringTablePart(WorkbookPart workbookpart) => workbookpart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault() ?? workbookpart.AddNewPart<SharedStringTablePart>();
 
-    internal WorksheetPart InsertWorksheet(WorkbookPart workbookpart, string? sheetname)
+    internal WorksheetPart InsertWorksheet(WorkbookPart workbookpart, string? sheetname, out string sheetid)
     {
         // Add a new worksheet part to the workbook.
         WorksheetPart NewWorksheetPart = workbookpart.AddNewPart<WorksheetPart>();
@@ -132,6 +137,7 @@ internal class OpenXmlHelper
 
         Sheets sheets = workbookpart.Workbook.GetFirstChild<Sheets>() ?? workbookpart.Workbook.AppendChild(new Sheets());
         string RelationshipId = workbookpart.GetIdOfPart(NewWorksheetPart);
+        sheetid = RelationshipId;
 
         // Get a unique ID for the new sheet.
         uint SheetId = sheets.Elements<Sheet>().Any() ? sheets.Elements<Sheet>().Max(s => s.SheetId!.Value) + 1 : 1;
@@ -169,17 +175,25 @@ internal class OpenXmlHelper
         return i;
     }
 
-    internal string GetColumnLetters(int colindex)
+    internal string GetColumnLetters(int columnindex)
     {
-        int FirstLetterAsciiCodeDec = ((colindex) / 676) + 64;
-        int SecondLetterAsciiCodeDec = ((colindex % 676) / 26) + 64;
-        int ThirdLetterAsciiCodeDec = (colindex % 26) + 65;
+        columnindex++;
+        const int Base = 26;
+        const int ASCIIOffset = 64; // 'A' is 65 in ASCII
 
-        char FirstLetter = (FirstLetterAsciiCodeDec > 64) ? (char)FirstLetterAsciiCodeDec : ' ';
-        char SecondLetter = (SecondLetterAsciiCodeDec > 64) ? (char)SecondLetterAsciiCodeDec : ' ';
-        char ThirdLetter = (char)ThirdLetterAsciiCodeDec;
+        if (columnindex <= 0)
+            throw new ArgumentOutOfRangeException(nameof(columnindex), "Index must be a positive number.");
 
-        return string.Concat(FirstLetter, SecondLetter, ThirdLetter).Trim();
+        StringBuilder ColumnNameBuilder = new StringBuilder();
+
+        while (columnindex > 0)
+        {
+            int Remainder = (columnindex - 1) % Base;
+            ColumnNameBuilder.Insert(0, (char)(Remainder + ASCIIOffset + 1));
+            columnindex = (columnindex - Remainder - 1) / Base;
+        }
+
+        return ColumnNameBuilder.ToString();
     }
 
     internal int GetColumnIndex(string cellreference)

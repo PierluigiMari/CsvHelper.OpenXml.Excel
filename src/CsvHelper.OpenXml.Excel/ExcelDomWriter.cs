@@ -31,13 +31,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     private readonly SpreadsheetDocument SpreadsheetDocument;
 
-    private readonly WorkbookPart WorkbookPart;
-
     private readonly SharedStringTablePart SharedStringPart;
 
     private WorksheetPart WorksheetPart = null!;
 
-    private SheetData SheetData = null!;
+    private string SheetId = string.Empty;
 
     private int ExcelRowIndex = 1;
     private int ExcelColumnIndex = 0;
@@ -76,7 +74,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         else
             SpreadsheetDocument = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
 
-        WorkbookPart = SpreadsheetDocument.WorkbookPart ?? SpreadsheetDocument.AddWorkbookPart();
+        WorkbookPart WorkbookPart = SpreadsheetDocument.WorkbookPart ?? SpreadsheetDocument.AddWorkbookPart();
 
         WorkbookPart.Workbook ??= new Workbook();
 
@@ -129,7 +127,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         ExcelRowIndex++;
 
         WritingRow = new Row();
-        SheetData.Append(WritingRow);
+        ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().Append(WritingRow);
     }
 
     public override Task NextRecordAsync()
@@ -141,12 +139,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     public override void Flush()
     {
-        WorkbookPart.Workbook.Save();
+        SpreadsheetDocument.WorkbookPart!.Workbook.Save();
     }
 
     public override Task FlushAsync()
     {
-        WorkbookPart.Workbook.Save();
+        SpreadsheetDocument.WorkbookPart!.Workbook.Save();
 
         return Task.CompletedTask;
     }
@@ -160,7 +158,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         if (Disposed)
             return;
 
-        WorkbookPart.Workbook.Save();
+        SpreadsheetDocument.WorkbookPart!.Workbook.Save();
 
         if (disposing)
         {
@@ -177,7 +175,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         if (Disposed)
             return ValueTask.CompletedTask;
 
-        WorkbookPart.Workbook.Save();
+        SpreadsheetDocument.WorkbookPart!.Workbook.Save();
 
         if (disposing)
         {
@@ -253,7 +251,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         base.WriteRecords(records);
 
-        SheetData.RemoveChild(WritingRow);
+        ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().RemoveChild(WritingRow);
 
         ExcelRowIndex--;
 
@@ -298,7 +296,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         await base.WriteRecordsAsync(records, cancellationToken);
 
-        SheetData.RemoveChild(WritingRow);
+        ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().RemoveChild(WritingRow);
 
         ExcelRowIndex--;
 
@@ -331,7 +329,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         base.WriteRecords(records);
 
-        SheetData.RemoveChild(WritingRow);
+        ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().RemoveChild(WritingRow);
 
         ExcelRowIndex--;
 
@@ -363,7 +361,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         await base.WriteRecordsAsync(records, cancellationToken);
 
-        SheetData.RemoveChild(WritingRow);
+        ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().RemoveChild(WritingRow);
 
         ExcelRowIndex--;
 
@@ -396,7 +394,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         await base.WriteRecordsAsync(records, cancellationToken);
 
-        SheetData.RemoveChild(WritingRow);
+        ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().RemoveChild(WritingRow);
 
         ExcelRowIndex--;
 
@@ -409,9 +407,9 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     private void InitializeWritingNewWorksheet(Type type, string? sheetname)
     {
-        WorksheetPart = OpenXmlHelper.InsertWorksheet(WorkbookPart, string.IsNullOrEmpty(sheetname) ? null : sheetname);
+        WorksheetPart = OpenXmlHelper.InsertWorksheet(SpreadsheetDocument.WorkbookPart!, string.IsNullOrEmpty(sheetname) ? null : sheetname, out SheetId);
 
-        SheetData = WorksheetPart.Worksheet.GetFirstChild<SheetData>()!;
+        SheetData SheetData = WorksheetPart.Worksheet.GetFirstChild<SheetData>()!;
 
         ClassMap? ClassMap = Context.Maps[type];
         if (ClassMap is not null)

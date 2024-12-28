@@ -14,6 +14,16 @@ public class ExcelDomWriterTests
 {
     #region Test Methods
 
+    [Fact]
+    public void ConstructorShouldInitializeCorrectlyTest()
+    {
+        using MemoryStream ExcelStream = new MemoryStream();
+        using ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
+
+        ExcelWriter.Row.Should().Be(1);
+        ExcelWriter.Index.Should().Be(0);
+    }
+
     [Fact()]
     public void WriteSingleAnonymousUnformattedRecordTest()
     {
@@ -1746,6 +1756,30 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).Should().Be("LastModifiedDate");
         DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).Should().Be(new DateTime(2024, 12, 24, 15, 25, 15));
         DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).Should().Be(new DateTime(2024, 12, 24, 15, 25, 15));
+    }
+
+    [Fact]
+    public void DisposeShouldDisposeResourcesTest()
+    {
+        MemoryStream ExcelStream = new MemoryStream();
+        ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
+
+        ExcelWriter.Dispose();
+
+        Action action = () => ExcelWriter.NextRecord();
+        action.Should().Throw<ObjectDisposedException>();
+    }
+
+    [Fact]
+    public async Task DisposeAsyncShouldDisposeResourcesTest()
+    {
+        MemoryStream ExcelStream = new MemoryStream();
+        ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
+
+        await ExcelWriter.DisposeAsync();
+
+        Func<Task> action = async () => await ExcelWriter.NextRecordAsync();
+        await action.Should().ThrowAsync<ObjectDisposedException>();
     }
 
     #endregion

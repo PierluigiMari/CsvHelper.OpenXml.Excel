@@ -23,7 +23,7 @@ public sealed class ExcelDomParser : IExcelParser
     private string[] CurrentRecord = [];
     private readonly SpreadsheetDocument SpreadsheetDocument;
     private readonly Stream ExcelStream;
-    private readonly SheetData SheetData;
+    private readonly string SheetId;
     private readonly int LastRow;
     private readonly int LastColumn;
 
@@ -54,11 +54,11 @@ public sealed class ExcelDomParser : IExcelParser
 
         WorkbookPart WorkbookPart = SpreadsheetDocument.WorkbookPart ?? SpreadsheetDocument.AddWorkbookPart();
 
-        string SheetId = string.IsNullOrEmpty(sheetname) ? WorkbookPart.Workbook.Descendants<Sheet>().First().Id! : WorkbookPart.Workbook.Descendants<Sheet>().FirstOrDefault(sheet => sheet.Name == sheetname)?.Id?.Value ?? WorkbookPart.Workbook.Descendants<Sheet>().First().Id!;
+        SheetId = string.IsNullOrEmpty(sheetname) ? WorkbookPart.Workbook.Descendants<Sheet>().First().Id! : WorkbookPart.Workbook.Descendants<Sheet>().FirstOrDefault(sheet => sheet.Name == sheetname)?.Id?.Value ?? WorkbookPart.Workbook.Descendants<Sheet>().First().Id!;
 
         WorksheetPart WorksheetPart = (WorksheetPart)WorkbookPart.GetPartById(SheetId);
 
-        SheetData = WorksheetPart.Worksheet.Elements<SheetData>().First();
+        SheetData SheetData = WorksheetPart.Worksheet.Elements<SheetData>().First();
 
         LastRow = SheetData.Elements<Row>().Count(r => !string.IsNullOrEmpty(r.InnerText)) - 1;
 
@@ -89,11 +89,12 @@ public sealed class ExcelDomParser : IExcelParser
     public string Delimiter => Configuration.Delimiter;
     public CsvContext Context { get; }
     public IParserConfiguration Configuration { get; }
-    public int RowCount { get => LastRow; }
+    public int RowCount { get => LastRow + 1; }
 
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string[] GetRecord()
     {
+        SheetData SheetData = ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First();
         Row CurrentRow = SheetData.Elements<Row>().ElementAt(Row);
 
         string[] RecordValues;

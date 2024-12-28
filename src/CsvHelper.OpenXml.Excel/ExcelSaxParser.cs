@@ -90,7 +90,7 @@ public sealed class ExcelSaxParser : IExcelParser
     public string Delimiter => Configuration.Delimiter;
     public CsvContext Context { get; }
     public IParserConfiguration Configuration { get; }
-    public int RowCount { get => LastRow; }
+    public int RowCount { get => LastRow + 1; }
 
     public string[] GetRecord()
     {

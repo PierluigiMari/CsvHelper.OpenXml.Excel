@@ -35,31 +35,16 @@ internal class OpenXmlHelper
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 180, FormatCode = "0.0000E+00" });
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 181, FormatCode = "00000" });
 
-        Font DefaultFont = new Font(); // Default font
-        FontName DefaultFontName = new FontName { Val = "Calibri" };
-        FontSize DefaultFontSize = new FontSize { Val = 11 };
-        DefaultFont.Append(DefaultFontName);
-        DefaultFont.Append(DefaultFontSize);
+        Font FontDefault = new Font(new FontName { Val = "Calibri" }, new FontSize { Val = 11 }); // Default font
+        Font FontBold = new Font(new Bold()); // Bold font
 
+        Fonts Fonts = new Fonts(FontDefault, FontBold);
 
-        Font FontBold = new Font(); // Bold font
-        Bold bold = new Bold();
-        FontBold.Append(bold);
+        Fill FillDefault = new Fill(new PatternFill { PatternType = PatternValues.None }); // Default fill
+        Fills Fills = new Fills(FillDefault);
 
-        // Append both fonts
-        Fonts Fonts = new Fonts();
-        Fonts.Append(DefaultFont);
-        Fonts.Append(FontBold);
-
-        //Append fills - a must, in my case just default
-        Fill fill0 = new Fill();
-        Fills Fills = new Fills();
-        Fills.Append(fill0);
-
-        // Append borders - a must, in my case just default
-        Border DefaultBorder = new Border();     // Default border
-        Borders Borders = new Borders();
-        Borders.Append(DefaultBorder);
+        Border BorderDefault = new Border(); // Default border
+        Borders Borders = new Borders(BorderDefault);
 
         // CellFormats
         CellFormats CellFormats = new CellFormats();
@@ -124,7 +109,7 @@ internal class OpenXmlHelper
         CellFormats.Append(ScientificFormatWithFourDecimals);
         CellFormats.Append(SpecialZipCodeFormat);
 
-        // Append everything to stylesheet  - Preserve the ORDER !
+        // Append everything to stylesheet  - Preserve the ORDER!
         WorkbookStyleSheet.Append(StylesheetNumberingFormats);
         WorkbookStyleSheet.Append(Fonts);
         WorkbookStyleSheet.Append(Fills);
@@ -136,7 +121,7 @@ internal class OpenXmlHelper
         NewWorkbookStylesPartCreated.Stylesheet.Save();
     }
 
-    internal SharedStringTablePart GetSharedStringTablePart(WorkbookPart workbookpart) => workbookpart.GetPartsOfType<SharedStringTablePart>().Any() ? workbookpart.GetPartsOfType<SharedStringTablePart>().First() : workbookpart.AddNewPart<SharedStringTablePart>();
+    internal SharedStringTablePart GetSharedStringTablePart(WorkbookPart workbookpart) => workbookpart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault() ?? workbookpart.AddNewPart<SharedStringTablePart>();
 
     internal WorksheetPart InsertWorksheet(WorkbookPart workbookpart, string? sheetname)
     {
@@ -149,24 +134,9 @@ internal class OpenXmlHelper
         string RelationshipId = workbookpart.GetIdOfPart(NewWorksheetPart);
 
         // Get a unique ID for the new sheet.
-        uint SheetId = 1;
-        if (sheets.Elements<Sheet>().Any())
-        {
-            SheetId = sheets.Elements<Sheet>().Select<Sheet, uint>(s => s.SheetId is not null && s.SheetId.HasValue ? s.SheetId.Value : 0).Max() + 1;
-        }
+        uint SheetId = sheets.Elements<Sheet>().Any() ? sheets.Elements<Sheet>().Max(s => s.SheetId!.Value) + 1 : 1;
 
-        string SheetName = string.Empty;
-        if (sheetname is not null)
-        {
-            if (sheets.Elements<Sheet>().Any(x => x.Name == sheetname))
-                SheetName = sheetname + SheetId;
-            else
-                SheetName = sheetname;
-        }
-        else
-        {
-            SheetName = "Sheet" + SheetId;
-        }
+        string SheetName = sheetname is not null && sheets.Elements<Sheet>().Any(x => x.Name == sheetname) ? sheetname + SheetId : sheetname ?? "Sheet" + SheetId;
 
         // Append the new worksheet and associate it with the workbook.
         Sheet sheet = new Sheet() { Id = RelationshipId, SheetId = SheetId, Name = SheetName };
@@ -223,13 +193,6 @@ internal class OpenXmlHelper
 
         string ColumnLettersPart = RegexMatch.Groups[1].Value;
 
-        int ColumnIndex = 0;
-
-        foreach (char ColumnLetter in ColumnLettersPart)
-        {
-            ColumnIndex = (ColumnIndex * 26) + (ColumnLetter - 'A' + 1);
-        }
-
-        return ColumnIndex;
+        return ColumnLettersPart.Aggregate(0, (index, letter) => (index * 26) + (letter - 'A' + 1));
     }
 }

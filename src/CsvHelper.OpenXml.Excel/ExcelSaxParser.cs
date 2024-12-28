@@ -11,6 +11,10 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The ExcelSaxParser class is defined as sealed, meaning it cannot be inherited. It implements the <see cref="IExcelParser"/> interface, which extends <seealso cref="IParser"/> and IAsyncDisposable.
+/// The class provides a robust way to read data from Excel files using the OpenXML SDK, this approach is efficient for reading large Excel files because it doesn't load the entire document into memory and ensures proper resource management.
+/// </summary>
 public sealed class ExcelSaxParser : IExcelParser
 {
     #region Fields

@@ -17,6 +17,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// The ExcelDomWriter class is defined as sealed, meaning it cannot be inherited. It implements the <see cref="IExcelWriter"/> interface, which extends <seealso cref="IWriter"/>.
+/// The ExcelDomWriter class provides a robust way to write data to Excel files using the OpenXML SDK, extending the capabilities of <see cref="CsvWriter"/> to support Excel specific features and formats. It handles various data types, manages the Excel document structure, and ensures proper resource management.
+/// </summary>
 public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 {
     #region Fields
@@ -68,9 +72,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         base.Configuration.Validate();
 
         if (stream.Length > 0)
-        {
             SpreadsheetDocument = SpreadsheetDocument.Open(stream, true);
-        }
         else
             SpreadsheetDocument = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook);
 
@@ -251,6 +253,10 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         base.WriteRecords(records);
 
+        SheetData.RemoveChild(WritingRow);
+
+        ExcelRowIndex--;
+
         AutoFitColumns();
     }
 
@@ -292,6 +298,10 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         await base.WriteRecordsAsync(records, cancellationToken);
 
+        SheetData.RemoveChild(WritingRow);
+
+        ExcelRowIndex--;
+
         AutoFitColumns();
     }
 
@@ -323,6 +333,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         SheetData.RemoveChild(WritingRow);
 
+        ExcelRowIndex--;
+
         AutoFitColumns();
     }
 
@@ -352,6 +364,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         await base.WriteRecordsAsync(records, cancellationToken);
 
         SheetData.RemoveChild(WritingRow);
+
+        ExcelRowIndex--;
 
         AutoFitColumns();
     }
@@ -383,6 +397,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         await base.WriteRecordsAsync(records, cancellationToken);
 
         SheetData.RemoveChild(WritingRow);
+
+        ExcelRowIndex--;
 
         AutoFitColumns();
     }

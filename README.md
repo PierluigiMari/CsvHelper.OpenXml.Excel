@@ -3,15 +3,29 @@
 [![NuGet](https://img.shields.io/nuget/v/CsvHelper.OpenXml.Excel.svg)](https://www.nuget.org/packages/CsvHelper.OpenXml.Excel)
 
 ## Introduction
-**CsvHelper.OpenXml.Excel** is a small library thinked to allow the import and export data from and to **Excel** files. The library is the facto an extension that connects and integrates two famous libraries [CsvHelper](https://github.com/JoshClose/CsvHelper) and [OpenXml](https://github.com/dotnet/Open-XML-SDK), mainly providing implementations of `IParser` and `IWriter`, of **CsvHelper**, which read and write files in xlsx format using **OpenXml**.
+**CsvHelper.OpenXml.Excel** is a small library thinked to allow the import and export data from and to **Excel** files. The library is the facto an extension that connects and integrates two famous libraries [CsvHelper](https://github.com/JoshClose/CsvHelper) and [OpenXml](https://github.com/dotnet/Open-XML-SDK). It mainly providing implementations of `IParser` and `IWriter`, of **CsvHelper**, which read and write files in xlsx format using **OpenXml**.
 
 The ultimate goal is to obtain versatility of use and accuracy in import and export results; especially with regard to export, the file obtained, although always in simple tabular form, still has all the characteristics expected for an Excel file, with the columns having the cells formatted in an adequate way and not as simple text.
 
-## Basic hirings
-Assumed that you have knowledge of [CsvHelper](https://github.com/JoshClose/CsvHelper) and its documentation.
+## Prerequisites
+Knowledge of [CsvHelper](https://github.com/JoshClose/CsvHelper) and its documentation.
+
+.NET 8 or .NET 9 SDK installed.
+
+## Installation
+To install the library, from the **Package Manager Console** use the following command:
+
+```
+PM> Install-Package CsvHelper.OpenXml.Excel
+```
+Or,  from the **.NET Core CLI Console** use the following command:
+
+```
+ > dotnet add package CsvHelper.OpenXml.Excel
+```
 
 ## Import
-For importing from Excel files, the library makes available both approaches offered by **OpenXml**, so there are two implementations of **IParser**
+For importing from Excel files, the library makes available both approaches offered by **OpenXml**, so there are two implementations of **IParser**:
 
 - ExcelDomParser
 - ExcelSaxParser
@@ -73,7 +87,7 @@ IEnumerable<Foo> FooCollection = ExcelReader.GetRecords<Foo>().ToArray();
 >```
 
 ## Export
-For exporting to Excel files, the library currently only provides the DOM approach of the two offered by OpenXml, so for now there is only one implementation of IWriter
+For exporting to Excel files, the library currently only provides the DOM approach of the two offered by OpenXml, so for now there is only one implementation of IWriter:
 
 - ExcelDomWriter
 
@@ -94,11 +108,11 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 
 >The constructor has an optional parameter, **configuration**, for which the instance of a `CsvConfiguration` is used. In case the  configuration is not specified, a configuration with InvariantCulture is used by default.
 
-Like with import, you can use the specific implementations of the `DefaultTypeConverter` to the definition of `ClassMap`. The library, also, provides both an enumeration
+Like with import, you can use the specific implementations of the `DefaultTypeConverter` to the definition of `ClassMap`. The library, also, provides both an enumeration:
 
 - ExcelCellFormats
 
-which allows you to specify the Excel cell format to be applied to the column of the generated worksheet, and a specific implementation of `TypeConverterOptions`
+which allows you to specify the Excel cell format to be applied to the column of the generated worksheet, and a specific implementation of `TypeConverterOptions`:
 
 - ExcelTypeConverterOptions
 
@@ -132,42 +146,37 @@ byte[] Bytes = ExcelStream.ToArray();
 File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 ```
 
-**ExcelCellFormats** enumeration, below is the detail of the definition.
+**ExcelCellFormats** enumeration, the following are the details of the defined named constant members:
 
-```csharp
-public enum ExcelCellFormats
-{
-    Default, //Default format
-    DefaultBold, //Format with Bold text
-    DefaultBoldCentered, //Format with Bold text with horizontal aligment centered
-    NumberIntegerDefault, //Format like "0" - Default for "Int32" type
-    NumberDecimalWithTwoDecimalsDefault, //Format like "0.00" - Default for "Decimal" type
-    NumberDecimalWithFourDecimals, //Format like "0.0000"
-    CurrencyGenericWithoutDecimals, //Format like "#,##0"
-    CurrencyGenericWithTwoDecimals, // Format like "#,##0.00"
-    CurrencyGenericWithFourDecimals, // Format like "#,##0.0000"
-    CurrencyEuroWithTwoDecimals, // Format like "#,##0.00 €"
-    CurrencyEuroWithFourDecimals, // Format like "#,##0.0000 €"
-    AccountingWithTwoDecimals, // Format like "#,##0.00 €"
-    AccountingWithFourDecimals, // Format like "#,##0.0000 €"
-    DateDefault, //Format like "dd/mm/yyyy" - Default for "DateOnly" type
-    DateExtended, //Format like "dddd dd mmmm yyyy"
-    DateWithDash, //Format like "dd-mm-yyyy"
-    DateTimeWithHoursMinutesSecondsDefault, //Format like "dd/mm/yyyy hh:mm:ss" - Default for "DateTime" type
-    DateTimeWithHoursMinutes, //Format like "dd/mm/yyyy hh:mm"
-    DateTime12HourWithHoursMinutesSeconds, //Format like "dd/mm/yyyy h:mm:ss AM/PM"
-    DateTime12HourWithHoursMinutes, //Format like "dd/mm/yyyy h:mm AM/PM"
-    TimeWithHoursMinutesSecondsDefault, //Format like "hh:mm:ss" - Default for "TimeOnly" type
-    TimeWithHoursMinutes, //Format like "hh:mm"
-    Time12HourWithHoursMinutesSeconds, //Format like "h:mm:ss AM/PM"
-    Time12HourWithHoursMinutes, //Format like "h:mm AM/PM"
-    PercentageWithoutDecimals, //Format like "0%"
-    PercentageWithTwoDecimals, //Format like "0.00%"
-    ScientificWithTwoDecimalsDefault, //Format like "0.00E+00" - Default for "Double" type
-    ScientificWithFourDecimals, //Format like "0.0000E+00"
-    SpecialZipCode //Format like "00000"
-}
-```
+1. **Default** => Default format
+2. **DefaultBold** => Format with Bold text
+3. **DefaultBoldCentered** => Format with Bold text with horizontal aligment centered
+4. **NumberIntegerDefault** => Format like "0" - ***Default*** for "**Int32**" type
+5. **NumberDecimalWithTwoDecimalsDefault** => Format like "0.00" - ***Default*** for "**Decimal**" type
+6. **NumberDecimalWithFourDecimals** => Format like "0.0000"
+7. **CurrencyGenericWithoutDecimals** => Format like "#,##0"
+8. **CurrencyGenericWithTwoDecimals** => Format like "#,##0.00"
+9. **CurrencyGenericWithFourDecimals** => Format like "#,##0.0000"
+10. **CurrencyEuroWithTwoDecimals** => Format like "#,##0.00 €"
+11. **CurrencyEuroWithFourDecimals** => Format like "#,##0.0000 €"
+12. **AccountingWithTwoDecimals** => Format like "#,##0.00 €"
+13. **AccountingWithFourDecimals** => Format like "#,##0.0000 €"
+14. **DateDefault** => Format like "dd/mm/yyyy" - ***Default*** for "**DateOnly**" type
+15. **DateExtended** => Format like "dddd dd mmmm yyyy"
+16. **DateWithDash** => Format like "dd-mm-yyyy"
+17. **DateTimeWithHoursMinutesSecondsDefault** => Format like "dd/mm/yyyy hh:mm:ss" - ***Default*** for "**DateTime**" type
+18. **DateTimeWithHoursMinutes** => Format like "dd/mm/yyyy hh:mm"
+19. **DateTime12HourWithHoursMinutesSeconds** => Format like "dd/mm/yyyy h:mm:ss AM/PM"
+20. **DateTime12HourWithHoursMinutes** => Format like "dd/mm/yyyy h:mm AM/PM"
+21. **TimeWithHoursMinutesSecondsDefault** => Format like "hh:mm:ss" - ***Default*** for "**TimeOnly**" type
+22. **TimeWithHoursMinutes** => Format like "hh:mm"
+23. **Time12HourWithHoursMinutesSeconds** => Format like "h:mm:ss AM/PM"
+24. **Time12HourWithHoursMinutes** => Format like "h:mm AM/PM"
+25. **PercentageWithoutDecimals** => Format like "0%"
+26. **PercentageWithTwoDecimals** => Format like "0.00%"
+27. **ScientificWithTwoDecimalsDefault** => Format like "0.00E+00" - ***Default*** for "**Double**" type
+28. **ScientificWithFourDecimals** => Format like "0.0000E+00"
+29. **SpecialZipCode** => Format like "00000"
 
 >For each type (Int32, DateOnly, DateTime, TimeOnly, Double) a default enumerate has been defined, recognizable by "...Default" at the end of the name; in the `ClassMap` definition, can omit the Excel cell format if intend to apply the default format to that Excel column.
 >
@@ -190,6 +199,8 @@ using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CsvConfi
     ExcelWriter.Context.RegisterClassMap<FooMap>();
     ExcelWriter.WriteRecords(FooCollection);
     
+    ExcelWriter.NextRecord();
+
     ExcelWriter.WriteRecords(AnotherFooCollection);
 }
 
@@ -212,7 +223,7 @@ using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CsvConfi
     ExcelWriter.Context.UnregisterClassMap<FooMap>();
 
     ExcelWriter.Context.RegisterClassMap<BarMap>();
-    ExcelWriter.WriteRecords(BarFooCollection, "SheetBar");
+    ExcelWriter.WriteRecords(BarCollection, "SheetBar");
 }
 
 byte[] Bytes = ExcelStream.ToArray();

@@ -4,9 +4,9 @@ using CsvHelper.Configuration;
 using CsvHelper.OpenXml.Excel.TypeConversion;
 using System.Globalization;
 
-internal class OrderMap : ClassMap<Order>
+internal class OrderExportMap : ClassMap<Order>
 {
-    public OrderMap()
+    public OrderExportMap()
     {
         AutoMap(new CultureInfo("en-US"));
         Map(m => m.OrderDate).TypeConverter<ExcelDateOnlyConverter>();

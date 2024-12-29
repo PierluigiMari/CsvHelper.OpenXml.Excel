@@ -15,7 +15,7 @@ public class ExcelDomWriterTests
     #region Test Methods
 
     [Fact]
-    public void ConstructorShouldInitializeCorrectlyTest()
+    public void Constructor_ShouldInitializeCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
@@ -25,7 +25,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteSingleAnonymousUnformattedRecordTest()
+    public void WriteRecord_ShouldWriteSingleAnonymousUnformattedRecordCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -80,7 +80,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteMultipleAnonymousUnformattedRecordsTest()
+    public void WriteRecords_ShouldWriteMultipleAnonymousUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -162,7 +162,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultipleAnonymousUnformattedRecordsAsyncTest()
+    public async Task WriteRecordsAsync_ShouldWriteMultipleAnonymousUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -244,7 +244,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultipleAnonymousUnformattedAsyncRecordsAsyncTest()
+    public async Task WriteRecordsAsync_IAsyncEnumerable_ShouldWriteMultipleAnonymousUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -294,7 +294,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteSingleDynamicUnformattedRecordTest()
+    public void WriteRecord_ShouldWriteSingleDynamicUnformattedRecordCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -346,7 +346,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteMultipleDynamicUnformattedRecordsTest()
+    public void WriteRecords_ShouldWriteMultipleDynamicUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -424,7 +424,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultipleDynamicUnformattedRecordsAsyncTest()
+    public async Task WriteRecordsAsync_ShouldWriteMultipleDynamicUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -502,7 +502,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultipleDynamicUnformattedAsyncRecordsAsyncTest()
+    public async Task WriteRecordsAsync_IAsyncEnumerable_ShouldWriteMultipleDynamicUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -552,7 +552,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteSinglePersonUnformattedRecordTest()
+    public void WriteRecord_ShouldWriteSinglePersonUnformattedRecordCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -607,7 +607,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteMultiplePersonUnformattedRecordsTest()
+    public void WriteRecords_ShouldWriteMultiplePersonUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -689,7 +689,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultiplePersonUnformattedRecordsAsyncTest()
+    public async Task WriteRecordsAsync_ShouldWriteMultiplePersonUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -771,7 +771,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultiplePersonUnformattedAsyncRecordsAsyncTest()
+    public async Task WriteRecordsAsync_IAsyncEnumerable_ShouldWriteMultiplePersonUnformattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
@@ -821,12 +821,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteSinglePersonFormattedRecordTest()
+    public void WriteRecord_ShouldWriteSinglePersonFormattedRecordCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             Person Record = new Person
             {
@@ -877,12 +877,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteMultiplePersonFormattedRecordsTest()
+    public void WriteRecords_ShouldWriteMultiplePersonFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             List<Person> Records = new List<Person>
             {
@@ -961,12 +961,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteMultiplePersonCollectionFormattedRecordsTest()
+    public void WriteRecords_ShouldWriteMultiplePersonCollectionFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             List<Person> Records = new List<Person>
             {
@@ -1113,12 +1113,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public void WriteMultiplePersonAndOrderFormattedRecordsTest()
+    public void WriteRecords_ShouldWriteMultiplePersonAndOrderFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             List<Person> PersonRecords = new List<Person>
             {
@@ -1154,9 +1154,9 @@ public class ExcelDomWriterTests
 
             ExcelWriter.WriteRecords(PersonRecords, "SheetPerson");
 
-            ExcelWriter.Context.UnregisterClassMap<PersonMap>();
+            ExcelWriter.Context.UnregisterClassMap<PersonExportMap>();
             
-            ExcelWriter.Context.RegisterClassMap<OrderMap>();
+            ExcelWriter.Context.RegisterClassMap<OrderExportMap>();
 
             List<Order> OrderRecords = new List<Order>
             {
@@ -1292,12 +1292,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultiplePersonFormattedRecordsAsyncTest()
+    public async Task WriteRecordsAsync_ShouldWriteMultiplePersonFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             List<Person> Records = new List<Person>
             {
@@ -1376,12 +1376,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultiplePersonCollectionFormattedRecordsAsyncTest()
+    public async Task WriteRecordsAsync_ShouldWriteMultiplePersonCollectionFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             List<Person> Records = new List<Person>
             {
@@ -1528,12 +1528,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultiplePersonAndOrderFormattedRecordsAsyncTest()
+    public async Task WriteRecordsAsync_ShouldWriteMultiplePersonAndOrderFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             List<Person> PersonRecords = new List<Person>
             {
@@ -1569,9 +1569,9 @@ public class ExcelDomWriterTests
 
             await ExcelWriter.WriteRecordsAsync(PersonRecords, "SheetPerson");
 
-            ExcelWriter.Context.UnregisterClassMap<PersonMap>();
+            ExcelWriter.Context.UnregisterClassMap<PersonExportMap>();
 
-            ExcelWriter.Context.RegisterClassMap<OrderMap>();
+            ExcelWriter.Context.RegisterClassMap<OrderExportMap>();
 
             List<Order> OrderRecords = new List<Order>
             {
@@ -1707,12 +1707,12 @@ public class ExcelDomWriterTests
     }
 
     [Fact()]
-    public async Task WriteMultiplePersonFormattedAsyncRecordsAsyncTest()
+    public async Task WriteRecordsAsync_IAsyncEnumerable_ShouldWriteMultiplePersonFormattedRecordsCorrectlyTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
         {
-            ExcelWriter.Context.RegisterClassMap<PersonMap>();
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
 
             await ExcelWriter.WriteRecordsAsync(GetPersonAsyncEnumerable());
         }
@@ -1759,7 +1759,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact]
-    public void DisposeShouldDisposeResourcesTest()
+    public void Dispose_ShouldDisposeResourcesTest()
     {
         MemoryStream ExcelStream = new MemoryStream();
         ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
@@ -1771,7 +1771,7 @@ public class ExcelDomWriterTests
     }
 
     [Fact]
-    public async Task DisposeAsyncShouldDisposeResourcesTest()
+    public async Task DisposeAsync_ShouldDisposeResourcesTest()
     {
         MemoryStream ExcelStream = new MemoryStream();
         ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);

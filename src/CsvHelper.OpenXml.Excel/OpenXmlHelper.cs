@@ -11,8 +11,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-internal class OpenXmlHelper
+/// <summary>
+/// The OpenXmlHelper class is a utility class to assist with various operations related to OpenXML spreadsheets.
+/// </summary>
+internal partial class OpenXmlHelper
 {
+    /// <summary>
+    /// Creates and applies a new stylesheet to the specified spreadsheet document.
+    /// </summary>
+    /// <param name="spreadsheetdocument">The spreadsheet document to which the stylesheet will be applied.</param>
     internal void CreateWorksheetStyle(SpreadsheetDocument spreadsheetdocument)
     {
         spreadsheetdocument.WorkbookPart!.DeletePart(spreadsheetdocument.WorkbookPart!.WorkbookStylesPart!);
@@ -126,8 +133,20 @@ internal class OpenXmlHelper
         NewWorkbookStylesPartCreated.Stylesheet.Save();
     }
 
+    /// <summary>
+    /// Gets the SharedStringTablePart of the specified workbook part. If it does not exist, creates a new one.
+    /// </summary>
+    /// <param name="workbookpart">The workbook part.</param>
+    /// <returns>The SharedStringTablePart.</returns>
     internal SharedStringTablePart GetSharedStringTablePart(WorkbookPart workbookpart) => workbookpart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault() ?? workbookpart.AddNewPart<SharedStringTablePart>();
 
+    /// <summary>
+    /// Inserts a new worksheet into the specified workbook part.
+    /// </summary>
+    /// <param name="workbookpart">The workbook part.</param>
+    /// <param name="sheetname">The name of the new sheet.</param>
+    /// <param name="sheetid">The ID of the new sheet.</param>
+    /// <returns>The newly created WorksheetPart.</returns>
     internal WorksheetPart InsertWorksheet(WorkbookPart workbookpart, string? sheetname, out string sheetid)
     {
         // Add a new worksheet part to the workbook.
@@ -152,6 +171,12 @@ internal class OpenXmlHelper
         return NewWorksheetPart;
     }
 
+    /// <summary>
+    /// Inserts a shared string item into the SharedStringTablePart.
+    /// </summary>
+    /// <param name="text">The text to insert.</param>
+    /// <param name="sharestringpart">The SharedStringTablePart.</param>
+    /// <returns>The index of the inserted shared string item.</returns>
     internal int InsertSharedStringItem(string text, SharedStringTablePart sharestringpart)
     {
         // If the part does not contain a SharedStringTable, create one.
@@ -175,14 +200,20 @@ internal class OpenXmlHelper
         return i;
     }
 
+    /// <summary>
+    /// Converts a column index to its corresponding Excel column letters.
+    /// </summary>
+    /// <param name="columnindex">The column index (0-based).</param>
+    /// <returns>The column letters.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the column index is less than to zero.</exception>
     internal string GetColumnLetters(int columnindex)
     {
+        if (columnindex < 0)
+            throw new ArgumentOutOfRangeException(nameof(columnindex), "Index must be a positive number.");
+
         columnindex++;
         const int Base = 26;
         const int ASCIIOffset = 64; // 'A' is 65 in ASCII
-
-        if (columnindex <= 0)
-            throw new ArgumentOutOfRangeException(nameof(columnindex), "Index must be a positive number.");
 
         StringBuilder ColumnNameBuilder = new StringBuilder();
 
@@ -196,9 +227,15 @@ internal class OpenXmlHelper
         return ColumnNameBuilder.ToString();
     }
 
+    /// <summary>
+    /// Gets the column index from the cell reference.
+    /// </summary>
+    /// <param name="cellreference">The cell reference (e.g., "A1").</param>
+    /// <returns>The column index (1-based).</returns>
+    /// <exception cref="ArgumentException">Thrown when the cell reference format is invalid.</exception>
     internal int GetColumnIndex(string cellreference)
     {
-        Match RegexMatch = Regex.Match(cellreference, @"([A-Za-z]+)(\d+)");
+        Match RegexMatch = CellReferenceRegex().Match(cellreference);
 
         if (!RegexMatch.Success)
         {
@@ -209,4 +246,7 @@ internal class OpenXmlHelper
 
         return ColumnLettersPart.Aggregate(0, (index, letter) => (index * 26) + (letter - 'A' + 1));
     }
+
+    [GeneratedRegex(@"([A-Za-z]+)(\d+)")]
+    private partial Regex CellReferenceRegex();
 }

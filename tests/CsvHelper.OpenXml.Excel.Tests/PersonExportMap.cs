@@ -4,9 +4,9 @@ using CsvHelper.Configuration;
 using CsvHelper.OpenXml.Excel.TypeConversion;
 using System.Globalization;
 
-internal class PersonMap : ClassMap<Person>
+internal class PersonExportMap : ClassMap<Person>
 {
-    public PersonMap()
+    public PersonExportMap()
     {
         AutoMap(new CultureInfo("en-US"));
 

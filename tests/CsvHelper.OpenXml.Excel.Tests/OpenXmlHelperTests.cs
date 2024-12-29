@@ -12,7 +12,7 @@ public class OpenXmlHelperTests
     #region Test Methods
 
     [Fact]
-    public void CreateWorksheetStyleShouldCreateStylesheetTest()
+    public void CreateWorksheetStyle_ShouldCreateStylesheetTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(ExcelStream, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook);
@@ -27,7 +27,7 @@ public class OpenXmlHelperTests
     }
 
     [Fact]
-    public void GetSharedStringTablePartShouldReturnSharedStringTablePartTest()
+    public void GetSharedStringTablePart_ShouldReturnSharedStringTablePartTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(ExcelStream, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook);
@@ -40,7 +40,7 @@ public class OpenXmlHelperTests
     }
 
     [Fact]
-    public void InsertWorksheetShouldInsertWorksheetTest()
+    public void InsertWorksheet_ShouldInsertWorksheetTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(ExcelStream, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook);
@@ -57,7 +57,7 @@ public class OpenXmlHelperTests
     }
 
     [Fact]
-    public void InsertSharedStringItemShouldInsertAndReturnIndexTest()
+    public void InsertSharedStringItem_ShouldInsertAndReturnIndexTest()
     {
         using MemoryStream ExcelStream = new MemoryStream();
         using SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Create(ExcelStream, DocumentFormat.OpenXml.SpreadsheetDocumentType.Workbook);
@@ -79,7 +79,7 @@ public class OpenXmlHelperTests
     [InlineData(27, "AB")]
     [InlineData(701, "ZZ")]
     [InlineData(702, "AAA")]
-    public void GetColumnLettersShouldReturnCorrectLettersTest(int colindex, string expected)
+    public void GetColumnLetters_ShouldReturnCorrectLettersTest(int colindex, string expected)
     {
         string ColumnLetterResult = OpenXmlHelper.GetColumnLetters(colindex);
 
@@ -93,7 +93,7 @@ public class OpenXmlHelperTests
     [InlineData("AA1", 27)]
     [InlineData("AB1", 28)]
     [InlineData("AAA1", 703)]
-    public void GetColumnIndexShouldReturnCorrectIndexTest(string cellreference, int expected)
+    public void GetColumnIndex_ShouldReturnCorrectIndexTest(string cellreference, int expected)
     {
         int ColumnIndexResult = OpenXmlHelper.GetColumnIndex(cellreference);
 
@@ -101,7 +101,7 @@ public class OpenXmlHelperTests
     }
 
     [Fact]
-    public void GetColumnIndexShouldThrowArgumentExceptionForInvalidReferenceTest()
+    public void GetColumnIndex_ShouldThrowArgumentExceptionForInvalidReferenceTest()
     {
         Action action = () => OpenXmlHelper.GetColumnIndex("1A");
 

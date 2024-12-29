@@ -25,28 +25,67 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 {
     #region Fields
 
+    /// <summary>
+    /// Helper class for OpenXML operations.
+    /// </summary>
     private readonly OpenXmlHelper OpenXmlHelper = new OpenXmlHelper();
 
+    /// <summary>
+    /// Options for handling injection attacks.
+    /// </summary>
     private readonly InjectionOptions InjectionOptions;
 
+    /// <summary>
+    /// The SpreadsheetDocument being written to.
+    /// </summary>
     private readonly SpreadsheetDocument SpreadsheetDocument;
 
+    /// <summary>
+    /// The SharedStringTablePart of the SpreadsheetDocument.
+    /// </summary>
     private readonly SharedStringTablePart SharedStringPart;
 
+    /// <summary>
+    /// The WorksheetPart currently being written to.
+    /// </summary>
     private WorksheetPart WorksheetPart = null!;
 
+    /// <summary>
+    /// The relationship id of current sheet.
+    /// </summary>
     private string SheetId = string.Empty;
 
+    /// <summary>
+    /// The current row index in the Excel sheet.
+    /// </summary>
     private int ExcelRowIndex = 1;
+    /// <summary>
+    /// The current column index in the Excel sheet.
+    /// </summary>
     private int ExcelColumnIndex = 0;
+    /// <summary>
+    /// The total number of columns in the Excel sheet.
+    /// </summary>
     private int ExcelColumnCount = 0;
 
+    /// <summary>
+    /// The current row being written to.
+    /// </summary>
     private Row WritingRow = null!;
 
+    /// <summary>
+    /// The type of the field currently being written.
+    /// </summary>
     private Type? WritingFieldType = null!;
 
+    /// <summary>
+    /// Details of the Excel cell member map.
+    /// </summary>
     private readonly Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)> ExcelCellMemberMapDetails = new Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)>();
 
+    /// <summary>
+    /// The name of the last sheet written to.
+    /// </summary>
     private string? LastSheetName;
 
     #endregion
@@ -54,17 +93,17 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelWriter"/> class.
+    /// Initializes a new instance of the <see cref="ExcelDomWriter"/> class with the specified stream and culture.
     /// </summary>
-    /// <param name="stream">The stream.</param>
-    /// <param name="culture">The culture.</param>
+    /// <param name="stream">The stream to write to.</param>
+    /// <param name="culture">The culture to use for formatting.</param>
     public ExcelDomWriter(Stream stream, CultureInfo? culture) : this(stream, culture is null ? new CsvConfiguration(CultureInfo.InvariantCulture) : new CsvConfiguration(culture)) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelWriter"/> class.
+    /// Initializes a new instance of the <see cref="ExcelDomWriter"/> class with the specified stream and configuration.
     /// </summary>
-    /// <param name="stream">The stream.</param>
-    /// <param name="configuration">The configuration.</param>
+    /// <param name="stream">The stream to write to.</param>
+    /// <param name="configuration">The configuration to use.</param>
     public ExcelDomWriter(Stream stream, CsvConfiguration? configuration = null) : base(TextWriter.Null, configuration is null ? new CsvConfiguration(CultureInfo.InvariantCulture) : configuration)
     {
         base.Configuration.Validate();
@@ -89,10 +128,22 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     #region Overriding CsvWriter Properties and Methods
 
+    /// <summary>
+    /// Gets the current row index.
+    /// </summary>
     public override int Row => ExcelRowIndex;
+    /// <summary>
+    /// Gets the current column index.
+    /// </summary>
     public override int Index => ExcelColumnIndex;
 
 
+    /// <summary>
+    /// Writes a field to the current row.
+    /// </summary>
+    /// <typeparam name="T">The type of the field.</typeparam>
+    /// <param name="field">The field to write.</param>
+    /// <param name="converter">The converter to use for the field.</param>
     public override void WriteField<T>(T? field, ITypeConverter converter) where T : default
     {
         WritingFieldType = typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(typeof(T)) : typeof(T);
@@ -100,6 +151,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         base.WriteField(field, converter);
     }
 
+    /// <summary>
+    /// Writes a converted field to the current row.
+    /// </summary>
+    /// <param name="field">The field to write.</param>
+    /// <param name="fieldType">The type of the field.</param>
     public override void WriteConvertedField(string? field, Type fieldType)
     {
         WritingFieldType = fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(fieldType) : fieldType;
@@ -107,6 +163,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         base.WriteConvertedField(field, fieldType);
     }
 
+    /// <summary>
+    /// Writes a field to the current row.
+    /// </summary>
+    /// <param name="field">The field to write.</param>
+    /// <param name="shouldQuote">Whether the field should be quoted.</param>
     public override void WriteField(string? field, bool shouldQuote)
     {
         if (InjectionOptions == InjectionOptions.Strip)
@@ -120,6 +181,9 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     }
 
 
+    /// <summary>
+    /// Moves to the next record (row).
+    /// </summary>
     public override void NextRecord()
     {
         ExcelColumnCount = ExcelColumnIndex;
@@ -130,6 +194,10 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Elements<SheetData>().First().Append(WritingRow);
     }
 
+    /// <summary>
+    /// Asynchronously moves to the next record (row).
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public override Task NextRecordAsync()
     {
         NextRecord();
@@ -137,11 +205,18 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Flushes the current data to the Excel document.
+    /// </summary>
     public override void Flush()
     {
         SpreadsheetDocument.WorkbookPart!.Workbook.Save();
     }
 
+    /// <summary>
+    /// Asynchronously flushes the current data to the Excel document.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public override Task FlushAsync()
     {
         SpreadsheetDocument.WorkbookPart!.Workbook.Save();
@@ -151,8 +226,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     #region IDisposable and IAsyncDisposable override Methods of CsvWriter
 
+    /// <summary>
+    /// Indicates whether the object has been disposed.
+    /// </summary>
     private bool Disposed;
 
+    /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {
         if (Disposed)
@@ -170,6 +249,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         Disposed = true;
     }
 
+    /// <inheritdoc/>
     protected override ValueTask DisposeAsync(bool disposing)
     {
         if (Disposed)
@@ -195,6 +275,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     #region Implementation of the IExcelWriter interface members
 
+    /// <summary>
+    /// Writes a single record to the specified sheet.
+    /// </summary>
+    /// <typeparam name="T">The type of the record.</typeparam>
+    /// <param name="record">The record to write.</param>
+    /// <param name="sheetname">The name of the sheet to write to.</param>
     public void WriteRecord<T>(T? record, string? sheetname = null)
     {
         if (ExcelRowIndex == 1)
@@ -212,7 +298,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         base.WriteRecord(record);
     }
 
-
+    /// <summary>
+    /// Writes multiple records to the specified sheet.
+    /// </summary>
+    /// <param name="records">The records to write.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If null, the default sheet is used.</param>
     public void WriteRecords(IEnumerable records, string? sheetname = null)
     {
         IEnumerator Enumerator = records.GetEnumerator();
@@ -258,6 +348,13 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         AutoFitColumns();
     }
 
+    /// <summary>
+    /// Asynchronously writes multiple records to the specified sheet.
+    /// </summary>
+    /// <param name="records">The records to write.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If null, the default sheet is used.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
     public async Task WriteRecordsAsync(IEnumerable records, string? sheetname = null, CancellationToken cancellationToken = default)
     {
         IEnumerator Enumerator = records.GetEnumerator();
@@ -304,6 +401,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     }
 
 
+    /// <summary>
+    /// Writes multiple records of a specific type to the specified sheet.
+    /// </summary>
+    /// <typeparam name="T">The type of the records.</typeparam>
+    /// <param name="records">The records to write.</param>
+    /// <param name="sheetname">The name of the sheet to write to.</param>
     public void WriteRecords<T>(IEnumerable<T> records, string? sheetname = null)
     {
         if (ExcelRowIndex == 1)
@@ -336,6 +439,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         AutoFitColumns();
     }
 
+    /// <summary>
+    /// Asynchronously writes multiple records of a specific type to the specified sheet.
+    /// </summary>
+    /// <typeparam name="T">The type of the records.</typeparam>
+    /// <param name="records">The records to write.</param>
+    /// <param name="sheetname">The name of the sheet to write to.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
     public async Task WriteRecordsAsync<T>(IEnumerable<T> records, string? sheetname = null, CancellationToken cancellationToken = default)
     {
         if (ExcelRowIndex == 1)
@@ -369,6 +480,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     }
 
 
+    /// <summary>
+    /// Asynchronously writes multiple records from an asynchronous enumerable to the specified sheet.
+    /// </summary>
+    /// <typeparam name="T">The type of the records.</typeparam>
+    /// <param name="records">The asynchronous enumerable of records to write.</param>
+    /// <param name="sheetname">The name of the sheet to write to.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous write operation.</returns>
     public async Task WriteRecordsAsync<T>(IAsyncEnumerable<T> records, string? sheetname = null, CancellationToken cancellationToken = default)
     {
         if (ExcelRowIndex == 1)
@@ -405,6 +524,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
     #region Private Methods
 
+    /// <summary>
+    /// Initializes a new worksheet for writing.
+    /// </summary>
+    /// <param name="type">The type of the records.</param>
+    /// <param name="sheetname">The name of the sheet.</param>
     private void InitializeWritingNewWorksheet(Type type, string? sheetname)
     {
         WorksheetPart = OpenXmlHelper.InsertWorksheet(SpreadsheetDocument.WorkbookPart!, string.IsNullOrEmpty(sheetname) ? null : sheetname, out SheetId);
@@ -426,11 +550,20 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         SheetData.Append(WritingRow);
     }
 
+    /// <summary>
+    /// Initializes a new worksheet for writing.
+    /// </summary>
+    /// <typeparam name="T">The type of the records.</typeparam>
+    /// <param name="sheetname">The name of the sheet.</param>
     private void InitializeWritingNewWorksheet<T>(string? sheetname)
     {
         InitializeWritingNewWorksheet(typeof(T), sheetname);
     }
 
+    /// <summary>
+    /// Writes a value to a cell.
+    /// </summary>
+    /// <param name="value">The value to write.</param>
     private void WriteToCell(string? value)
     {
         int length = value?.Length ?? 0;
@@ -602,6 +735,9 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         }
     }
 
+    /// <summary>
+    /// Adjusts the column widths to fit the content.
+    /// </summary>
     private void AutoFitColumns()
     {
         if (ExcelCellMemberMapDetails.Count == 0)

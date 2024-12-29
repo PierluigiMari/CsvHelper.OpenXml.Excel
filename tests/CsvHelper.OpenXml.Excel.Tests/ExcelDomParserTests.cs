@@ -12,7 +12,7 @@ public class ExcelDomParserTests
     #region Test Methods
 
     [Fact]
-    public void ConstructorShouldInitializeCorrectlyTest()
+    public void Constructor_ShouldInitializeCorrectlyTest()
     {
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -24,7 +24,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public void ReadShouldReturnTrueWhenThereAreMoreRowsTest()
+    public void Read_ShouldReturnTrueWhenThereAreMoreRowsTest()
     {
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -46,7 +46,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public void ReadShouldReturnFalseWhenNoMoreRowsTest()
+    public void Read_ShouldReturnFalseWhenNoMoreRowsTest()
     {
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -58,7 +58,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public async Task ReadAsyncShouldReturnTrueWhenThereAreMoreRowsTest()
+    public async Task ReadAsync_ShouldReturnTrueWhenThereAreMoreRowsTest()
     {
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -78,7 +78,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public async Task ReadAsyncShouldReturnFalseWhenNoMoreRowsTest()
+    public async Task ReadAsync_ShouldReturnFalseWhenNoMoreRowsTest()
     {
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -90,7 +90,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public void IndexerShouldReturnCorrectValueTest()
+    public void Indexer_ShouldReturnCorrectValueTest()
     {
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -118,7 +118,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public void DisposeShouldDisposeResourcesTest()
+    public void Dispose_ShouldDisposeResourcesTest()
     {
         MemoryStream ExcelStream = CreateTestExcelStream();
         ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
@@ -130,7 +130,7 @@ public class ExcelDomParserTests
     }
 
     [Fact]
-    public async Task DisposeAsyncShouldDisposeResourcesTest()
+    public async Task DisposeAsync_ShouldDisposeResourcesTest()
     {
         MemoryStream ExcelStream = CreateTestExcelStream();
         ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);

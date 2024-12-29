@@ -18,16 +18,43 @@ public sealed class ExcelDomParser : IExcelParser
 {
     #region Fields
 
+    /// <summary>
+    /// Helper class for OpenXML operations.
+    /// </summary>
     private readonly OpenXmlHelper OpenXmlHelper = new OpenXmlHelper();
 
+    /// <summary>
+    /// The current record being processed as an array of strings.
+    /// </summary>
     private string[] CurrentRecord = [];
+    /// <summary>
+    /// The SpreadsheetDocument instance representing the Excel file.
+    /// </summary>
     private readonly SpreadsheetDocument SpreadsheetDocument;
+    /// <summary>
+    /// The stream containing the Excel file data.
+    /// </summary>
     private readonly Stream ExcelStream;
+    /// <summary>
+    /// The relationship id of sheet.
+    /// </summary>
     private readonly string SheetId;
+    /// <summary>
+    /// The index of the last row in the Excel sheet.
+    /// </summary>
     private readonly int LastRow;
+    /// <summary>
+    /// The index of the last column in the Excel sheet.
+    /// </summary>
     private readonly int LastColumn;
 
+    /// <summary>
+    /// The current row index being processed.
+    /// </summary>
     private int ExcelRow = 0;
+    /// <summary>
+    /// The raw row index being processed.
+    /// </summary>
     private int ExcelRawRow = 0;
 
     #endregion
@@ -35,19 +62,19 @@ public sealed class ExcelDomParser : IExcelParser
     #region Constructors
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelDomParser"/> class.
+    /// Initializes a new instance of the <see cref="ExcelDomParser"/> class with the specified stream, sheet name, and culture.
     /// </summary>
-    /// <param name="stream">The stream.</param>
-    /// <param name="sheetname">The sheet name</param>
-    /// <param name="culture">The culture.</param>
+    /// <param name="stream">The stream containing the Excel file.</param>
+    /// <param name="sheetname">The name of the sheet to parse.</param>
+    /// <param name="culture">The culture information for parsing.</param>
     public ExcelDomParser(Stream stream, string? sheetname, CultureInfo? culture) : this(stream, sheetname, culture is null ? null : new CsvConfiguration(culture)) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelDomParser"/> class.
+    /// Initializes a new instance of the <see cref="ExcelDomParser"/> class with the specified stream, sheet name, and configuration.
     /// </summary>
-    /// <param name="stream">The stream.</param>
-    /// <param name="sheetname">The sheet name</param>
-    /// <param name="configuration">The configuration.</param>
+    /// <param name="stream">The stream containing the Excel file.</param>
+    /// <param name="sheetname">The name of the sheet to parse.</param>
+    /// <param name="configuration">The CSV configuration for parsing.</param>
     public ExcelDomParser(Stream stream, string? sheetname = null, CsvConfiguration? configuration = null)
     {
         SpreadsheetDocument = SpreadsheetDocument.Open(stream, false);
@@ -77,20 +104,62 @@ public sealed class ExcelDomParser : IExcelParser
 
     #region Implementation of the IExcelParser interface members
 
+    /// <summary>
+    /// Gets the value of the cell at the specified index in the current record.
+    /// </summary>
+    /// <param name="index">The index of the cell.</param>
+    /// <returns>The value of the cell.</returns>
     public string this[int index] => Record?.ElementAtOrDefault(index) ?? string.Empty;
 
+    /// <summary>
+    /// Gets the total number of bytes read. Not applicable in ExcelParser, not used. Always returns -1.
+    /// </summary>
     public long ByteCount => -1;
+    /// <summary>
+    /// Gets the total number of characters read. Not applicable in ExcelParser, not used. Always returns -1.
+    /// </summary>
     public long CharCount => -1;
+    /// <summary>
+    /// Gets the total number of columns in the current record.
+    /// </summary>
     public int Count { get; }
+    /// <summary>
+    /// Gets the current record as an array of strings.
+    /// </summary>
     public string[]? Record => CurrentRecord;
+    /// <summary>
+    /// Gets the raw record as a single string.
+    /// </summary>
     public string RawRecord => Record is null ? string.Empty : string.Join(Delimiter, Record);
+    /// <summary>
+    /// Gets the current row index being processed.
+    /// </summary>
     public int Row => ExcelRow;
+    /// <summary>
+    ///Gets the raw row index being processed.
+    /// </summary>
     public int RawRow => ExcelRawRow;
+    /// <summary>
+    /// Gets the delimiter used to separate fields. The default value is <see cref="TextInfo.ListSeparator"/>. Not applicable in ExcelParser, not used.
+    /// </summary>
     public string Delimiter => Configuration.Delimiter;
+    /// <summary>
+    /// Gets the reading context of parser.
+    /// </summary>
     public CsvContext Context { get; }
+    /// <summary>
+    /// Gets the configuration of parser.
+    /// </summary>
     public IParserConfiguration Configuration { get; }
+    /// <summary>
+    /// Gets the total number of rows in the Excel file.
+    /// </summary>
     public int RowCount { get => LastRow + 1; }
 
+    /// <summary>
+    /// Retrieves the record as an array of strings.
+    /// </summary>
+    /// <returns>An array of strings representing the record.</returns>
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     public string[] GetRecord()
     {
@@ -120,6 +189,10 @@ public sealed class ExcelDomParser : IExcelParser
         return RecordValues;
     }
 
+    /// <summary>
+    /// Reads the next record from the Excel sheet.
+    /// </summary>
+    /// <returns>True if the next record was read successfully; otherwise, false.</returns>
     public bool Read()
     {
         if (Row > LastRow)
@@ -132,21 +205,17 @@ public sealed class ExcelDomParser : IExcelParser
         return true;
     }
 
-    public Task<bool> ReadAsync()
-    {
-        if (Row > LastRow)
-            return Task.FromResult(false);
-
-
-        CurrentRecord = GetRecord();
-        ExcelRow++;
-        ExcelRawRow++;
-
-        return Task.FromResult(true);
-    }
+    /// <summary>
+    /// Asynchronously reads the next record from the Excel sheet.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous read operation. The task result contains true if the next record was read successfully; otherwise, false.</returns>
+    public Task<bool> ReadAsync() => Task.FromResult(Read());
 
     #region IDisposable and IAsyncDisposable Methods with Dispose pattern
 
+    /// <summary>
+    /// Indicates whether the object has been disposed.
+    /// </summary>
     private bool Disposed;
 
     private void Dispose(bool disposing)
@@ -173,6 +242,7 @@ public sealed class ExcelDomParser : IExcelParser
         await ExcelStream.DisposeAsync().ConfigureAwait(false);
     }
 
+    /// <inheritdoc/>
     public async ValueTask DisposeAsync()
     {
         await DisposeAsyncCore().ConfigureAwait(false);
@@ -181,6 +251,7 @@ public sealed class ExcelDomParser : IExcelParser
         GC.SuppressFinalize(this);
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -201,6 +272,12 @@ public sealed class ExcelDomParser : IExcelParser
 
     #region Private Methods
 
+    /// <summary>
+    /// Gets the value of the specified cell.
+    /// </summary>
+    /// <param name="spreadsheetdocument">The spreadsheet document instance containing the cell.</param>
+    /// <param name="cell">The cell to retrieve the value from.</param>
+    /// <returns>The value of the cell as a string.</returns>
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     private string GetCellValue(SpreadsheetDocument spreadsheetdocument, Cell cell)
     {

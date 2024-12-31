@@ -34,18 +34,27 @@ internal partial class OpenXmlHelper
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 167, FormatCode = "#,##0\\ _€" });
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 168, FormatCode = "#,##0.00\\ _€" });
         StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 169, FormatCode = "#,##0.0000\\ _€" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 170, FormatCode = "#,##0.00\\ \"€\"" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 171, FormatCode = "#,##0.0000\\ \"€\"" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 172, FormatCode = "_-* #,##0.0000 \"€\"_-;-* #,##0.0000 \"€\"_-;_-* \"-\"???? \"€\"_-;_-@_-" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 173, FormatCode = "[$-F400]h:mm:ss\\ AM/PM" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 174, FormatCode = "h:mm;@" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 175, FormatCode = "[$-409]h:mm:ss\\ AM/PM;@" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 176, FormatCode = "[$-409]h:mm\\ AM/PM;@" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 177, FormatCode = "dd/mm/yyyy\\ hh:mm:ss" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 178, FormatCode = "dd/mm/yyyy\\ h:mm:ss\\ AM/PM;@" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 179, FormatCode = "dd/mm/yyyy\\ h:mm\\ AM/PM;@" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 180, FormatCode = "0.0000E+00" });
-        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 181, FormatCode = "00000" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 170, FormatCode = "#,##0.00\\ [$€-410]" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 171, FormatCode = "#,##0.0000\\ [$€-410]" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 172, FormatCode = "[$$-409]#,##0.00" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 173, FormatCode = "[$$-409]#,##0.0000" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 174, FormatCode = "[$£-809]#,##0.00" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 175, FormatCode = "[$£-809]#,##0.0000" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 176, FormatCode = "_-* #,##0.00\\ [$€-410]_-;\\-* #,##0.00\\ [$€-410]_-;_-* \"-\"??\\ [$€-410]_-;_-@_-" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 177, FormatCode = "_-* #,##0.0000\\ [$€-410]_-;\\-* #,##0.0000\\ [$€-410]_-;_-* \"-\"????\\ [$€-410]_-;_-@_-" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 178, FormatCode = "_-[$$-409]* #,##0.00_ ;_-[$$-409]* \\-#,##0.00\\ ;_-[$$-409]* \"-\"??_ ;_-@_ " });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 179, FormatCode = "_-[$$-409]* #,##0.0000_ ;_-[$$-409]* \\-#,##0.0000\\ ;_-[$$-409]* \"-\"????_ ;_-@_ " });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 180, FormatCode = "_-[$£-809]* #,##0.00_-;\\-[$£-809]* #,##0.00_-;_-[$£-809]* \"-\"??_-;_-@_-" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 181, FormatCode = "_-[$£-809]* #,##0.0000_-;\\-[$£-809]* #,##0.0000_-;_-[$£-809]* \"-\"????_-;_-@_-" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 182, FormatCode = "[$-F400]h:mm:ss\\ AM/PM" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 183, FormatCode = "h:mm;@" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 184, FormatCode = "[$-409]h:mm:ss\\ AM/PM;@" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 185, FormatCode = "[$-409]h:mm\\ AM/PM;@" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 186, FormatCode = "dd/mm/yyyy\\ hh:mm:ss" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 187, FormatCode = "dd/mm/yyyy\\ h:mm:ss\\ AM/PM;@" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 188, FormatCode = "dd/mm/yyyy\\ h:mm\\ AM/PM;@" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 189, FormatCode = "0.0000E+00" });
+        StylesheetNumberingFormats.Append(new NumberingFormat { NumberFormatId = 190, FormatCode = "00000" });
 
         Font FontDefault = new Font(new FontName { Val = "Calibri" }, new FontSize { Val = 11 }); // Default font
         Font FontBold = new Font(new Bold()); // Bold font
@@ -70,26 +79,34 @@ internal partial class OpenXmlHelper
         CellFormat CurrencyGenericFormatWithoutDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 167, FormatId = 0, ApplyNumberFormat = true }; // format like "#,##0"
         CellFormat CurrencyGenericFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 168, FormatId = 0, ApplyNumberFormat = true }; // format like "#,##0.00"
         CellFormat CurrencyGenericFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 169, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat CurrencyEuroFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 170, FormatId = 0, ApplyNumberFormat = true }; // format like "#,##0.00 €"
-        CellFormat CurrencyEuroFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 171, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat AccountingFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 44, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat AccountingFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 172, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat CurrencyEuroITFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 170, FormatId = 0, ApplyNumberFormat = true }; // format like "#,##0.00 €"
+        CellFormat CurrencyEuroITFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 171, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat CurrencyDollarUSFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 172, FormatId = 0, ApplyNumberFormat = true }; // format like "$#,##0.00"
+        CellFormat CurrencyDollarUSFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 173, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat CurrencyPoundGBFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 174, FormatId = 0, ApplyNumberFormat = true }; // format like "£#,##0.00"
+        CellFormat CurrencyPoundGBFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 175, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat AccountingEuroITFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 176, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat AccountingEuroITFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 177, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat AccountingDollarUSFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 178, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat AccountingDollarUSFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 179, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat AccountingPoundGBFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 180, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat AccountingPoundGBFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 181, FormatId = 0, ApplyNumberFormat = true };
         CellFormat DateFormatDefault = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 14, FormatId = 0, ApplyNumberFormat = true };
         CellFormat DateFormatExtended = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 165, FormatId = 0, ApplyNumberFormat = true };
         CellFormat DateFormatWithDash = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 166, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat DateTimeFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 177, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat DateTimeFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 186, FormatId = 0, ApplyNumberFormat = true };
         CellFormat DateTimeFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 22, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat DateTime12HourFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 178, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat DateTime12HourFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 179, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat TimeFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 173, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat TimeFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 174, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat Time12HourFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 175, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat Time12HourFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 176, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat DateTime12HourFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 187, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat DateTime12HourFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 188, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat TimeFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 182, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat TimeFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 183, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat Time12HourFormatWithHoursMinutesSeconds = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 184, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat Time12HourFormatWithHoursMinutes = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 185, FormatId = 0, ApplyNumberFormat = true };
         CellFormat PercentageFormatWithoutDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 9, FormatId = 0, ApplyNumberFormat = true };
         CellFormat PercentageFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 10, FormatId = 0, ApplyNumberFormat = true };
         CellFormat ScientificFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 11, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat ScientificFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 180, FormatId = 0, ApplyNumberFormat = true };
-        CellFormat SpecialZipCodeFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 181, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat ScientificFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 189, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat SpecialZipCodeFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 190, FormatId = 0, ApplyNumberFormat = true };
 
         CellFormats.Append(CellFormatDefault);
         CellFormats.Append(CellFormatDefaultBold);
@@ -100,10 +117,18 @@ internal partial class OpenXmlHelper
         CellFormats.Append(CurrencyGenericFormatWithoutDecimals);
         CellFormats.Append(CurrencyGenericFormatWithTwoDecimals);
         CellFormats.Append(CurrencyGenericFormatWithFourDecimals);
-        CellFormats.Append(CurrencyEuroFormatWithTwoDecimals);
-        CellFormats.Append(CurrencyEuroFormatWithFourDecimals);
-        CellFormats.Append(AccountingFormatWithTwoDecimals);
-        CellFormats.Append(AccountingFormatWithFourDecimals);
+        CellFormats.Append(CurrencyEuroITFormatWithTwoDecimals);
+        CellFormats.Append(CurrencyEuroITFormatWithFourDecimals);
+        CellFormats.Append(CurrencyDollarUSFormatWithTwoDecimals);
+        CellFormats.Append(CurrencyDollarUSFormatWithFourDecimals);
+        CellFormats.Append(CurrencyPoundGBFormatWithTwoDecimals);
+        CellFormats.Append(CurrencyPoundGBFormatWithFourDecimals);
+        CellFormats.Append(AccountingEuroITFormatWithTwoDecimals);
+        CellFormats.Append(AccountingEuroITFormatWithFourDecimals);
+        CellFormats.Append(AccountingDollarUSFormatWithTwoDecimals);
+        CellFormats.Append(AccountingDollarUSFormatWithFourDecimals);
+        CellFormats.Append(AccountingPoundGBFormatWithTwoDecimals);
+        CellFormats.Append(AccountingPoundGBFormatWithFourDecimals);
         CellFormats.Append(DateFormatDefault);
         CellFormats.Append(DateFormatExtended);
         CellFormats.Append(DateFormatWithDash);

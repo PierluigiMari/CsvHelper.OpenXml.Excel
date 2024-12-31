@@ -42,83 +42,115 @@ public enum ExcelCellFormats : int
     /// </summary>
     CurrencyGenericWithFourDecimals = 8,
     /// <summary>
-    /// Cell format for Euro currency with two decimal places.
+    /// Cell format for Euro IT currency with two decimal places.
     /// </summary>
-    CurrencyEuroWithTwoDecimals = 9,
+    CurrencyEuroITWithTwoDecimals = 9,
     /// <summary>
-    /// Cell format for Euro currency with four decimal places.
+    /// Cell format for Euro IT currency with four decimal places.
     /// </summary>
-    CurrencyEuroWithFourDecimals = 10,
+    CurrencyEuroITWithFourDecimals = 10,
     /// <summary>
-    /// Cell format for accounting with two decimal places.
+    /// Cell format for Dollar US currency with two decimal places.
     /// </summary>
-    AccountingWithTwoDecimals = 11,
+    CurrencyDollarUSWithTwoDecimals = 11,
     /// <summary>
-    /// Cell format for accounting with four decimal places.
+    /// Cell format for Dollar uS currency with four decimal places.
     /// </summary>
-    AccountingWithFourDecimals = 12,
+    CurrencyDollarUSWithFourDecimals = 12,
+    /// <summary>
+    /// Cell format for Pound GB currency with two decimal places.
+    /// </summary>
+    CurrencyPoundGBWithTwoDecimals = 13,
+    /// <summary>
+    /// Cell format for Pound GB currency with four decimal places.
+    /// </summary>
+    CurrencyPoundGBWithFourDecimals = 14,
+    /// <summary>
+    /// Cell format for Euro IT accounting with two decimal places.
+    /// </summary>
+    AccountingEuroITWithTwoDecimals = 15,
+    /// <summary>
+    /// Cell format for Euro IT accounting with four decimal places.
+    /// </summary>
+    AccountingEuroITWithFourDecimals = 16,
+    /// <summary>
+    /// Cell format for Dollar US accounting with two decimal places.
+    /// </summary>
+    AccountingDollarUSWithTwoDecimals = 17,
+    /// <summary>
+    /// Cell format for Dollar US accounting with four decimal places.
+    /// </summary>
+    AccountingDollarUSWithFourDecimals = 18,
+    /// <summary>
+    /// Cell format for Pound GB accounting with two decimal places.
+    /// </summary>
+    AccountingPoundGBWithTwoDecimals = 19,
+    /// <summary>
+    /// Cell format for Pound GB accounting with four decimal places.
+    /// </summary>
+    AccountingPoundGBWithFourDecimals = 20,
     /// <summary>
     /// Default cell format for dates.
     /// </summary>
-    DateDefault = 13,
+    DateDefault = 21,
     /// <summary>
     /// Extended cell format for dates.
     /// </summary>
-    DateExtended = 14,
+    DateExtended = 22,
     /// <summary>
     /// Cell format for dates with dashes.
     /// </summary>
-    DateWithDash = 15,
+    DateWithDash = 23,
     /// <summary>
     /// Default cell format for date and time with hours, minutes, and seconds.
     /// </summary>
-    DateTimeWithHoursMinutesSecondsDefault = 16,
+    DateTimeWithHoursMinutesSecondsDefault = 24,
     /// <summary>
     /// Cell format for date and time with hours and minutes.
     /// </summary>
-    DateTimeWithHoursMinutes = 17,
+    DateTimeWithHoursMinutes = 25,
     /// <summary>
     /// Cell format for 12-hour date and time with hours, minutes, and seconds.
     /// </summary>
-    DateTime12HourWithHoursMinutesSeconds = 18,
+    DateTime12HourWithHoursMinutesSeconds = 26,
     /// <summary>
     /// Cell format for 12-hour date and time with hours and minutes.
     /// </summary>
-    DateTime12HourWithHoursMinutes = 19,
+    DateTime12HourWithHoursMinutes = 27,
     /// <summary>
     /// Default cell format for time with hours, minutes, and seconds.
     /// </summary>
-    TimeWithHoursMinutesSecondsDefault = 20,
+    TimeWithHoursMinutesSecondsDefault = 28,
     /// <summary>
     /// Cell format for time with hours and minutes.
     /// </summary>
-    TimeWithHoursMinutes = 21,
+    TimeWithHoursMinutes = 29,
     /// <summary>
     /// Cell format for 12-hour time with hours, minutes, and seconds.
     /// </summary>
-    Time12HourWithHoursMinutesSeconds = 22,
+    Time12HourWithHoursMinutesSeconds = 30,
     /// <summary>
     /// Cell format for 12-hour time with hours and minutes.
     /// </summary>
-    Time12HourWithHoursMinutes = 23,
+    Time12HourWithHoursMinutes = 31,
     /// <summary>
     /// Cell format for percentages without decimal places.
     /// </summary>
-    PercentageWithoutDecimals = 24,
+    PercentageWithoutDecimals = 32,
     /// <summary>
     /// Cell format for percentages with two decimal places.
     /// </summary>
-    PercentageWithTwoDecimals = 25,
+    PercentageWithTwoDecimals = 33,
     /// <summary>
     /// Default cell format for scientific notation with two decimal places.
     /// </summary>
-    ScientificWithTwoDecimalsDefault = 26,
+    ScientificWithTwoDecimalsDefault = 34,
     /// <summary>
     /// Cell format for scientific notation with four decimal places.
     /// </summary>
-    ScientificWithFourDecimals = 27,
+    ScientificWithFourDecimals = 35,
     /// <summary>
     /// Cell format for special zip codes.
     /// </summary>
-    SpecialZipCode = 28
+    SpecialZipCode = 36
 }

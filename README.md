@@ -148,35 +148,43 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 
 **ExcelCellFormats** enumeration, the following are the details of the defined named constant members:
 
-1. **Default** => Default format
-2. **DefaultBold** => Format with Bold text
-3. **DefaultBoldCentered** => Format with Bold text with horizontal aligment centered
-4. **NumberIntegerDefault** => Format like "0" - ***Default*** for "**Int32**" type
-5. **NumberDecimalWithTwoDecimalsDefault** => Format like "0.00" - ***Default*** for "**Decimal**" type
-6. **NumberDecimalWithFourDecimals** => Format like "0.0000"
-7. **CurrencyGenericWithoutDecimals** => Format like "#,##0"
-8. **CurrencyGenericWithTwoDecimals** => Format like "#,##0.00"
-9. **CurrencyGenericWithFourDecimals** => Format like "#,##0.0000"
-10. **CurrencyEuroWithTwoDecimals** => Format like "#,##0.00 &euro;"
-11. **CurrencyEuroWithFourDecimals** => Format like "#,##0.0000 &euro;"
-12. **AccountingWithTwoDecimals** => Format like "#,##0.00 &euro;"
-13. **AccountingWithFourDecimals** => Format like "#,##0.0000 &euro;"
-14. **DateDefault** => Format like "dd/mm/yyyy" - ***Default*** for "**DateOnly**" type
-15. **DateExtended** => Format like "dddd dd mmmm yyyy"
-16. **DateWithDash** => Format like "dd-mm-yyyy"
-17. **DateTimeWithHoursMinutesSecondsDefault** => Format like "dd/mm/yyyy hh:mm:ss" - ***Default*** for "**DateTime**" type
-18. **DateTimeWithHoursMinutes** => Format like "dd/mm/yyyy hh:mm"
-19. **DateTime12HourWithHoursMinutesSeconds** => Format like "dd/mm/yyyy h:mm:ss AM/PM"
-20. **DateTime12HourWithHoursMinutes** => Format like "dd/mm/yyyy h:mm AM/PM"
-21. **TimeWithHoursMinutesSecondsDefault** => Format like "hh:mm:ss" - ***Default*** for "**TimeOnly**" type
-22. **TimeWithHoursMinutes** => Format like "hh:mm"
-23. **Time12HourWithHoursMinutesSeconds** => Format like "h:mm:ss AM/PM"
-24. **Time12HourWithHoursMinutes** => Format like "h:mm AM/PM"
-25. **PercentageWithoutDecimals** => Format like "0%"
-26. **PercentageWithTwoDecimals** => Format like "0.00%"
-27. **ScientificWithTwoDecimalsDefault** => Format like "0.00E+00" - ***Default*** for "**Double**" type
-28. **ScientificWithFourDecimals** => Format like "0.0000E+00"
-29. **SpecialZipCode** => Format like "00000"
+0. **Default** => Default format
+0. **DefaultBold** => Format with Bold text
+0. **DefaultBoldCentered** => Format with Bold text with horizontal aligment centered
+0. **NumberIntegerDefault** => Format like "0" - ***Default*** for "**Int32**" type
+0. **NumberDecimalWithTwoDecimalsDefault** => Format like "0.00" - ***Default*** for "**Decimal**" type
+0. **NumberDecimalWithFourDecimals** => Format like "0.0000"
+0. **CurrencyGenericWithoutDecimals** => Format like "#,##0"
+0. **CurrencyGenericWithTwoDecimals** => Format like "#,##0.00"
+0. **CurrencyGenericWithFourDecimals** => Format like "#,##0.0000"
+0. **CurrencyEuroITWithTwoDecimals** => Format like "#,##0.00 &euro;"
+0. **CurrencyEuroITWithFourDecimals** => Format like "#,##0.0000 &euro;"
+0. **CurrencyDollarUSWithTwoDecimals** => Format like "&dollar;#,##0.00"
+0. **CurrencyDollarUSWithFourDecimals** => Format like "&dollar;#,##0.0000"
+0. **CurrencyPoundGBWithTwoDecimals** => Format like "&pound;#,##0.00"
+0. **CurrencyPoundGBWithFourDecimals** => Format like "&pound;#,##0.0000"
+0. **AccountingEuroITWithTwoDecimals** => Format like "#,##0.00 &euro;"
+0. **AccountingEuroITWithFourDecimals** => Format like "#,##0.0000 &euro;"
+0. **AccountingDollarUSWithTwoDecimals** => Format like "&dollar; #,##0.00"
+0. **AccountingDollarUSWithFourDecimals** => Format like "&dollar; #,##0.0000"
+0. **AccountingPoundGBWithTwoDecimals** => Format like "&pound; #,##0.00;"
+0. **AccountingPoundGBWithFourDecimals** => Format like "&pound; #,##0.0000"
+0. **DateDefault** => Format like "dd/mm/yyyy" - ***Default*** for "**DateOnly**" type
+0. **DateExtended** => Format like "dddd dd mmmm yyyy"
+0. **DateWithDash** => Format like "dd-mm-yyyy"
+0. **DateTimeWithHoursMinutesSecondsDefault** => Format like "dd/mm/yyyy hh:mm:ss" - ***Default*** for "**DateTime**" type
+0. **DateTimeWithHoursMinutes** => Format like "dd/mm/yyyy hh:mm"
+0. **DateTime12HourWithHoursMinutesSeconds** => Format like "dd/mm/yyyy h:mm:ss AM/PM"
+0. **DateTime12HourWithHoursMinutes** => Format like "dd/mm/yyyy h:mm AM/PM"
+0. **TimeWithHoursMinutesSecondsDefault** => Format like "hh:mm:ss" - ***Default*** for "**TimeOnly**" type
+0. **TimeWithHoursMinutes** => Format like "hh:mm"
+0. **Time12HourWithHoursMinutesSeconds** => Format like "h:mm:ss AM/PM"
+0. **Time12HourWithHoursMinutes** => Format like "h:mm AM/PM"
+0. **PercentageWithoutDecimals** => Format like "0%"
+0. **PercentageWithTwoDecimals** => Format like "0.00%"
+0. **ScientificWithTwoDecimalsDefault** => Format like "0.00E+00" - ***Default*** for "**Double**" type
+0. **ScientificWithFourDecimals** => Format like "0.0000E+00"
+0. **SpecialZipCode** => Format like "00000"
 
 >For each type (Int32, DateOnly, DateTime, TimeOnly, Double) a default enumerate has been defined, recognizable by "...Default" at the end of the name; in the `ClassMap` definition, can omit the Excel cell format if intend to apply the default format to that Excel column.
 >

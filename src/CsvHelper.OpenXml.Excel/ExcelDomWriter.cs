@@ -623,11 +623,21 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         {
             if (int.TryParse(value, out _))
             {
-                Cell.CellValue = new CellValue(value);
+                if (ExcelCellFormat is not null && ExcelCellFormat == ExcelCellFormats.Text)
+                {
+                    int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart);
 
-                if (ExcelCellFormat is not null)
+                    Cell.CellValue = new CellValue(index.ToString());
+                    Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
                     Cell.StyleIndex = (uint)ExcelCellFormat;
+                }
+                else
+                {
+                    Cell.CellValue = new CellValue(value);
 
+                    if (ExcelCellFormat is not null)
+                        Cell.StyleIndex = (uint)ExcelCellFormat;
+                }
             }
             else
             {

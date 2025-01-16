@@ -148,43 +148,44 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 
 **ExcelCellFormats** enumeration, the following are the details of the defined named constant members:
 
-0. **Default** => Default format
-0. **DefaultBold** => Format with Bold text
-0. **DefaultBoldCentered** => Format with Bold text with horizontal aligment centered
-0. **NumberIntegerDefault** => Format like "0" - ***Default*** for "**Int32**" type
-0. **NumberDecimalWithTwoDecimalsDefault** => Format like "0.00" - ***Default*** for "**Decimal**" type
-0. **NumberDecimalWithFourDecimals** => Format like "0.0000"
-0. **CurrencyGenericWithoutDecimals** => Format like "#,##0"
-0. **CurrencyGenericWithTwoDecimals** => Format like "#,##0.00"
-0. **CurrencyGenericWithFourDecimals** => Format like "#,##0.0000"
-0. **CurrencyEuroITWithTwoDecimals** => Format like "#,##0.00 &euro;"
-0. **CurrencyEuroITWithFourDecimals** => Format like "#,##0.0000 &euro;"
-0. **CurrencyDollarUSWithTwoDecimals** => Format like "&dollar;#,##0.00"
-0. **CurrencyDollarUSWithFourDecimals** => Format like "&dollar;#,##0.0000"
-0. **CurrencyPoundGBWithTwoDecimals** => Format like "&pound;#,##0.00"
-0. **CurrencyPoundGBWithFourDecimals** => Format like "&pound;#,##0.0000"
-0. **AccountingEuroITWithTwoDecimals** => Format like "#,##0.00 &euro;"
-0. **AccountingEuroITWithFourDecimals** => Format like "#,##0.0000 &euro;"
-0. **AccountingDollarUSWithTwoDecimals** => Format like "&dollar; #,##0.00"
-0. **AccountingDollarUSWithFourDecimals** => Format like "&dollar; #,##0.0000"
-0. **AccountingPoundGBWithTwoDecimals** => Format like "&pound; #,##0.00;"
-0. **AccountingPoundGBWithFourDecimals** => Format like "&pound; #,##0.0000"
-0. **DateDefault** => Format like "dd/mm/yyyy" - ***Default*** for "**DateOnly**" type
-0. **DateExtended** => Format like "dddd dd mmmm yyyy"
-0. **DateWithDash** => Format like "dd-mm-yyyy"
-0. **DateTimeWithHoursMinutesSecondsDefault** => Format like "dd/mm/yyyy hh:mm:ss" - ***Default*** for "**DateTime**" type
-0. **DateTimeWithHoursMinutes** => Format like "dd/mm/yyyy hh:mm"
-0. **DateTime12HourWithHoursMinutesSeconds** => Format like "dd/mm/yyyy h:mm:ss AM/PM"
-0. **DateTime12HourWithHoursMinutes** => Format like "dd/mm/yyyy h:mm AM/PM"
-0. **TimeWithHoursMinutesSecondsDefault** => Format like "hh:mm:ss" - ***Default*** for "**TimeOnly**" type
-0. **TimeWithHoursMinutes** => Format like "hh:mm"
-0. **Time12HourWithHoursMinutesSeconds** => Format like "h:mm:ss AM/PM"
-0. **Time12HourWithHoursMinutes** => Format like "h:mm AM/PM"
-0. **PercentageWithoutDecimals** => Format like "0%"
-0. **PercentageWithTwoDecimals** => Format like "0.00%"
-0. **ScientificWithTwoDecimalsDefault** => Format like "0.00E+00" - ***Default*** for "**Double**" type
-0. **ScientificWithFourDecimals** => Format like "0.0000E+00"
-0. **SpecialZipCode** => Format like "00000"
+0. **Default** :arrow_right: Default format
+0. **DefaultBold** :arrow_right: Format with Bold text
+0. **DefaultBoldCentered** :arrow_right: Format with Bold text with horizontal aligment centered
+0. **NumberIntegerDefault** :arrow_right: Format like "0" - ***Default*** for "**Int32**" type
+0. **NumberDecimalWithTwoDecimalsDefault** :arrow_right: Format like "0.00" - ***Default*** for "**Decimal**" type
+0. **NumberDecimalWithFourDecimals** :arrow_right: Format like "0.0000"
+0. **CurrencyGenericWithoutDecimals** :arrow_right: Format like "#,##0"
+0. **CurrencyGenericWithTwoDecimals** :arrow_right: Format like "#,##0.00"
+0. **CurrencyGenericWithFourDecimals** :arrow_right: Format like "#,##0.0000"
+0. **CurrencyEuroITWithTwoDecimals** :arrow_right: Format like "#,##0.00 &euro;"
+0. **CurrencyEuroITWithFourDecimals** :arrow_right: Format like "#,##0.0000 &euro;"
+0. **CurrencyDollarUSWithTwoDecimals** :arrow_right: Format like "&dollar;#,##0.00"
+0. **CurrencyDollarUSWithFourDecimals** :arrow_right: Format like "&dollar;#,##0.0000"
+0. **CurrencyPoundGBWithTwoDecimals** :arrow_right: Format like "&pound;#,##0.00"
+0. **CurrencyPoundGBWithFourDecimals** :arrow_right: Format like "&pound;#,##0.0000"
+0. **AccountingEuroITWithTwoDecimals** :arrow_right: Format like "#,##0.00 &euro;"
+0. **AccountingEuroITWithFourDecimals** :arrow_right: Format like "#,##0.0000 &euro;"
+0. **AccountingDollarUSWithTwoDecimals** :arrow_right: Format like "&dollar; #,##0.00"
+0. **AccountingDollarUSWithFourDecimals** :arrow_right: Format like "&dollar; #,##0.0000"
+0. **AccountingPoundGBWithTwoDecimals** :arrow_right: Format like "&pound; #,##0.00;"
+0. **AccountingPoundGBWithFourDecimals** :arrow_right: Format like "&pound; #,##0.0000"
+0. **DateDefault** :arrow_right: Format like "dd/mm/yyyy" - ***Default*** for "**DateOnly**" type
+0. **DateExtended** :arrow_right: Format like "dddd dd mmmm yyyy"
+0. **DateWithDash** :arrow_right: Format like "dd-mm-yyyy"
+0. **DateTimeWithHoursMinutesSecondsDefault** :arrow_right: Format like "dd/mm/yyyy hh:mm:ss" - ***Default*** for "**DateTime**" type
+0. **DateTimeWithHoursMinutes** :arrow_right: Format like "dd/mm/yyyy hh:mm"
+0. **DateTime12HourWithHoursMinutesSeconds** :arrow_right: Format like "dd/mm/yyyy h:mm:ss AM/PM"
+0. **DateTime12HourWithHoursMinutes** :arrow_right: Format like "dd/mm/yyyy h:mm AM/PM"
+0. **TimeWithHoursMinutesSecondsDefault** :arrow_right: Format like "hh:mm:ss" - ***Default*** for "**TimeOnly**" type
+0. **TimeWithHoursMinutes** :arrow_right: Format like "hh:mm"
+0. **Time12HourWithHoursMinutesSeconds** :arrow_right: Format like "h:mm:ss AM/PM"
+0. **Time12HourWithHoursMinutes** :arrow_right: Format like "h:mm AM/PM"
+0. **PercentageWithoutDecimals** :arrow_right: Format like "0%"
+0. **PercentageWithTwoDecimals** :arrow_right: Format like "0.00%"
+0. **ScientificWithTwoDecimalsDefault** :arrow_right: Format like "0.00E+00" - ***Default*** for "**Double**" type
+0. **ScientificWithFourDecimals** :arrow_right: Format like "0.0000E+00"
+0. **Text** :arrow_right: Format like plain text
+0. **SpecialZipCode** :arrow_right: Format like "00000"
 
 >For each type (Int32, DateOnly, DateTime, TimeOnly, Double) a default enumerate has been defined, recognizable by "...Default" at the end of the name; in the `ClassMap` definition, can omit the Excel cell format if intend to apply the default format to that Excel column.
 >

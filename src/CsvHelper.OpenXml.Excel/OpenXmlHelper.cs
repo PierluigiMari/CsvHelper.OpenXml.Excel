@@ -106,6 +106,7 @@ internal partial class OpenXmlHelper
         CellFormat PercentageFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 10, FormatId = 0, ApplyNumberFormat = true };
         CellFormat ScientificFormatWithTwoDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 11, FormatId = 0, ApplyNumberFormat = true };
         CellFormat ScientificFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 189, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat TextFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 49, FormatId = 0, ApplyNumberFormat = true };
         CellFormat SpecialZipCodeFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 190, FormatId = 0, ApplyNumberFormat = true };
 
         CellFormats.Append(CellFormatDefault);
@@ -144,6 +145,7 @@ internal partial class OpenXmlHelper
         CellFormats.Append(PercentageFormatWithTwoDecimals);
         CellFormats.Append(ScientificFormatWithTwoDecimals);
         CellFormats.Append(ScientificFormatWithFourDecimals);
+        CellFormats.Append(TextFormat);
         CellFormats.Append(SpecialZipCodeFormat);
 
         // Append everything to stylesheet  - Preserve the ORDER!

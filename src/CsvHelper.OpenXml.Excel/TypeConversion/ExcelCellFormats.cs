@@ -150,7 +150,11 @@ public enum ExcelCellFormats : int
     /// </summary>
     ScientificWithFourDecimals = 35,
     /// <summary>
+    /// Cell format for text.
+    /// </summary>
+    Text = 36,
+    /// <summary>
     /// Cell format for special zip codes.
     /// </summary>
-    SpecialZipCode = 36
+    SpecialZipCode = 37
 }

@@ -16,7 +16,7 @@ public class ExcelDateTimeConverter : DefaultTypeConverter
     /// <param name="row">The <see cref="IReaderRow"/> for the current record.</param>
     /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
     /// <returns>A <see cref="DateTime"/> object if the conversion was successful; otherwise, null.</returns>
-    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData) => text is null ? null : DateTime.FromOADate(double.Parse(text.Replace('.', ',')));
+    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData) => string.IsNullOrWhiteSpace(text) ? null : DateTime.FromOADate(double.Parse(text.Replace('.', ',')));
 
     /// <summary>
     /// Converts the specified <see cref="DateTime"/> object to a string.

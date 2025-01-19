@@ -14,6 +14,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -564,6 +565,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// Writes a value to a cell.
     /// </summary>
     /// <param name="value">The value to write.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void WriteToCell(string? value)
     {
         int length = value?.Length ?? 0;

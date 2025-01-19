@@ -16,7 +16,7 @@ public class ExcelTimeOnlyConverter : DefaultTypeConverter
     /// <param name="row">The <see cref="IReaderRow"/> for the current record.</param>
     /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
     /// <returns>A <see cref="TimeOnly"/> object if the conversion was successful; otherwise, null.</returns>
-    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData) => text is null ? null : TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(text.Replace('.', ','))));
+    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData) => string.IsNullOrWhiteSpace(text) ? null : TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(text.Replace('.', ','))));
 
     /// <summary>
     /// Converts the specified <see cref="TimeOnly"/> object to a string.

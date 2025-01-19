@@ -8,6 +8,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 /// <summary>
@@ -278,7 +279,7 @@ public sealed class ExcelDomParser : IExcelParser
     /// <param name="spreadsheetdocument">The spreadsheet document instance containing the cell.</param>
     /// <param name="cell">The cell to retrieve the value from.</param>
     /// <returns>The value of the cell as a string.</returns>
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private string GetCellValue(SpreadsheetDocument spreadsheetdocument, Cell cell)
     {
         if (cell.CellValue is not null)

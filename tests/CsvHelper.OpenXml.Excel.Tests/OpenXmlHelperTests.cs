@@ -2,7 +2,7 @@
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using FluentAssertions;
+using Shouldly;
 using System;
 
 public class OpenXmlHelperTests
@@ -22,8 +22,8 @@ public class OpenXmlHelperTests
         OpenXmlHelper.CreateWorksheetStyle(ExcelDocument);
 
         WorkbookStylesPart StylesPart = WorkbookPart.WorkbookStylesPart!;
-        StylesPart.Should().NotBeNull();
-        StylesPart.Stylesheet.Should().NotBeNull();
+        StylesPart.ShouldNotBeNull();
+        StylesPart.Stylesheet.ShouldNotBeNull();
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class OpenXmlHelperTests
 
         SharedStringTablePart SharedStringPart = OpenXmlHelper.GetSharedStringTablePart(WorkbookPart);
 
-        SharedStringPart.Should().NotBeNull();
+        SharedStringPart.ShouldNotBeNull();
     }
 
     [Fact]
@@ -50,10 +50,10 @@ public class OpenXmlHelperTests
 
         WorksheetPart WorksheetPart = OpenXmlHelper.InsertWorksheet(WorkbookPart, "TestSheet", out var sheetId);
 
-        WorksheetPart.Should().NotBeNull();
-        WorksheetPart.Worksheet.Should().NotBeNull();
-        sheetId.Should().NotBeNullOrEmpty();
-        WorkbookPart.Workbook.Sheets!.Elements<Sheet>().Should().ContainSingle(sheet => sheet.Name == "TestSheet");
+        WorksheetPart.ShouldNotBeNull();
+        WorksheetPart.Worksheet.ShouldNotBeNull();
+        sheetId.ShouldNotBeNullOrEmpty();
+        WorkbookPart.Workbook.Sheets!.Elements<Sheet>().ShouldHaveSingleItem().Name!.Value.ShouldBe("TestSheet");
     }
 
     [Fact]
@@ -65,10 +65,21 @@ public class OpenXmlHelperTests
         WorkbookPart.Workbook = new Workbook();
         SharedStringTablePart SharedStringPart = OpenXmlHelper.GetSharedStringTablePart(WorkbookPart);
 
-        int Index = OpenXmlHelper.InsertSharedStringItem("TestString", SharedStringPart);
+        Dictionary<string, int> SharedStringDictionary = new Dictionary<string, int>();
 
-        Index.Should().Be(0);
-        SharedStringPart.SharedStringTable.Elements<SharedStringItem>().Should().ContainSingle(item => item.InnerText == "TestString");
+        int Index = OpenXmlHelper.InsertSharedStringItem("TestString", SharedStringPart, SharedStringDictionary);
+
+        Index.ShouldBe(0);
+        SharedStringPart.SharedStringTable.Elements<SharedStringItem>().ShouldHaveSingleItem().InnerText.ShouldBe("TestString");
+
+        Index = OpenXmlHelper.InsertSharedStringItem("TestString1", SharedStringPart, SharedStringDictionary);
+        
+        Index.ShouldBe(1);
+        SharedStringPart.SharedStringTable.Elements<SharedStringItem>().Count().ShouldBe(2);
+        SharedStringPart.SharedStringTable.Elements<SharedStringItem>().ElementAt(1).InnerText.ShouldBe("TestString1");
+
+        Index = OpenXmlHelper.InsertSharedStringItem("TestString", SharedStringPart, SharedStringDictionary);
+        Index.ShouldBe(0);
     }
 
     [Theory]
@@ -79,11 +90,12 @@ public class OpenXmlHelperTests
     [InlineData(27, "AB")]
     [InlineData(701, "ZZ")]
     [InlineData(702, "AAA")]
+    [InlineData(16383, "XFD")]
     public void GetColumnLetters_ShouldReturnCorrectLettersTest(int colindex, string expected)
     {
         string ColumnLetterResult = OpenXmlHelper.GetColumnLetters(colindex);
 
-        ColumnLetterResult.Should().Be(expected);
+        ColumnLetterResult.ShouldBe(expected);
     }
 
     [Theory]
@@ -93,11 +105,12 @@ public class OpenXmlHelperTests
     [InlineData("AA1", 27)]
     [InlineData("AB1", 28)]
     [InlineData("AAA1", 703)]
+    [InlineData("XFD1", 16384)]
     public void GetColumnIndex_ShouldReturnCorrectIndexTest(string cellreference, int expected)
     {
         int ColumnIndexResult = OpenXmlHelper.GetColumnIndex(cellreference);
 
-        ColumnIndexResult.Should().Be(expected);
+        ColumnIndexResult.ShouldBe(expected);
     }
 
     [Fact]
@@ -105,7 +118,7 @@ public class OpenXmlHelperTests
     {
         Action action = () => OpenXmlHelper.GetColumnIndex("1A");
 
-        action.Should().Throw<ArgumentException>().WithMessage("Invalid cell reference format.");
+        action.ShouldThrow<ArgumentException>("Invalid cell reference format.");
     }
 
     #endregion

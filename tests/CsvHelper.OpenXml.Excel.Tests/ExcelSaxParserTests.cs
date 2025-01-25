@@ -2,7 +2,7 @@
 
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using FluentAssertions;
+using Shouldly;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -17,10 +17,10 @@ public class ExcelSaxParserTests
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
-        ExcelParser.RowCount.Should().Be(3);
-        ExcelParser.Count.Should().Be(5);
-        ExcelParser.Row.Should().Be(0);
-        ExcelParser.RawRow.Should().Be(0);
+        ExcelParser.RowCount.ShouldBe(3);
+        ExcelParser.Count.ShouldBe(5);
+        ExcelParser.Row.ShouldBe(0);
+        ExcelParser.RawRow.ShouldBe(0);
     }
 
     [Fact]
@@ -29,20 +29,20 @@ public class ExcelSaxParserTests
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
-        ExcelParser.Read().Should().BeTrue();
-        ExcelParser.Record.Should().BeEquivalentTo(new[] { "Name", "Surname", "NickName", "BirthDate", "Age" });
-        ExcelParser.Row.Should().Be(1);
-        ExcelParser.RawRow.Should().Be(1);
+        ExcelParser.Read().ShouldBeTrue();
+        ExcelParser.Record.ShouldBe(new[] { "Name", "Surname", "NickName", "BirthDate", "Age" });
+        ExcelParser.Row.ShouldBe(1);
+        ExcelParser.RawRow.ShouldBe(1);
 
-        ExcelParser.Read().Should().BeTrue();
-        ExcelParser.Record.Should().BeEquivalentTo(new[] { "John", "Doe", "", "06/01/1994 00:00:00", "30" });
-        ExcelParser.Row.Should().Be(2);
-        ExcelParser.RawRow.Should().Be(2);
+        ExcelParser.Read().ShouldBeTrue();
+        ExcelParser.Record.ShouldBe(new[] { "John", "Doe", "", "06/01/1994 00:00:00", "30" });
+        ExcelParser.Row.ShouldBe(2);
+        ExcelParser.RawRow.ShouldBe(2);
 
-        ExcelParser.Read().Should().BeTrue();
-        ExcelParser.Record.Should().BeEquivalentTo(new[] { "Jane", "Doe", "Tarzan lady", "15/03/1996 00:00:00", "28" });
-        ExcelParser.Row.Should().Be(3);
-        ExcelParser.RawRow.Should().Be(3);
+        ExcelParser.Read().ShouldBeTrue();
+        ExcelParser.Record.ShouldBe(new[] { "Jane", "Doe", "Tarzan lady", "15/03/1996 00:00:00", "28" });
+        ExcelParser.Row.ShouldBe(3);
+        ExcelParser.RawRow.ShouldBe(3);
     }
 
     [Fact]
@@ -51,10 +51,10 @@ public class ExcelSaxParserTests
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
-        ExcelParser.Read().Should().BeTrue();
-        ExcelParser.Read().Should().BeTrue();
-        ExcelParser.Read().Should().BeTrue();
-        ExcelParser.Read().Should().BeFalse();
+        ExcelParser.Read().ShouldBeTrue();
+        ExcelParser.Read().ShouldBeTrue();
+        ExcelParser.Read().ShouldBeTrue();
+        ExcelParser.Read().ShouldBeFalse();
     }
 
     [Fact]
@@ -63,18 +63,18 @@ public class ExcelSaxParserTests
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
-        (await ExcelParser.ReadAsync()).Should().BeTrue();
-        ExcelParser.Record.Should().BeEquivalentTo(new[] { "Name", "Surname", "NickName", "BirthDate", "Age" });
-        ExcelParser.Row.Should().Be(1);
-        ExcelParser.RawRow.Should().Be(1);
-        (await ExcelParser.ReadAsync()).Should().BeTrue();
-        ExcelParser.Record.Should().BeEquivalentTo(new[] { "John", "Doe", "", "06/01/1994 00:00:00", "30" });
-        ExcelParser.Row.Should().Be(2);
-        ExcelParser.RawRow.Should().Be(2);
-        (await ExcelParser.ReadAsync()).Should().BeTrue();
-        ExcelParser.Record.Should().BeEquivalentTo(new[] { "Jane", "Doe", "Tarzan lady", "15/03/1996 00:00:00", "28" });
-        ExcelParser.Row.Should().Be(3);
-        ExcelParser.RawRow.Should().Be(3);
+        (await ExcelParser.ReadAsync()).ShouldBeTrue();
+        ExcelParser.Record.ShouldBe(new[] { "Name", "Surname", "NickName", "BirthDate", "Age" });
+        ExcelParser.Row.ShouldBe(1);
+        ExcelParser.RawRow.ShouldBe(1);
+        (await ExcelParser.ReadAsync()).ShouldBeTrue();
+        ExcelParser.Record.ShouldBe(new[] { "John", "Doe", "", "06/01/1994 00:00:00", "30" });
+        ExcelParser.Row.ShouldBe(2);
+        ExcelParser.RawRow.ShouldBe(2);
+        (await ExcelParser.ReadAsync()).ShouldBeTrue();
+        ExcelParser.Record.ShouldBe(new[] { "Jane", "Doe", "Tarzan lady", "15/03/1996 00:00:00", "28" });
+        ExcelParser.Row.ShouldBe(3);
+        ExcelParser.RawRow.ShouldBe(3);
     }
 
     [Fact]
@@ -83,10 +83,10 @@ public class ExcelSaxParserTests
         using MemoryStream ExcelStream = CreateTestExcelStream();
         using ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
-        (await ExcelParser.ReadAsync()).Should().BeTrue();
-        (await ExcelParser.ReadAsync()).Should().BeTrue();
-        (await ExcelParser.ReadAsync()).Should().BeTrue();
-        (await ExcelParser.ReadAsync()).Should().BeFalse();
+        (await ExcelParser.ReadAsync()).ShouldBeTrue();
+        (await ExcelParser.ReadAsync()).ShouldBeTrue();
+        (await ExcelParser.ReadAsync()).ShouldBeTrue();
+        (await ExcelParser.ReadAsync()).ShouldBeFalse();
     }
 
     [Fact]
@@ -96,25 +96,25 @@ public class ExcelSaxParserTests
         using ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
         ExcelParser.Read();
-        ExcelParser[0].Should().Be("Name");
-        ExcelParser[1].Should().Be("Surname");
-        ExcelParser[2].Should().Be("NickName");
-        ExcelParser[3].Should().Be("BirthDate");
-        ExcelParser[4].Should().Be("Age");
+        ExcelParser[0].ShouldBe("Name");
+        ExcelParser[1].ShouldBe("Surname");
+        ExcelParser[2].ShouldBe("NickName");
+        ExcelParser[3].ShouldBe("BirthDate");
+        ExcelParser[4].ShouldBe("Age");
 
         ExcelParser.Read();
-        ExcelParser[0].Should().Be("John");
-        ExcelParser[1].Should().Be("Doe");
-        ExcelParser[2].Should().Be("");
-        ExcelParser[3].Should().Be("06/01/1994 00:00:00");
-        ExcelParser[4].Should().Be("30");
+        ExcelParser[0].ShouldBe("John");
+        ExcelParser[1].ShouldBe("Doe");
+        ExcelParser[2].ShouldBe("");
+        ExcelParser[3].ShouldBe("06/01/1994 00:00:00");
+        ExcelParser[4].ShouldBe("30");
 
         ExcelParser.Read();
-        ExcelParser[0].Should().Be("Jane");
-        ExcelParser[1].Should().Be("Doe");
-        ExcelParser[2].Should().Be("Tarzan lady");
-        ExcelParser[3].Should().Be("15/03/1996 00:00:00");
-        ExcelParser[4].Should().Be("28");
+        ExcelParser[0].ShouldBe("Jane");
+        ExcelParser[1].ShouldBe("Doe");
+        ExcelParser[2].ShouldBe("Tarzan lady");
+        ExcelParser[3].ShouldBe("15/03/1996 00:00:00");
+        ExcelParser[4].ShouldBe("28");
     }
 
     [Fact]
@@ -126,7 +126,7 @@ public class ExcelSaxParserTests
         ExcelParser.Dispose();
 
         Action action = () => ExcelParser.Read();
-        action.Should().Throw<ObjectDisposedException>();
+        action.ShouldThrow<ObjectDisposedException>();
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class ExcelSaxParserTests
         await ExcelParser.DisposeAsync();
 
         Func<Task> action = async () => await ExcelParser.ReadAsync();
-        await action.Should().ThrowAsync<ObjectDisposedException>();
+        await action.ShouldThrowAsync<ObjectDisposedException>();
     }
 
     #endregion

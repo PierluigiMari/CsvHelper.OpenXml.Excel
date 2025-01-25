@@ -89,6 +89,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// </summary>
     private string? LastSheetName;
 
+    /// <summary>
+    /// Dictionary to store shared string items and their corresponding indices.
+    /// </summary>
+    private Dictionary<string, int> SharedStringDictionary = new Dictionary<string, int>();
+
     #endregion
 
     #region Constructors
@@ -281,7 +286,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// </summary>
     /// <typeparam name="T">The type of the record.</typeparam>
     /// <param name="record">The record to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If null, the default sheet is used.</param>
     public void WriteRecord<T>(T? record, string? sheetname = null)
     {
         if (ExcelRowIndex == 1)
@@ -390,6 +395,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             }
         }
 
+
         LastSheetName = sheetname;
 
         await base.WriteRecordsAsync(records, cancellationToken);
@@ -428,6 +434,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 NextRecord();
             }
         }
+
 
         LastSheetName = sheetname;
 
@@ -469,6 +476,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             }
         }
 
+
         LastSheetName = sheetname;
 
         await base.WriteRecordsAsync(records, cancellationToken);
@@ -509,6 +517,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 NextRecord();
             }
         }
+
 
         LastSheetName = sheetname;
 
@@ -568,9 +577,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void WriteToCell(string? value)
     {
-        int length = value?.Length ?? 0;
-
-        if (value is null || length == 0)
+        if (value is null || value.Length == 0)
         {
             WritingFieldType = null;
             return;
@@ -582,169 +589,234 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         Cell Cell = new Cell() { CellReference = $"{OpenXmlHelper.GetColumnLetters(ExcelColumnIndex)}{ExcelRowIndex}" };
         WritingRow.Append(Cell);
 
-        WriteSpecificTypeInCell(value, Cell);
+        if (WritingFieldType is null)
+        {
+            WriteStringOrGuidToCellWithUseSharedStrings(value, Cell, null, true);
+        }
+        else
+        {
+            WriteSpecificTypeInCell(value, Cell);
+        }
 
         WritingFieldType = null;
+    }
 
-        void WriteSpecificTypeInCell(string value, Cell cell)
+    /// <summary>
+    /// Writes a specific type of value to a cell.
+    /// </summary>
+    /// <param name="value">The value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void WriteSpecificTypeInCell(string value, Cell cell)
+    {
+        //ExcelCellFormats? ExcelCellFormat =ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat;
+        ExcelCellFormats? ExcelCellFormat = ExcelCellMemberMapDetails.Count > 0 ? ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat : null;
+
+
+        switch (Type.GetTypeCode(WritingFieldType))
         {
-            if (WritingFieldType is not null)
-            {
-                Action WriteAction = (WritingFieldType.Name, ExcelCellMemberMapDetails.Count) switch
-                {
-                    (nameof(String) or nameof(Guid), > 0) => () => WriteStringOrGuidToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                    (nameof(DateOnly), > 0) => () => WriteDateOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                    (nameof(TimeOnly), > 0) => () => WriteTimeOnlyToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                    (nameof(DateTime), > 0) => () => WriteDateTimeToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                    (nameof(Int32), > 0) => () => WriteIntTocell(value, Cell),
-                    (nameof(Decimal), > 0) => () => WriteDecimalToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                    (nameof(Double), > 0) => () => WriteDoubleToCell(value, Cell, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat),
-                    (nameof(Boolean), > 0) => () => WriteBoolToCell(value, Cell),
-
-                    (nameof(String) or nameof(Guid), 0) => () => WriteStringOrGuidToCell(value, Cell, null),
-                    (nameof(DateOnly), 0) => () => WriteDateOnlyToCell(value, Cell, null),
-                    (nameof(TimeOnly), 0) => () => WriteTimeOnlyToCell(value, Cell, null),
-                    (nameof(DateTime), 0) => () => WriteDateTimeToCell(value, Cell, null),
-                    (nameof(Int32), 0) => () => WriteIntTocell(value, Cell),
-                    (nameof(Decimal), 0) => () => WriteDecimalToCell(value, Cell, null),
-                    (nameof(Double), 0) => () => WriteDoubleToCell(value, Cell, null),
-                    (nameof(Boolean), 0) => () => WriteBoolToCell(value, Cell),
-
-                    _ => throw new NotImplementedException($"Writing of the specific type {WritingFieldType.Name} not yet implemented!")
-                };
-
-                WriteAction();
-            }
-            else
-            {
-                WriteStringOrGuidToCell(value, Cell, null, true);
-            }
-        }
-
-        void WriteStringOrGuidToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat, bool isheadercell = false)
-        {
-            if (int.TryParse(value, out _))
-            {
-                if (ExcelCellFormat is not null && ExcelCellFormat == ExcelCellFormats.Text)
-                {
-                    int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart);
-
-                    Cell.CellValue = new CellValue(index.ToString());
-                    Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-                    Cell.StyleIndex = (uint)ExcelCellFormat;
-                }
+            case TypeCode.String:
+            case TypeCode.Object when WritingFieldType == typeof(Guid):
+                WriteStringOrGuidToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
+                break;
+            case TypeCode.DateTime:
+                WriteDateTimeToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
+                break;
+            case TypeCode.Int32:
+                WriteIntToCell(value, cell);
+                break;
+            case TypeCode.Decimal:
+                WriteDecimalToCell(value, cell, ExcelCellFormat);
+                break;
+            case TypeCode.Double:
+                WriteDoubleToCell(value, cell, ExcelCellFormat);
+                break;
+            case TypeCode.Boolean:
+                WriteBoolToCell(value, cell);
+                break;
+            default:
+                if (WritingFieldType == typeof(DateOnly))
+                    WriteDateOnlyToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
+                else if (WritingFieldType == typeof(TimeOnly))
+                    WriteTimeOnlyToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 else
-                {
-                    Cell.CellValue = new CellValue(value);
+                    throw new NotImplementedException($"Writing of the specific type {WritingFieldType!.Name} not yet implemented!");
+                break;
+        }
+    }
 
-                    if (ExcelCellFormat is not null)
-                        Cell.StyleIndex = (uint)ExcelCellFormat;
-                }
+    /// <summary>
+    /// Writes a string or GUID value to a cell.
+    /// </summary>
+    /// <param name="value">The value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    /// <param name="isheadercell">Indicates whether the cell is a header cell.</param>
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void WriteStringOrGuidToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat, bool isheadercell = false)
+    {
+        int index;
+        if (int.TryParse(value, out _))
+        {
+            if (excelcellformat is not null && excelcellformat == ExcelCellFormats.Text)
+            {
+                index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+                cell.CellValue = new CellValue(index.ToString());
+                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+                cell.StyleIndex = (uint)excelcellformat;
             }
             else
             {
-                int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart);
+                cell.CellValue = new CellValue(value);
 
-                Cell.CellValue = new CellValue(index.ToString());
-                Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                if (isheadercell)
-                    Cell.StyleIndex = (uint)ExcelCellFormats.DefaultBoldCentered;
+                if (excelcellformat is not null)
+                    cell.StyleIndex = (uint)excelcellformat;
             }
         }
-
-        void WriteDateOnlyToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
+        else
         {
-            if (DateOnly.TryParse(value, out DateOnly dateonlyvalue))
-            {
-                int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart);
+            index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
-                Cell.CellValue = new CellValue(index.ToString());
-                Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-            }
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+            if (isheadercell)
+                cell.StyleIndex = (uint)ExcelCellFormats.DefaultBoldCentered;
+        }
+    }
+
+    /// <summary>
+    /// Writes a DateOnly value to a cell.
+    /// </summary>
+    /// <param name="value">The DateOnly value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WriteDateOnlyToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
+    {
+        if (DateOnly.TryParse(value, out DateOnly dateonlyvalue))
+        {
+            int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        }
+        else
+        {
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            cell.CellValue = new CellValue(value);
+            if (excelcellformat is null)
+                cell.StyleIndex = (uint)ExcelCellFormats.DateDefault;
             else
-            {
-                Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-                Cell.CellValue = new CellValue(value);
-                if (ExcelCellFormat is null)
-                    Cell.StyleIndex = (uint)ExcelCellFormats.DateDefault;
-                else
-                    Cell.StyleIndex = (uint)ExcelCellFormat;
-            }
+                cell.StyleIndex = (uint)excelcellformat;
         }
+    }
 
-        void WriteTimeOnlyToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
+    /// <summary>
+    /// Writes a TimeOnly value to a cell.
+    /// </summary>
+    /// <param name="value">The TimeOnly value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WriteTimeOnlyToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
+    {
+        if (TimeOnly.TryParse(value, out TimeOnly timeonlyvalue))
         {
-            if (TimeOnly.TryParse(value, out TimeOnly timeonlyvalue))
-            {
-                int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart);
+            int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
-                Cell.CellValue = new CellValue(index.ToString());
-                Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-            }
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        }
+        else
+        {
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            cell.CellValue = new CellValue(value);
+            if (excelcellformat is null)
+                cell.StyleIndex = (uint)ExcelCellFormats.TimeWithHoursMinutesSecondsDefault;
             else
-            {
-                Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-                Cell.CellValue = new CellValue(value);
-                if (ExcelCellFormat is null)
-                    Cell.StyleIndex = (uint)ExcelCellFormats.TimeWithHoursMinutesSecondsDefault;
-                else
-                    Cell.StyleIndex = (uint)ExcelCellFormat;
-            }
+                cell.StyleIndex = (uint)excelcellformat;
         }
+    }
 
-        void WriteDateTimeToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
+    /// <summary>
+    /// Writes a DateTime value to a cell.
+    /// </summary>
+    /// <param name="value">The DateTime value to write.</param>
+    /// <param name="Cell">The cell to write the value to.</param>
+    /// <param name="ExcelCellFormat">The format to apply to the cell.</param>
+    private void WriteDateTimeToCellWithUseSharedStrings(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
+    {
+        if (DateTime.TryParse(value, out DateTime datetimevalue))
         {
-            if (DateTime.TryParse(value, out DateTime datetimevalue))
-            {
-                int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart);
+            int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
-                Cell.CellValue = new CellValue(index.ToString());
-                Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-            }
-            else
-            {
-                Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-                Cell.CellValue = new CellValue(value);
-                if (ExcelCellFormat is null)
-                    Cell.StyleIndex = (uint)ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault;
-                else
-                    Cell.StyleIndex = (uint)ExcelCellFormat;
-            }
+            Cell.CellValue = new CellValue(index.ToString());
+            Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
         }
-
-        void WriteIntTocell(string value, Cell Cell)
+        else
         {
+            Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
             Cell.CellValue = new CellValue(value);
-            Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-            Cell.StyleIndex = (uint)ExcelCellFormats.NumberIntegerDefault;
-        }
-
-        void WriteDecimalToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
-        {
-            Cell.CellValue = new CellValue(decimal.Parse(value, Configuration.CultureInfo));
-            Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
             if (ExcelCellFormat is null)
-                Cell.StyleIndex = (uint)ExcelCellFormats.NumberDecimalWithTwoDecimalsDefault;
+                Cell.StyleIndex = (uint)ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault;
             else
                 Cell.StyleIndex = (uint)ExcelCellFormat;
         }
+    }
 
-        void WriteDoubleToCell(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
-        {
-            Cell.CellValue = new CellValue(double.Parse(value, Configuration.CultureInfo));
-            Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-            if (ExcelCellFormat is null)
-                Cell.StyleIndex = (uint)ExcelCellFormats.ScientificWithTwoDecimalsDefault;
-            else
-                Cell.StyleIndex = (uint)ExcelCellFormat;
-        }
+    /// <summary>
+    /// Writes an integer value to a cell.
+    /// </summary>
+    /// <param name="value">The integer value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    private void WriteIntToCell(string value, Cell cell)
+    {
+        cell.CellValue = new CellValue(value);
+        cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        cell.StyleIndex = (uint)ExcelCellFormats.NumberIntegerDefault;
+    }
 
-        void WriteBoolToCell(string value, Cell Cell)
-        {
-            Cell.CellValue = new CellValue((bool.Parse(value) ? 1 : 0).ToString());
-            Cell.DataType = new EnumValue<CellValues>(CellValues.Boolean);
-        }
+    /// <summary>
+    /// Writes a decimal value to a cell.
+    /// </summary>
+    /// <param name="value">The decimal value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WriteDecimalToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
+    {
+        cell.CellValue = new CellValue(decimal.Parse(value, Configuration.CultureInfo));
+        cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        if (excelcellformat is null)
+            cell.StyleIndex = (uint)ExcelCellFormats.NumberDecimalWithTwoDecimalsDefault;
+        else
+            cell.StyleIndex = (uint)excelcellformat;
+    }
+
+    /// <summary>
+    /// Writes a double value to a cell.
+    /// </summary>
+    /// <param name="value">The double value to write.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WriteDoubleToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
+    {
+        cell.CellValue = new CellValue(double.Parse(value, Configuration.CultureInfo));
+        cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        if (excelcellformat is null)
+            cell.StyleIndex = (uint)ExcelCellFormats.ScientificWithTwoDecimalsDefault;
+        else
+            cell.StyleIndex = (uint)excelcellformat;
+    }
+
+    /// <summary>
+    /// Writes a boolean value to a cell.
+    /// </summary>
+    /// <param name="value">The boolean value to write, represented as a string.</param>
+    /// <param name="cell">The cell to write the value to.</param>
+    private void WriteBoolToCell(string value, Cell cell)
+    {
+        cell.CellValue = new CellValue((bool.Parse(value) ? 1 : 0).ToString());
+        cell.DataType = new EnumValue<CellValues>(CellValues.Boolean);
     }
 
     /// <summary>
@@ -755,9 +827,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         if (ExcelCellMemberMapDetails.Count == 0)
             return;
 
-        WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
-
-        Columns columns = WorksheetPart.Worksheet.GetFirstChild<Columns>()!;
+        Columns columns = WorksheetPart.Worksheet.GetFirstChild<Columns>() ?? WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
 
         for (int ColumnIndex = 0; ColumnIndex < ExcelColumnCount; ColumnIndex++)
         {
@@ -795,7 +865,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 _ => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
             };
 
-            Column column = new Column() { Min = Convert.ToUInt32(ColumnIndex + 1), Max = Convert.ToUInt32(ColumnIndex + 1), Width = ColumnWidth, CustomWidth = BooleanValue.FromBoolean(true), BestFit = BooleanValue.FromBoolean(true) };
+            Column column = new Column() { Min = Convert.ToUInt32(ColumnIndex + 1), Max = Convert.ToUInt32(ColumnIndex + 1), Width = ColumnWidth, CustomWidth = true, BestFit = true };
 
             columns.Append(column);
         }

@@ -8,8 +8,6 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 /// <summary>
 /// The OpenXmlHelper class is a utility class to assist with various operations related to OpenXML spreadsheets.
@@ -203,28 +201,28 @@ internal partial class OpenXmlHelper
     /// </summary>
     /// <param name="text">The text to insert.</param>
     /// <param name="sharestringpart">The SharedStringTablePart.</param>
+    /// <param name="sharedstringdictionary">A dictionary to improve lookup performance.</param>
     /// <returns>The index of the inserted shared string item.</returns>
-    internal int InsertSharedStringItem(string text, SharedStringTablePart sharestringpart)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal int InsertSharedStringItem(string text, SharedStringTablePart sharestringpart, Dictionary<string, int> sharedstringdictionary)
     {
-        // If the part does not contain a SharedStringTable, create one.
+        //If the part does not contain a SharedStringTable, create one.
         sharestringpart.SharedStringTable ??= new SharedStringTable();
 
-        int i = 0;
-
-        // Iterate through all the items in the SharedStringTable. If the text already exists, return its index.
-        foreach (SharedStringItem item in sharestringpart.SharedStringTable.Elements<SharedStringItem>())
+        //Use a dictionary to improve lookup performance.
+        if (sharedstringdictionary.TryGetValue(text, out int index))
         {
-            if (item.InnerText == text)
-                return i;
-
-            i++;
+            return index;
         }
 
-        // The text does not exist in the part. Create the SharedStringItem and return its index.
-        sharestringpart.SharedStringTable.AppendChild(new SharedStringItem(new Text(text)));
-        sharestringpart.SharedStringTable.Save();
+        //The text does not exist in the part. Create the SharedStringItem and return its index.
+        index = sharedstringdictionary.Count;
 
-        return i;
+        sharedstringdictionary[text] = index;
+
+        sharestringpart.SharedStringTable.AppendChild(new SharedStringItem(new Text(text)));
+
+        return index;
     }
 
     /// <summary>
@@ -232,26 +230,29 @@ internal partial class OpenXmlHelper
     /// </summary>
     /// <param name="columnindex">The column index (0-based).</param>
     /// <returns>The column letters.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when the column index is less than to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when the column index is less than zero.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal string GetColumnLetters(int columnindex)
     {
         if (columnindex < 0)
             throw new ArgumentOutOfRangeException(nameof(columnindex), "Index must be a positive number.");
 
-        columnindex++;
         const int Base = 26;
         const int ASCIIOffset = 64; // 'A' is 65 in ASCII
 
-        StringBuilder ColumnNameBuilder = new StringBuilder();
+        Span<char> ColumnName = stackalloc char[7]; // Max length for Excel columns is "XFD" (3 characters), 7 is more than enough
+        int CurrentIndex = ColumnName.Length;
 
-        while (columnindex > 0)
+        do
         {
-            int Remainder = (columnindex - 1) % Base;
-            ColumnNameBuilder.Insert(0, (char)(Remainder + ASCIIOffset + 1));
-            columnindex = (columnindex - Remainder - 1) / Base;
+            int Remainder = columnindex % Base;
+            ColumnName[--CurrentIndex] = (char)(Remainder + ASCIIOffset + 1);
+            //columnindex = (columnindex - Remainder - 1) / Base;
+            columnindex = (columnindex / Base) - 1;
         }
+        while (columnindex >= 0);
 
-        return ColumnNameBuilder.ToString();
+        return new string(ColumnName.Slice(CurrentIndex));
     }
 
     /// <summary>
@@ -262,18 +263,23 @@ internal partial class OpenXmlHelper
     /// <exception cref="ArgumentException">Thrown when the cell reference format is invalid.</exception>
     internal int GetColumnIndex(string cellreference)
     {
-        Match RegexMatch = CellReferenceRegex().Match(cellreference);
+        // Use a more efficient method to parse the cell reference without regex.
+        int ColumnIndex = 0;
+        int i = 0;
 
-        if (!RegexMatch.Success)
+        // Process the column letters part.
+        do
+        {
+            ColumnIndex = (ColumnIndex * 26) + (cellreference[i] - 'A' + 1);
+            i++;
+        }
+        while (i < cellreference.Length && char.IsLetter(cellreference[i]));
+
+        if (ColumnIndex <= 0)
         {
             throw new ArgumentException("Invalid cell reference format.");
         }
 
-        string ColumnLettersPart = RegexMatch.Groups[1].Value;
-
-        return ColumnLettersPart.Aggregate(0, (index, letter) => (index * 26) + (letter - 'A' + 1));
+        return ColumnIndex;
     }
-
-    [GeneratedRegex(@"([A-Za-z]+)(\d+)")]
-    private partial Regex CellReferenceRegex();
 }

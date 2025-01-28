@@ -3,14 +3,14 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<VersionPrefix>1.1.0</VersionPrefix>
-		<VersionSuffix>rc</VersionSuffix>
+		<VersionSuffix></VersionSuffix>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<Title>CsvHelper.OpenXml.Excel</Title>
 		<Authors>Pierluigi Mari</Authors>
 		<IncludeSymbols>True</IncludeSymbols>
-		<Copyright>Copyright © 2024 Pierluigi Mari</Copyright>
+		<Copyright>Copyright © 2024-2025 Pierluigi Mari</Copyright>
 		<PackageIcon>CsvHelper.OpenXml.Excel Logo Icon.png</PackageIcon>
 		<RepositoryUrl>https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>

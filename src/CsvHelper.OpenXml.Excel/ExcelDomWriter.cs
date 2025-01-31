@@ -166,6 +166,9 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     {
         WritingFieldType = fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(Nullable<>) ? Nullable.GetUnderlyingType(fieldType) : fieldType;
 
+        if (field is null)
+            ExcelColumnIndex++;
+
         base.WriteConvertedField(field, fieldType);
     }
 

@@ -1155,7 +1155,7 @@ public class ExcelDomWriterTests
             ExcelWriter.WriteRecords(PersonRecords, "SheetPerson");
 
             ExcelWriter.Context.UnregisterClassMap<PersonExportMap>();
-            
+
             ExcelWriter.Context.RegisterClassMap<OrderExportMap>();
 
             List<Order> OrderRecords = new List<Order>
@@ -1782,6 +1782,88 @@ public class ExcelDomWriterTests
         await action.ShouldThrowAsync<ObjectDisposedException>();
     }
 
+    [Fact]
+    public void WriteRecord_ShouldWriteSingleRecordFormattedRecordCorrectlyTest()
+    {
+        using MemoryStream ExcelStream = new MemoryStream();
+        using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
+        {
+            ExcelWriter.Context.RegisterClassMap<RecordExportMap>();
+
+            List<Record> Records = new List<Record>
+            {
+                new Record
+                {
+                    Id = 1,
+                    Number = "REC2021001",
+                    Description = "Record 1 description",
+                    Date = new DateTime(2024, 12, 24, 15, 25, 15),
+                    AnotherDate = null,
+                    YetAnotherDate = new DateTime(2024, 12, 24, 15, 25, 15),
+                    Amount = 200.75m,
+                    CreationDate = new DateOnly(2021, 1, 2),
+                    CreationTime = new TimeOnly(12, 0),
+                    LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
+                },
+                new Record
+                {
+                    Id = 2,
+                    Number = "REC2021002",
+                    Description = "Record 2 description",
+                    Date = new DateTime(2024, 12, 24, 15, 25, 15),
+                    AnotherDate = null,
+                    YetAnotherDate = new DateTime(2024, 12, 24, 15, 25, 15),
+                    Amount = 200.75m,
+                    CreationDate = new DateOnly(2021, 1, 2),
+                    CreationTime = new TimeOnly(12, 0),
+                    LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
+
+                }
+            };
+
+            ExcelWriter.WriteRecords(Records, "SheetRecord");
+        }
+
+        ExcelStream.Position = 0;
+        using SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Open(ExcelStream, false);
+        SheetData? ExcelSheetData = ExcelDocument.WorkbookPart!.WorksheetParts.First().Worksheet.GetFirstChild<SheetData>();
+        List<Row> ExcelRows = ExcelSheetData!.Elements<Row>().ToList();
+        ExcelRows.Count.ShouldBe(3);
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(0)).ShouldBe("Id");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(1)).ShouldBe("Number");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(2)).ShouldBe("Description");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(3)).ShouldBe("Date");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("AnotherDate");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("YetAnotherDate");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Amount");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("LastModifiedDate");
+
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(0)).ShouldBe("1");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(1)).ShouldBe("REC2021001");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).ShouldBe("Record 1 description");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        ExcelRows[1].Elements<Cell>().ElementAt(4).CellReference!.Value.ShouldBe("F2");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("200.75");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6))))).ShouldBe(new DateOnly(2021, 1, 2));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+
+
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(0)).ShouldBe("2");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(1)).ShouldBe("REC2021002");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(2)).ShouldBe("Record 2 description");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(3)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        ExcelRows[2].Elements<Cell>().ElementAt(4).CellReference!.Value.ShouldBe("F3");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("200.75");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6))))).ShouldBe(new DateOnly(2021, 1, 2));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+    }
+
     #endregion
 
     #region Private Methods
@@ -1837,7 +1919,7 @@ public class ExcelDomWriterTests
             CreationTime = new TimeOnly(12, 0),
             LastModifiedDate = new DateTime?(new DateTime(2024, 12, 24, 15, 25, 15))
         };
-;
+        ;
         yield return new
         {
             Name = "Jane",

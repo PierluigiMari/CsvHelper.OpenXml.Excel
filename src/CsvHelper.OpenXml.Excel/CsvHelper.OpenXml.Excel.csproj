@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<VersionPrefix>1.1.1</VersionPrefix>
-		<VersionSuffix>beta</VersionSuffix>
+		<VersionSuffix></VersionSuffix>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -21,7 +21,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Feature enhancements, added ExcelCellFormats.Text and fix Converters updated to handle null or whitespace input correctly. Performance enhancements.</PackageReleaseNotes>
+		<PackageReleaseNotes>Fix export.</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel</PackageProjectUrl>
 	</PropertyGroup>
 

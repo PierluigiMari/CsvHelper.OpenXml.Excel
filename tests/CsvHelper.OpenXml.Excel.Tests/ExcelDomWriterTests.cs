@@ -1864,6 +1864,191 @@ public class ExcelDomWriterTests
         DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
+    [Fact()]
+    public async Task WriteRecordsAsync_ShouldWriteMultiplePersonAndPersonFormattedRecordsCorrectlyTest()
+    {
+        using MemoryStream ExcelStream = new MemoryStream();
+        using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CultureInfo("en-US")))
+        {
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
+
+            List<Person> PersonRecords1 = new List<Person>
+            {
+                new Person
+                {
+                    Name = "John",
+                    Surname = "Doe",
+                    NickName = null as string,
+                    BirthDate = new DateOnly(1994, 1, 6),
+                    Age = 30,
+                    Address = "250 Via Tuscolana",
+                    Zip = "00181",
+                    City = "Roma",
+                    CreationDate = new DateOnly(2021, 1, 2),
+                    CreationTime = new TimeOnly(12, 0),
+                    LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
+                },
+                new Person
+                {
+                    Name = "Jane",
+                    Surname = "Doe",
+                    NickName = (string?)"Tarzan lady",
+                    BirthDate = new DateOnly(1996, 3, 15),
+                    Age = 28,
+                    Address = "250 Via Tuscolana",
+                    Zip = "00181",
+                    City = "Roma",
+                    CreationDate = new DateOnly(2023, 5, 25),
+                    CreationTime = new TimeOnly(10, 0),
+                    LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
+                }
+            };
+
+            await ExcelWriter.WriteRecordsAsync(PersonRecords1, "SheetPerson1");
+
+            ExcelWriter.Context.UnregisterClassMap<PersonExportMap>();
+
+            ExcelWriter.Context.RegisterClassMap<PersonExportMap>();
+
+            List<Person> PersonRecords2 = new List<Person>
+            {
+                new Person
+                {
+                    Name = "John",
+                    Surname = "Doe",
+                    NickName = null as string,
+                    BirthDate = new DateOnly(1994, 1, 6),
+                    Age = 30,
+                    Address = "250 Via Tuscolana",
+                    Zip = "00181",
+                    City = "Roma",
+                    CreationDate = new DateOnly(2021, 1, 2),
+                    CreationTime = new TimeOnly(12, 0),
+                    LastModifiedDate = null
+                },
+                new Person
+                {
+                    Name = "Jane",
+                    Surname = "Doe",
+                    NickName = (string?)"Tarzan lady",
+                    BirthDate = new DateOnly(1996, 3, 15),
+                    Age = 28,
+                    Address = "250 Via Tuscolana",
+                    Zip = "00181",
+                    City = "Roma",
+                    CreationDate = new DateOnly(2023, 5, 25),
+                    CreationTime = new TimeOnly(10, 0),
+                    LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
+                }
+            };
+
+            await ExcelWriter.WriteRecordsAsync(PersonRecords2, "SheetPerson2");
+        }
+
+        ExcelStream.Position = 0;
+        using SpreadsheetDocument ExcelDocument = SpreadsheetDocument.Open(ExcelStream, false);
+        ExcelDocument.WorkbookPart!.Workbook.Sheets!.Count().ShouldBe(2);
+
+        ExcelDocument.WorkbookPart!.Workbook.Sheets!.Elements<Sheet>().ElementAt(0).Name!.Value.ShouldBe("SheetPerson1");
+        SheetData? ExcelSheetPerson1Data = ExcelDocument.WorkbookPart!.WorksheetParts.ElementAt(0).Worksheet.GetFirstChild<SheetData>();
+        List<Row> ExcelPerson1Rows = ExcelSheetPerson1Data!.Elements<Row>().ToList();
+
+        ExcelPerson1Rows.Count.ShouldBe(3);
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(0)).ShouldBe("Name");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(0)).ShouldBe("John");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(0)).ShouldBe("Jane");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(1)).ShouldBe("Last Name");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(2)).ShouldBe("NickName");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(2)).ShouldNotBe("");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(2)).ShouldBe("Tarzan lady");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(3)).ShouldBe("BirthDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1994, 1, 6));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(3)).Replace('.', ',')))).ShouldBe(new DateOnly(1996, 3, 15));
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+
+
+        ExcelDocument.WorkbookPart!.Workbook.Sheets!.Elements<Sheet>().ElementAt(1).Name!.Value.ShouldBe("SheetPerson2");
+        SheetData? ExcelSheetPerson2Data = ExcelDocument.WorkbookPart!.WorksheetParts.ElementAt(1).Worksheet.GetFirstChild<SheetData>();
+        List<Row> ExcelPerson2Rows = ExcelSheetPerson2Data!.Elements<Row>().ToList();
+
+        ExcelPerson1Rows.Count.ShouldBe(3);
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(0)).ShouldBe("Name");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(0)).ShouldBe("John");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(0)).ShouldBe("Jane");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(1)).ShouldBe("Last Name");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(2)).ShouldBe("NickName");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(2)).ShouldNotBe("");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(2)).ShouldBe("Tarzan lady");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(3)).ShouldBe("BirthDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1994, 1, 6));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(3)).Replace('.', ',')))).ShouldBe(new DateOnly(1996, 3, 15));
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
+        //DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+    }
+
     #endregion
 
     #region Private Methods

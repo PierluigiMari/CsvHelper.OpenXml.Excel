@@ -37,6 +37,7 @@ public class ExcelDomWriterTests
                 NickName = null as string,
                 BirthDate = new DateOnly(1994, 1, 6),
                 Age = 30,
+                WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                 Address = "250 Via Tuscolana",
                 Zip = "00181",
                 City = "Roma",
@@ -64,19 +65,20 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).ShouldBe("1/6/1994");
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -94,6 +96,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -108,6 +111,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -141,24 +145,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -176,6 +183,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -190,6 +198,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -223,24 +232,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -273,24 +285,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -305,6 +320,7 @@ public class ExcelDomWriterTests
             Record.NickName = null as string;
             Record.BirthDate = new DateOnly(1994, 1, 6);
             Record.Age = 30;
+            Record.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
             Record.Address = "250 Via Tuscolana";
             Record.Zip = "00181";
             Record.City = "Roma";
@@ -331,18 +347,20 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).ShouldBe("1/6/1994");
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -357,6 +375,7 @@ public class ExcelDomWriterTests
             Record1.NickName = null as string;
             Record1.BirthDate = new DateOnly(1994, 1, 6);
             Record1.Age = 30;
+            Record1.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
             Record1.Address = "250 Via Tuscolana";
             Record1.Zip = "00181";
             Record1.City = "Roma";
@@ -370,6 +389,7 @@ public class ExcelDomWriterTests
             Record2.NickName = (string?)"Tarzan lady";
             Record2.BirthDate = new DateOnly(1996, 3, 15);
             Record2.Age = 28;
+            Record2.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
             Record2.Address = "250 Via Tuscolana";
             Record2.Zip = "00181";
             Record2.City = "Roma";
@@ -403,24 +423,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -435,6 +458,7 @@ public class ExcelDomWriterTests
             Record1.NickName = null as string;
             Record1.BirthDate = new DateOnly(1994, 1, 6);
             Record1.Age = 30;
+            Record1.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
             Record1.Address = "250 Via Tuscolana";
             Record1.Zip = "00181";
             Record1.City = "Roma";
@@ -448,6 +472,7 @@ public class ExcelDomWriterTests
             Record2.NickName = (string?)"Tarzan lady";
             Record2.BirthDate = new DateOnly(1996, 3, 15);
             Record2.Age = 28;
+            Record2.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
             Record2.Address = "250 Via Tuscolana";
             Record2.Zip = "00181";
             Record2.City = "Roma";
@@ -481,24 +506,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -531,24 +559,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -564,6 +595,7 @@ public class ExcelDomWriterTests
                 NickName = null as string,
                 BirthDate = new DateOnly(1994, 1, 6),
                 Age = 30,
+                WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                 Address = "250 Via Tuscolana",
                 Zip = "00181",
                 City = "Roma",
@@ -591,19 +623,20 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).ShouldBe("1/6/1994");
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -621,6 +654,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -635,6 +669,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -668,24 +703,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -703,6 +741,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -717,6 +756,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -750,24 +790,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -800,24 +843,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("1/2/2021");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("5/25/2023");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("12:00 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("10:00 AM");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12/24/2024 3:25:15 PM");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("5/15/2023 11:30:00 AM +02:00");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).ShouldBe("1/2/2021");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).ShouldBe("5/25/2023");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).ShouldBe("12:00 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).ShouldBe("10:00 AM");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).ShouldBe("12/24/2024 3:25:15 PM");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).ShouldBe("12/24/2024 3:25:15 PM");
     }
 
     [Fact()]
@@ -835,6 +881,7 @@ public class ExcelDomWriterTests
                 NickName = null as string,
                 BirthDate = new DateOnly(1994, 1, 6),
                 Age = 30,
+                WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                 Address = "250 Via Tuscolana",
                 Zip = "00181",
                 City = "Roma",
@@ -862,18 +909,20 @@ public class ExcelDomWriterTests
         DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1994, 1, 6));
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
     [Fact()]
@@ -893,6 +942,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -907,6 +957,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -940,24 +991,27 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
     [Fact()]
@@ -977,6 +1031,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -991,6 +1046,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1013,6 +1069,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1984, 1, 6),
                     Age = 40,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 6, 5, 10, 30, 0)),
                     Address = "252 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1027,6 +1084,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1986, 3, 15),
                     Age = 38,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 6, 5, 10, 30, 0)),
                     Address = "252 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1075,41 +1133,47 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(3)).ShouldBe("40");
         GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(3)).ShouldBe("38");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(4)).ShouldBe("252 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(4)).ShouldBe("252 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 6, 5, 8, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 6, 5, 8, 30, 00)));
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(5)).ShouldBe("252 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(5)).ShouldBe("252 Via Tuscolana");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2020, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2022, 5, 25));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2020, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2022, 5, 25));
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
     [Fact()]
@@ -1129,6 +1193,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1143,6 +1208,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1220,29 +1286,33 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
 
 
         ExcelDocument.WorkbookPart!.Workbook.Sheets!.Elements<Sheet>().ElementAt(1).Name!.Value.ShouldBe("SheetOrder");
@@ -1308,6 +1378,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1322,6 +1393,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1343,36 +1415,50 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(0)).ShouldBe("Name");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(0)).ShouldBe("John");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(0)).ShouldBe("Jane");
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(1)).ShouldBe("Last Name");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(2)).ShouldBe("NickName");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).ShouldNotBe("");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(2)).ShouldBe("Tarzan lady");
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(3)).ShouldBe("BirthDate");
         DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1994, 1, 6));
         DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(3)).Replace('.', ',')))).ShouldBe(new DateOnly(1996, 3, 15));
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
     [Fact()]
@@ -1392,6 +1478,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1406,6 +1493,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1428,6 +1516,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1984, 1, 6),
                     Age = 40,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 6, 5, 10, 30, 0)),
                     Address = "252 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1442,6 +1531,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1986, 3, 15),
                     Age = 38,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 6, 5, 10, 30, 0)),
                     Address = "252 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1490,41 +1580,47 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(3)).ShouldBe("40");
         GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(3)).ShouldBe("38");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(4)).ShouldBe("252 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(4)).ShouldBe("252 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 6, 5, 8, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 6, 5, 8, 30, 00)));
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(5)).ShouldBe("252 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(5)).ShouldBe("252 Via Tuscolana");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2020, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2022, 5, 25));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2020, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2022, 5, 25));
 
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[3].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[4].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
     [Fact()]
@@ -1544,6 +1640,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1558,6 +1655,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1635,29 +1733,33 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
 
-        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelPersonRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPersonRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
 
 
         ExcelDocument.WorkbookPart!.Workbook.Sheets!.Elements<Sheet>().ElementAt(1).Name!.Value.ShouldBe("SheetOrder");
@@ -1726,36 +1828,50 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(0)).ShouldBe("Name");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(0)).ShouldBe("John");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(0)).ShouldBe("Jane");
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(1)).ShouldBe("Last Name");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(2)).ShouldBe("NickName");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).ShouldNotBe("");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(2)).ShouldBe("Tarzan lady");
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(3)).ShouldBe("BirthDate");
         DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1994, 1, 6));
         DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(3)).Replace('.', ',')))).ShouldBe(new DateOnly(1996, 3, 15));
+
         GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
         GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
-        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelRows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelRows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
     [Fact]
@@ -1881,6 +1997,7 @@ public class ExcelDomWriterTests
                     NickName = null as string,
                     BirthDate = new DateOnly(1994, 1, 6),
                     Age = 30,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1895,6 +2012,7 @@ public class ExcelDomWriterTests
                     NickName = (string?)"Tarzan lady",
                     BirthDate = new DateOnly(1996, 3, 15),
                     Age = 28,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
                     Address = "250 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
@@ -1914,29 +2032,31 @@ public class ExcelDomWriterTests
             {
                 new Person
                 {
-                    Name = "John",
-                    Surname = "Doe",
+                    Name = "Maverick",
+                    Surname = "Hunter",
                     NickName = null as string,
-                    BirthDate = new DateOnly(1994, 1, 6),
-                    Age = 30,
-                    Address = "250 Via Tuscolana",
+                    BirthDate = new DateOnly(1984, 1, 6),
+                    Age = 40,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 6, 5, 10, 30, 0)),
+                    Address = "252 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
-                    CreationDate = new DateOnly(2021, 1, 2),
+                    CreationDate = new DateOnly(2020, 1, 2),
                     CreationTime = new TimeOnly(12, 0),
-                    LastModifiedDate = null
+                    LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
                 },
                 new Person
                 {
-                    Name = "Jane",
-                    Surname = "Doe",
-                    NickName = (string?)"Tarzan lady",
-                    BirthDate = new DateOnly(1996, 3, 15),
-                    Age = 28,
-                    Address = "250 Via Tuscolana",
+                    Name = "Danielle",
+                    Surname = "Hunter",
+                    NickName = null as string,
+                    BirthDate = new DateOnly(1986, 3, 15),
+                    Age = 38,
+                    WeddingDate = new DateTimeOffset(new DateTime(2023, 6, 5, 10, 30, 0)),
+                    Address = "252 Via Tuscolana",
                     Zip = "00181",
                     City = "Roma",
-                    CreationDate = new DateOnly(2023, 5, 25),
+                    CreationDate = new DateOnly(2022, 5, 25),
                     CreationTime = new TimeOnly(10, 0),
                     LastModifiedDate = new DateTime(2024, 12, 24, 15, 25, 15)
                 }
@@ -1974,29 +2094,33 @@ public class ExcelDomWriterTests
         GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
         GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
 
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(5)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 5, 15, 9, 30, 00)));
 
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(6)).ShouldBe("250 Via Tuscolana");
 
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(7)).ShouldBe("00181");
 
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(8)).ShouldBe("Roma");
 
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2021, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(9))))).ShouldBe(new DateOnly(2023, 5, 25));
 
-        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
-        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(10)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
+
+        GetCellValue(ExcelDocument, ExcelPerson1Rows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson1Rows[2].Elements<Cell>().ElementAt(11)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
 
 
         ExcelDocument.WorkbookPart!.Workbook.Sheets!.Elements<Sheet>().ElementAt(1).Name!.Value.ShouldBe("SheetPerson2");
@@ -2005,47 +2129,51 @@ public class ExcelDomWriterTests
 
         ExcelPerson1Rows.Count.ShouldBe(3);
         GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(0)).ShouldBe("Name");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(0)).ShouldBe("John");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(0)).ShouldBe("Jane");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(0)).ShouldBe("Maverick");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(0)).ShouldBe("Danielle");
 
         GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(1)).ShouldBe("Last Name");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(1)).ShouldBe("Doe");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(1)).ShouldBe("Hunter");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(1)).ShouldBe("Hunter");
 
         GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(2)).ShouldBe("NickName");
         GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(2)).ShouldNotBe("");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(2)).ShouldBe("Tarzan lady");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(2)).ShouldNotBe("");
 
         GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(3)).ShouldBe("BirthDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1994, 1, 6));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(3)).Replace('.', ',')))).ShouldBe(new DateOnly(1996, 3, 15));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1984, 1, 6));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(2)).Replace('.', ',')))).ShouldBe(new DateOnly(1986, 3, 15));
 
         GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(4)).ShouldBe("Age");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(3)).ShouldBe("30");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(4)).ShouldBe("28");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(3)).ShouldBe("40");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(3)).ShouldBe("38");
 
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(5)).ShouldBe("Address");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(4)).ShouldBe("250 Via Tuscolana");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(5)).ShouldBe("250 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(5)).ShouldBe("WeddingDate");
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 6, 5, 8, 30, 00)));
+        new DateTimeOffset(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(4)).Replace('.', ',')))).ShouldBe(new DateTimeOffset(new DateTime(2023, 6, 5, 8, 30, 00)));
 
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Zip");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(5)).ShouldBe("00181");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(6)).ShouldBe("Address");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(5)).ShouldBe("252 Via Tuscolana");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(5)).ShouldBe("252 Via Tuscolana");
+
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(7)).ShouldBe("Zip");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
         GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(6)).ShouldBe("00181");
 
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(7)).ShouldBe("City");
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(6)).ShouldBe("Roma");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(8)).ShouldBe("City");
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
         GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(7)).ShouldBe("Roma");
 
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(8)).ShouldBe("CreationDate");
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(7))))).ShouldBe(new DateOnly(2021, 1, 2));
-        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2023, 5, 25));
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationDate");
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2020, 1, 2));
+        DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(8))))).ShouldBe(new DateOnly(2022, 5, 25));
 
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(9)).ShouldBe("CreationTime");
-        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(8)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(10)).ShouldBe("CreationTime");
+        TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(12, 0, 0));
         TimeOnly.FromDateTime(DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(9)).Replace('.', ',')))).ShouldBe(new TimeOnly(10, 0, 0));
 
-        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(10)).ShouldBe("LastModifiedDate");
-        //DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(9)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
+        GetCellValue(ExcelDocument, ExcelPerson2Rows[0].Elements<Cell>().ElementAt(11)).ShouldBe("LastModifiedDate");
+        DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[1].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
         DateTime.FromOADate(double.Parse(GetCellValue(ExcelDocument, ExcelPerson2Rows[2].Elements<Cell>().ElementAt(10)).Replace('.', ','))).ShouldBe(new DateTime(2024, 12, 24, 15, 25, 15));
     }
 
@@ -2062,6 +2190,7 @@ public class ExcelDomWriterTests
             NickName = null as string,
             BirthDate = new DateOnly(1994, 1, 6),
             Age = 30,
+            WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
             Address = "250 Via Tuscolana",
             Zip = "00181",
             City = "Roma",
@@ -2077,6 +2206,7 @@ public class ExcelDomWriterTests
             NickName = (string?)"Tarzan lady",
             BirthDate = new DateOnly(1996, 3, 15),
             Age = 28,
+            WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
             Address = "250 Via Tuscolana",
             Zip = "00181",
             City = "Roma",
@@ -2097,6 +2227,7 @@ public class ExcelDomWriterTests
             NickName = null as string,
             BirthDate = new DateOnly(1994, 1, 6),
             Age = 30,
+            WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
             Address = "250 Via Tuscolana",
             Zip = "00181",
             City = "Roma",
@@ -2112,6 +2243,7 @@ public class ExcelDomWriterTests
             NickName = (string?)"Tarzan lady",
             BirthDate = new DateOnly(1996, 3, 15),
             Age = 28,
+            WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0)),
             Address = "250 Via Tuscolana",
             Zip = "00181",
             City = "Roma",
@@ -2131,6 +2263,7 @@ public class ExcelDomWriterTests
         Record1.NickName = null as string;
         Record1.BirthDate = new DateOnly(1994, 1, 6);
         Record1.Age = 30;
+        Record1.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
         Record1.Address = "250 Via Tuscolana";
         Record1.Zip = "00181";
         Record1.City = "Roma";
@@ -2146,6 +2279,7 @@ public class ExcelDomWriterTests
         Record2.NickName = (string?)"Tarzan lady";
         Record2.BirthDate = new DateOnly(1996, 3, 15);
         Record2.Age = 28;
+        Record2.WeddingDate = new DateTimeOffset(new DateTime(2023, 5, 15, 11, 30, 0));
         Record2.Address = "250 Via Tuscolana";
         Record2.Zip = "00181";
         Record2.City = "Roma";

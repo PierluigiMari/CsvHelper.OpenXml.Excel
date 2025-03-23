@@ -9,6 +9,7 @@ internal class Person
     public string? NickName { get; set; }
     public required DateOnly BirthDate { get; set; }
     public required int Age { get; set; }
+    public required DateTimeOffset WeddingDate { get; set; }
     public required string Address { get; set; }
     public required string Zip { get; set; }
     public required string City { get; set; }

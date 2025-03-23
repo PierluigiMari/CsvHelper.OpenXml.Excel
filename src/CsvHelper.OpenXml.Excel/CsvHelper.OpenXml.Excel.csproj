@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-		<VersionPrefix>1.1.1</VersionPrefix>
-		<VersionSuffix></VersionSuffix>
+		<VersionPrefix>1.2.0</VersionPrefix>
+		<VersionSuffix>beta</VersionSuffix>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -21,7 +21,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Fix export.</PackageReleaseNotes>
+		<PackageReleaseNotes>Introduced ExcelDateTimeOffsetConverter.</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel</PackageProjectUrl>
 	</PropertyGroup>
 
@@ -29,7 +29,7 @@
 	  <WarningLevel>8</WarningLevel>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
 		<WarningLevel>8</WarningLevel>
 	</PropertyGroup>
 	
@@ -54,7 +54,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="CsvHelper" Version="33.0.1" />
-		<PackageReference Include="DocumentFormat.OpenXml" Version="3.2.0" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
 	</ItemGroup>
 
 </Project>

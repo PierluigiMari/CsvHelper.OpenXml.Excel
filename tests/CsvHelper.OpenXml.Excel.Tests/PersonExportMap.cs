@@ -12,6 +12,7 @@ internal class PersonExportMap : ClassMap<Person>
 
         Map(m => m.Surname).Name("Last Name");
         Map(m => m.BirthDate).Name("BirthDate").TypeConverter<ExcelDateOnlyConverter>();
+        Map(m => m.WeddingDate).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Utc));
         Map(m => m.Zip).Name("Zip").Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.SpecialZipCode };
         Map(m => m.CreationDate).Name("CreationDate").TypeConverter<ExcelDateOnlyConverter>();
         Map(m => m.CreationTime).TypeConverter<ExcelTimeOnlyConverter>();

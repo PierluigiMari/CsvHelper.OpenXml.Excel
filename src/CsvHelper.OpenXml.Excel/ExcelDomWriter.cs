@@ -642,6 +642,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                     WriteDateOnlyToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 else if (WritingFieldType == typeof(TimeOnly))
                     WriteTimeOnlyToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
+                else if (WritingFieldType == typeof(DateTimeOffset))
+                    WriteDateTimeToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 else
                     throw new NotImplementedException($"Writing of the specific type {WritingFieldType!.Name} not yet implemented!");
                 break;
@@ -697,7 +699,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteDateOnlyToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
-        if (DateOnly.TryParse(value, out DateOnly dateonlyvalue))
+        if (DateOnly.TryParse(value, Configuration.CultureInfo, out DateOnly dateonlyvalue))
         {
             int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
@@ -723,7 +725,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteTimeOnlyToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
-        if (TimeOnly.TryParse(value, out TimeOnly timeonlyvalue))
+        if (TimeOnly.TryParse(value, Configuration.CultureInfo, out TimeOnly timeonlyvalue))
         {
             int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
@@ -749,7 +751,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="ExcelCellFormat">The format to apply to the cell.</param>
     private void WriteDateTimeToCellWithUseSharedStrings(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
     {
-        if (DateTime.TryParse(value, out DateTime datetimevalue))
+        if (DateTime.TryParse(value, Configuration.CultureInfo, out DateTime datetimevalue))
         {
             int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 

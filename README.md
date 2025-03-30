@@ -7,6 +7,9 @@
 
 The ultimate goal is to obtain versatility of use and accuracy in import and export results; especially with regard to export, the file obtained, although always in simple tabular form, still has all the characteristics expected for an Excel file, with the columns having the cells formatted in an adequate way and not as simple text.
 
+### Version 1.2.0
+With this version, in the source code I have added a new console project that you can use both to see possible examples of use but above all to quickly make checks against the expected base scenario. This is the link to the project [CsvHelper.OpenXml.Excel.Tests.ConsoleApp](https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel/tree/main/tests/CsvHelper.OpenXml.Excel.Tests.ConsoleApp).
+
 ## Prerequisites
 Knowledge of [CsvHelper](https://github.com/JoshClose/CsvHelper) and its documentation.
 
@@ -67,6 +70,39 @@ public class FooMap : ClassMap<Foo>
     }
 }
 ```
+
+A separate discussion must be made for the following converters, introduced with version 1.2.0, which allow, for Excel files having columns with specific cell formats **(Custom (Date and Time)**, **Custom (Date and Time) in text format or Custom (Date and Time) in text format with the information of the offset with respect to UTC time**), to define the mappings to the **DateTimeOffset** type.
+
+- ExcelDateTimeOffsetConverter
+- ExcelDateTimeOffsetTextConverter
+
+With the use of these converters it's possible to define the mapping of an Excel column having cell format **Custom (Date and Time)** to a **DateTimeOffset** type using an `ExcelDateTimeOffsetConverter`; or map an Excel column having cell format **Text** with the value of a **Custom (Date and Time)** or with the value of a **Custom (Date and Time) followed by the offset information with respect to UTC time**, to a **DateTimeOffset** type using an `ExcelDateTimeOffsetTextConverter`.
+
+```csharp
+public class FooMap : ClassMap<Foo>
+{
+    public FooMap()
+    {
+        AutoMap(CultureInfo.CurrentCulture);
+
+        Map(m => m.DateTimeOffsetUnspecified).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Unspecified, new TimeSpan(3, 0, 0)));
+        Map(m => m.DateTimeOffsetUnspecifiedAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
+
+        Map(m => m.DateTimeOffsetUnspecifiedFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Unspecified, new TimeSpan(3, 0, 0)));
+
+        Map(m => m.DateTimeOffsetUtc).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Utc, new TimeSpan(0, 0, 0)));
+        Map(m => m.DateTimeOffsetUtcAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
+
+        Map(m => m.DateTimeOffsettUtcFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Utc, new TimeSpan(0, 0, 0)));
+
+        Map(m => m.DateTimeOffsetLocal).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Local, new TimeSpan(1, 0, 0)));
+        Map(m => m.DateTimeOffsetLocalAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
+        
+        Map(m => m.DateTimeOffsetLocalFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Local, new TimeSpan(1, 0, 0)));
+    }
+}
+```
+
 ```csharp
 byte[] Bytes = File.ReadAllBytes("path/subpath/file.xlsx");
 
@@ -130,6 +166,24 @@ public class FooMap : ClassMap<Foo>
             .TypeConverter<ExcelTimeOnlyConverter>().Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.TimeHoursMinutesSecondsDefault };
         Map(x => x.DateTime).TypeConverter<ExcelDateTimeConverter>()
             .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateTimeDefault };
+
+        //With version => 1.2.0
+        Map(m => m.DateTimeOffsetUnspecified).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Unspecified)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault };
+        Map(x => x.DateTimeOffsetUnspecifiedAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Unspecified)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { CultureInfo = CultureInfo.CurrentCulture };
+        
+        Map(x => x.DateTimeOffsetUnspecifiedFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter()).Data.TypeConverterOptions = new ExcelTypeConverterOptions { CultureInfo = CultureInfo.CurrentCulture };
+        // Or even
+        Map(m => m.DateTimeOffsetUnspecifiedFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Unspecified)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault };
+        
+        Map(m => m.DateTimeOffsetUtc).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Utc)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault  };
+        Map(x => x.DateTimeOffsetUtcAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Utc)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { CultureInfo = CultureInfo.CurrentCulture };
+        
+        Map(x => x.DateTimeOffsetUtcFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter()).Data.TypeConverterOptions = new ExcelTypeConverterOptions { CultureInfo = CultureInfo.CurrentCulture };
+
+        Map(m => m.DateTimeOffsetLocal).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Local)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault };
+        Map(x => x.DateTimeOffsetLocalAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Local)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { CultureInfo = CultureInfo.CurrentCulture };
+        
+        Map(x => x.DateTimeOffsetLocalFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter()).Data.TypeConverterOptions = new ExcelTypeConverterOptions { CultureInfo = CultureInfo.CurrentCulture };
     }
 }
 ```

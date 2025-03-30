@@ -13,9 +13,6 @@ public class GenericPersonMapImport : ClassMap<GenericPerson>
         Map(x => x.DateDefault).TypeConverter<ExcelDateOnlyConverter>();
         Map(x => x.DateExtendedDefault).TypeConverter<ExcelDateOnlyConverter>();
         Map(x => x.DateWithDash).TypeConverter<ExcelDateOnlyConverter>();
-        Map(x => x.GenericCurrencyWithoutDecimals);
-        Map(x => x.EuroCurrencyWithTwoDecimals);
-        Map(x => x.EuroCurrencyWithFourDecimals);
         Map(x => x.TimeDefault).TypeConverter<ExcelTimeOnlyConverter>();
         Map(x => x.TimeHoursMinutes).TypeConverter<ExcelTimeOnlyConverter>();
         Map(x => x.Time12HoursMinutesSeconds).TypeConverter<ExcelTimeOnlyConverter>();
@@ -24,9 +21,16 @@ public class GenericPersonMapImport : ClassMap<GenericPerson>
         Map(x => x.DateTimeWithHoursMinutes).TypeConverter<ExcelDateTimeConverter>();
         Map(x => x.DateTime12HourWithHoursMinutesSeconds).TypeConverter<ExcelDateTimeConverter>();
         Map(x => x.DateTime12HourWithHoursMinutes).TypeConverter<ExcelDateTimeConverter>();
-        //Map(m => m.DateTimeOffsetDefault).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Utc));
-        //Map(m => m.DateTimeOffsetDefault).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Local));
-        //Map(m => m.DateTimeOffsetDefault).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Unspecified));
-        Map(m => m.DateTimeOffsetDefault);
+
+        Map(m => m.DateTimeOffsetUnspecified).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Unspecified, new TimeSpan(3, 0, 0)));
+        Map(m => m.DateTimeOffsetUnspecifiedAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
+
+        Map(m => m.DateTimeOffsetUnspecifiedFromDateTimeAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter(DateTimeKind.Unspecified, new TimeSpan(4, 0, 0)));
+
+        Map(m => m.DateTimeOffsetUtc).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Utc, new TimeSpan(0, 0, 0)));
+        Map(m => m.DateTimeOffsetUtcAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
+
+        Map(m => m.DateTimeOffsetLocal).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Local, new TimeSpan(1, 0, 0)));
+        Map(m => m.DateTimeOffsetLocalAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
     }
 }

@@ -561,7 +561,7 @@ IEnumerable<GenericPerson> ImportGenericPersonExcelFileForExport(string fileName
     byte[] ExcelBytes = File.ReadAllBytes(fileName);
 
     using MemoryStream ExcelStream = new MemoryStream(ExcelBytes);
-    using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, sheetname);
+    using ExcelDomParser ExcelParser = new ExcelDomParser(ExcelStream, sheetname);//, new CsvConfiguration(CultureInfo.CurrentCulture));
     using CsvReader ExcelReader = new CsvReader(ExcelParser);
 
     ExcelReader.Context.RegisterClassMap<GenericPersonMapImport>();

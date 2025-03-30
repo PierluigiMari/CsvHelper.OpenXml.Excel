@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "CsvHelper.OpenXml.Excel.Tests.ConsoleApp": {
+      "commandName": "Project",
+      "nativeDebugging": false,
+      "hotReloadEnabled": true
+    }
+  }
+}

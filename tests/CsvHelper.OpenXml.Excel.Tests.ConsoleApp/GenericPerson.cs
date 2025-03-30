@@ -36,7 +36,13 @@ public class GenericPerson
     public DateTime? DateTimeWithHoursMinutes { get; set; }
     public DateTime DateTime12HourWithHoursMinutesSeconds { get; set; }
     public DateTime DateTime12HourWithHoursMinutes { get; set; }
-    public DateTimeOffset DateTimeOffsetDefault { get; set; }
+    public DateTimeOffset DateTimeOffsetUnspecified { get; set; }
+    public DateTimeOffset DateTimeOffsetUnspecifiedAsText { get; set; }
+    public DateTimeOffset DateTimeOffsetUnspecifiedFromDateTimeAsText { get; set; }
+    public DateTimeOffset DateTimeOffsetUtc { get; set; }
+    public DateTimeOffset DateTimeOffsetUtcAsText { get; set; }
+    public DateTimeOffset DateTimeOffsetLocal { get; set; }
+    public DateTimeOffset DateTimeOffsetLocalAsText { get; set; }
     public double ScientificDefault { get; set; }
     public double? ScientificFourDecimal { get; set; }
     public string FileName { get; set; } = null!;

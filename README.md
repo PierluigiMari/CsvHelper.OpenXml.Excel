@@ -8,7 +8,7 @@
 The ultimate goal is to obtain versatility of use and accuracy in import and export results; especially with regard to export, the file obtained, although always in simple tabular form, still has all the characteristics expected for an Excel file, with the columns having the cells formatted in an adequate way and not as simple text.
 
 ### Version 1.2.0
-With this version, in the source code I have added a new console project that you can use both to see possible examples of use but above all to quickly make checks against the expected base scenario. This is the link to the project [CsvHelper.OpenXml.Excel.Tests.ConsoleApp](https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel/tree/main/tests/CsvHelper.OpenXml.Excel.Tests.ConsoleApp).
+With this release, a new console project has been added to the source code that can be used both to see possible examples of use, but above all to quickly make checks against the expected base scenario. This is the link to the project [CsvHelper.OpenXml.Excel.Tests.ConsoleApp](https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel/tree/main/tests/CsvHelper.OpenXml.Excel.Tests.ConsoleApp).
 
 ## Prerequisites
 Knowledge of [CsvHelper](https://github.com/JoshClose/CsvHelper) and its documentation.

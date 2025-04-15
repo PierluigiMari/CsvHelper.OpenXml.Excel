@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-		<VersionPrefix>1.2.0</VersionPrefix>
+		<VersionPrefix>1.3.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -21,7 +21,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Introduced ExcelDateTimeOffsetConverter and ExcelDateTimeOffsetTextConverter. Enhanced ExcelDomWriter to support DateTimeOffset values.</PackageReleaseNotes>
+		<PackageReleaseNotes>Enhanced ExcelDomWriter to support Enums import and export.</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel</PackageProjectUrl>
 	</PropertyGroup>
 

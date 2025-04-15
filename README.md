@@ -252,6 +252,30 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 >    .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateDefault };
 >```
 
+The library, also, allows the export of **Enumeration types**, by default for Enum type properties the named constants are exported (the names to be clear), if you want to export the value you have to proceed by specifying it in the definition of the ClassMap.
+
+>Assuming that Foo has a Season property of type Seasons enum
+>```csharp
+>enum Seasons : int
+>{
+>    Spring = 0,
+>    Summer = 1,
+>    Autumn = 2,
+>    Winter = 3
+>}
+>```
+>To export the value of the enum assigned to the Season of Foo property, the Member Map can be written as follows
+>```csharp
+>Map(m => m.Season).TypeConverterOption.Format("D");
+>```
+>To be clear, for `Season = Seasons.Summer` in the Excel cell would be exported `1`
+>
+>To export the name of the enumeration assigned to the Season of Foo property while still specifying it in the ClassMap definition, the member map can be written as follows
+>```csharp
+>Map(m => m.Season).TypeConverterOption.Format("G");
+>```
+>To be clear, for `Season = Seasons.Summer` in the Excel cell would be exported `Summer`
+
 ### Usage details
 If you have two collections of the same type, you do not need to concat them into a single collection to proceed with the export.
 

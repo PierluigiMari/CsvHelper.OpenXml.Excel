@@ -619,11 +619,17 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         switch (Type.GetTypeCode(WritingFieldType))
         {
             case TypeCode.String:
-            case TypeCode.Object when WritingFieldType == typeof(Guid):
+            case TypeCode.Object when WritingFieldType is not null && WritingFieldType == typeof(Guid):
                 WriteStringOrGuidToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 break;
             case TypeCode.DateTime:
                 WriteDateTimeToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
+                break;
+            case TypeCode.Int32 when WritingFieldType is not null && WritingFieldType.IsEnum:
+                if (int.TryParse(value, out _))
+                    WriteIntToCell(value, cell);
+                else
+                    WriteStringOrGuidToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 break;
             case TypeCode.Int32:
                 WriteIntToCell(value, cell);

@@ -4,10 +4,15 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Shouldly;
 using System;
+using Xunit;
 
 public class OpenXmlHelperTests
 {
+    #region Fields
+
     private readonly OpenXmlHelper OpenXmlHelper = new OpenXmlHelper();
+
+    #endregion
 
     #region Test Methods
 

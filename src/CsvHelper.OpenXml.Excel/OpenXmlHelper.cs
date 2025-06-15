@@ -56,14 +56,26 @@ internal partial class OpenXmlHelper
 
         Font FontDefault = new Font(new FontName { Val = "Calibri" }, new FontSize { Val = 11 }); // Default font
         Font FontBold = new Font(new Bold()); // Bold font
+        Font FontHyperlink = new Font(new Color { Theme = 10 }, new Underline { Val = UnderlineValues.Single }, new FontName { Val = "Calibri" }, new FontSize { Val = 11 }); // Hyperlink font
+        //Font FontHyperlink = new Font(new Color { Theme = 10 }, new FontScheme { Val = FontSchemeValues.Minor }, new FontName { Val = "Calibri" }, new FontSize { Val = 11 }); // Hyperlink font
 
-        Fonts Fonts = new Fonts(FontDefault, FontBold);
+        Fonts Fonts = new Fonts(FontDefault, FontBold, FontHyperlink);
 
         Fill FillDefault = new Fill(new PatternFill { PatternType = PatternValues.None }); // Default fill
         Fills Fills = new Fills(FillDefault);
 
         Border BorderDefault = new Border(); // Default border
         Borders Borders = new Borders(BorderDefault);
+
+
+        CellStyleFormats CellStyleFormats = new CellStyleFormats();
+        CellStyleFormats.Append(new CellFormat { NumberFormatId = 0, FontId = 0, FillId = 0, BorderId = 0 }); // Default cell format
+        CellStyleFormats.Append(new CellFormat { NumberFormatId = 0, FontId = 2, FillId = 0, BorderId = 0, ApplyNumberFormat = false, ApplyFill = false, ApplyBorder = false, ApplyAlignment = false, ApplyProtection = false });
+
+
+        CellStyles CellStyles = new CellStyles();
+        CellStyles.Append(new CellStyle { Name = "Hyperlink", FormatId = 1, BuiltinId = 8 });
+        CellStyles.Append(new CellStyle { Name = "Normal", FormatId = 0, BuiltinId = 0 });
 
         // CellFormats
         CellFormats CellFormats = new CellFormats();
@@ -106,6 +118,7 @@ internal partial class OpenXmlHelper
         CellFormat ScientificFormatWithFourDecimals = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 189, FormatId = 0, ApplyNumberFormat = true };
         CellFormat TextFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 49, FormatId = 0, ApplyNumberFormat = true };
         CellFormat SpecialZipCodeFormat = new CellFormat { BorderId = 0, FillId = 0, FontId = 0, NumberFormatId = 190, FormatId = 0, ApplyNumberFormat = true };
+        CellFormat HyperlinkFormat = new CellFormat { NumberFormatId = 0, FontId = 2, FillId = 0, BorderId = 0, FormatId = 1, ApplyFont = true };
 
         CellFormats.Append(CellFormatDefault);
         CellFormats.Append(CellFormatDefaultBold);
@@ -145,13 +158,16 @@ internal partial class OpenXmlHelper
         CellFormats.Append(ScientificFormatWithFourDecimals);
         CellFormats.Append(TextFormat);
         CellFormats.Append(SpecialZipCodeFormat);
+        CellFormats.Append(HyperlinkFormat);
 
         // Append everything to stylesheet  - Preserve the ORDER!
         WorkbookStyleSheet.Append(StylesheetNumberingFormats);
         WorkbookStyleSheet.Append(Fonts);
         WorkbookStyleSheet.Append(Fills);
         WorkbookStyleSheet.Append(Borders);
+        WorkbookStyleSheet.Append(CellStyleFormats);
         WorkbookStyleSheet.Append(CellFormats);
+        WorkbookStyleSheet.Append(CellStyles);
 
         //Save style for finish
         NewWorkbookStylesPartCreated.Stylesheet = WorkbookStyleSheet;

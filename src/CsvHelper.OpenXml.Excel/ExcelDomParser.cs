@@ -58,6 +58,11 @@ public sealed class ExcelDomParser : IExcelParser
     /// </summary>
     private int ExcelRawRow = 0;
 
+    /// <summary>
+    /// Represents a collection of hyperlinks.
+    /// </summary>
+    private IEnumerable<Hyperlink>? Hyperlinks = null;
+
     #endregion
 
     #region Constructors
@@ -66,7 +71,7 @@ public sealed class ExcelDomParser : IExcelParser
     /// Initializes a new instance of the <see cref="ExcelDomParser"/> class with the specified stream, sheet name, and culture.
     /// </summary>
     /// <param name="stream">The stream containing the Excel file.</param>
-    /// <param name="sheetname">The name of the sheet to parse.</param>
+    /// <param name="sheetname">The name of the sheet to parse. If <c>null</c> or not specified, the first sheet in the workbook is used. The sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     /// <param name="culture">The culture information for parsing.</param>
     public ExcelDomParser(Stream stream, string? sheetname, CultureInfo? culture) : this(stream, sheetname, culture is null ? null : new CsvConfiguration(culture)) { }
 
@@ -74,10 +79,15 @@ public sealed class ExcelDomParser : IExcelParser
     /// Initializes a new instance of the <see cref="ExcelDomParser"/> class with the specified stream, sheet name, and configuration.
     /// </summary>
     /// <param name="stream">The stream containing the Excel file.</param>
-    /// <param name="sheetname">The name of the sheet to parse.</param>
+    /// <param name="sheetname">The name of the sheet to parse. If <c>null</c> or not specified, the first sheet in the workbook is used. The sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     /// <param name="configuration">The CSV configuration for parsing.</param>
     public ExcelDomParser(Stream stream, string? sheetname = null, CsvConfiguration? configuration = null)
     {
+        ArgumentNullException.ThrowIfNull(stream, nameof(stream));
+
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         SpreadsheetDocument = SpreadsheetDocument.Open(stream, false);
 
         WorkbookPart WorkbookPart = SpreadsheetDocument.WorkbookPart ?? SpreadsheetDocument.AddWorkbookPart();
@@ -99,6 +109,8 @@ public sealed class ExcelDomParser : IExcelParser
         ExcelStream = stream;
 
         Context = new CsvContext(this);
+
+        GetHyperlinks();
     }
 
     #endregion
@@ -278,16 +290,44 @@ public sealed class ExcelDomParser : IExcelParser
     /// </summary>
     /// <param name="spreadsheetdocument">The spreadsheet document instance containing the cell.</param>
     /// <param name="cell">The cell to retrieve the value from.</param>
-    /// <returns>The value of the cell as a string.</returns>
+    /// <returns>The value of the cell as a string. If the cell is empty, an empty string is returned.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private string GetCellValue(SpreadsheetDocument spreadsheetdocument, Cell cell)
     {
-        if (cell.CellValue is not null)
+        if (cell.CellValue is null)
         {
-            string value = Configuration.TrimOptions.HasFlag(TrimOptions.Trim) ? cell.CellValue.InnerText.Trim() : cell.CellValue.InnerText;
+            return string.Empty;
+        }
 
-            if (cell.DataType is not null)
+        string value = Configuration.TrimOptions.HasFlag(TrimOptions.Trim) ? cell.CellValue.InnerText.Trim() : cell.CellValue.InnerText;
+
+        if (Hyperlinks is null)
+        {
+            if (cell.DataType is null)
             {
+                return value;
+            }
+
+            if (cell.DataType.Value == CellValues.SharedString)
+                return spreadsheetdocument.WorkbookPart?.SharedStringTablePart?.SharedStringTable.ChildElements.ElementAt(int.Parse(value)).InnerText ?? value;
+            else if (cell.DataType.Value == CellValues.Boolean)
+                return value == "0" ? "FALSE" : "TRUE";
+            else if (cell.DataType.Value == CellValues.Date)
+                return DateTime.FromOADate(double.Parse(value)).ToString();
+            else
+                return value;
+        }
+        else
+        {
+            Hyperlink? Hyperlink = Hyperlinks?.FirstOrDefault(h => h.Reference == cell.CellReference);
+
+            if (Hyperlink is null)
+            {
+                if (cell.DataType is null)
+                {
+                    return value;
+                }
+
                 if (cell.DataType.Value == CellValues.SharedString)
                     return spreadsheetdocument.WorkbookPart?.SharedStringTablePart?.SharedStringTable.ChildElements.ElementAt(int.Parse(value)).InnerText ?? value;
                 else if (cell.DataType.Value == CellValues.Boolean)
@@ -297,13 +337,47 @@ public sealed class ExcelDomParser : IExcelParser
                 else
                     return value;
             }
-            else
-            {
-                return value;
-            }
-        }
 
-        return string.Empty;
+            const string Delimiter = "(|->)";
+
+            if (Hyperlink.Id is not null)
+            {
+                string? HyperlinkAbsoluteUri = ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).HyperlinkRelationships.FirstOrDefault(hr => hr.Id == Hyperlink.Id)?.Uri?.AbsoluteUri;
+
+                if (cell.DataType is not null && cell.DataType.Value == CellValues.SharedString)
+                {
+                    string CellValue = spreadsheetdocument.WorkbookPart?.SharedStringTablePart?.SharedStringTable.ChildElements.ElementAt(int.Parse(value)).InnerText ?? value;
+
+                    //return CellValue.Equals(HyperlinkAbsoluteUri, StringComparison.OrdinalIgnoreCase) ? CellValue : string.Concat(CellValue, Delimiter, HyperlinkAbsoluteUri);
+                    return string.Concat(CellValue, Delimiter, HyperlinkAbsoluteUri);
+                }
+
+                return value.Equals(HyperlinkAbsoluteUri, StringComparison.OrdinalIgnoreCase) ? value : string.Concat(value, Delimiter, HyperlinkAbsoluteUri);
+            }
+
+            if (Hyperlink.Location is not null)
+            {
+                if (cell.DataType is not null && cell.DataType.Value == CellValues.SharedString)
+                {
+                    string CellValue = spreadsheetdocument.WorkbookPart?.SharedStringTablePart?.SharedStringTable.ChildElements.ElementAt(int.Parse(value)).InnerText ?? value;
+
+                    //return CellValue.Equals(Hyperlink.Location, StringComparison.OrdinalIgnoreCase) ? CellValue : string.Concat(CellValue, Delimiter, Hyperlink.Location);
+                    return string.Concat(CellValue, Delimiter, Hyperlink.Location);
+                }
+
+                return value.Equals(Hyperlink.Location, StringComparison.OrdinalIgnoreCase) ? value : string.Concat(value, Delimiter, Hyperlink.Location);
+            }
+
+            return value;
+        }
+    }
+
+    /// <summary>
+    /// Retrieves the collection of hyperlinks from the worksheet associated with the current sheet ID.
+    /// </summary>
+    private void GetHyperlinks()
+    {
+        Hyperlinks = ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Descendants<Hyperlink>().Any() ? ((WorksheetPart)SpreadsheetDocument.WorkbookPart!.GetPartById(SheetId)).Worksheet.Descendants<Hyperlink>() : null;
     }
 
     #endregion

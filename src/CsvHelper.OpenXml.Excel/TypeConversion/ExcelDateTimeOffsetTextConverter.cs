@@ -16,7 +16,7 @@ public class ExcelDateTimeOffsetTextConverter(DateTimeKind datetimekind = DateTi
         DateTimeKind.Utc => TimeSpan.Zero,
         DateTimeKind.Local => TimeZoneInfo.Local.GetUtcOffset(DateTime.UtcNow),
         DateTimeKind.Unspecified => TimeSpan.Zero,
-        _ => throw new ArgumentOutOfRangeException(nameof(DateTimeKind), datetimekind, "Invalid DateTimeKind value.")
+        _ => throw new ArgumentOutOfRangeException(nameof(datetimekind), datetimekind, "Invalid DateTimeKind value.")
     };
 
     private readonly DateTimeKind DateTimeKind = datetimekind;
@@ -27,7 +27,7 @@ public class ExcelDateTimeOffsetTextConverter(DateTimeKind datetimekind = DateTi
     /// <param name="text">The string to convert.</param>
     /// <param name="row">The <see cref="IReaderRow"/> for the current record.</param>
     /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
-    /// <returns>A <see cref="DateTimeOffset"/> object if the conversion succeeded; otherwise, null, or null if the value is null.</returns>
+    /// <returns>A <see cref="DateTimeOffset"/> object if the conversion succeeded; otherwise, null, or null if <paramref name="text"/> is null or consists only of whitespace.</returns>
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
     {
         if (string.IsNullOrWhiteSpace(text))
@@ -35,7 +35,11 @@ public class ExcelDateTimeOffsetTextConverter(DateTimeKind datetimekind = DateTi
             return null;
         }
 
-        if (text.Contains("+") || text.Contains("-"))
+        const string DelimiterMinus = "-";
+
+        int DelimiterMinusIndex = text.LastIndexOf(DelimiterMinus, StringComparison.Ordinal);
+
+        if (text.Contains('+') || DelimiterMinusIndex > 19 || text.Contains('Z'))
         {
             if (DateTimeOffset.TryParse(text, out DateTimeOffset datetimeoffset))
                 return datetimeoffset;
@@ -43,7 +47,12 @@ public class ExcelDateTimeOffsetTextConverter(DateTimeKind datetimekind = DateTi
                 return null;
         }
 
-        return new DateTimeOffset(DateTime.SpecifyKind(DateTime.Parse(text), DateTimeKind), OffsetFromUtc);
+        TimeSpan OffsetFromUtcForLocal = TimeZoneInfo.Local.GetUtcOffset(DateTime.Parse(text));
+
+        if (DateTimeKind == DateTimeKind.Local && OffsetFromUtcForLocal != OffsetFromUtc)
+            return DateTime.TryParse(text, out DateTime datetime) ? new DateTimeOffset(DateTime.SpecifyKind(datetime, DateTimeKind), OffsetFromUtcForLocal) : null;
+        else
+            return DateTime.TryParse(text, out DateTime datetime) ? new DateTimeOffset(DateTime.SpecifyKind(datetime, DateTimeKind), OffsetFromUtc) : null;
     }
 
     /// <summary>
@@ -51,7 +60,7 @@ public class ExcelDateTimeOffsetTextConverter(DateTimeKind datetimekind = DateTi
     /// </summary>
     /// <param name="value">The <see cref="DateTimeOffset"/> object to convert.</param>
     /// <param name="row">The <see cref="IWriterRow"/> for the current record.</param>
-    /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
-    /// <returns>A string representation of the <see cref="DateTimeOffset"/> object if the conversion was successful; otherwise, null, or null if the value is null.</returns>
+    /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being written.</param>
+    /// <returns>A string representation of the <see cref="DateTimeOffset"/> object if the conversion was successful; otherwise, null if the <paramref name="value"/> is null.</returns>
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData) => value is null ? null : ((DateTimeOffset)value).ToString(memberMapData.TypeConverterOptions.CultureInfo);
 }

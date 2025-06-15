@@ -6,6 +6,7 @@ using Shouldly;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using Xunit;
 
 public class ExcelSaxParserTests
 {
@@ -120,7 +121,7 @@ public class ExcelSaxParserTests
     [Fact]
     public void Dispose_ShouldDisposeResourcesTest()
     {
-        MemoryStream ExcelStream = CreateTestExcelStream();
+        using MemoryStream ExcelStream = CreateTestExcelStream();
         ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
         ExcelParser.Dispose();
@@ -132,7 +133,7 @@ public class ExcelSaxParserTests
     [Fact]
     public async Task DisposeAsync_ShouldDisposeResourcesTest()
     {
-        MemoryStream ExcelStream = CreateTestExcelStream();
+        using MemoryStream ExcelStream = CreateTestExcelStream();
         ExcelSaxParser ExcelParser = new ExcelSaxParser(ExcelStream, "Sheet1", CultureInfo.InvariantCulture);
 
         await ExcelParser.DisposeAsync();

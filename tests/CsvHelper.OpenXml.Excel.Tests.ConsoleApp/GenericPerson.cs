@@ -12,6 +12,7 @@ public class GenericPerson
     public decimal NumberDecimalWithTwoDecimals { get; set; }
     public decimal NumberDecimalWithFourDecimals { get; set; }
     public string PhoneNo { get; set; } = null!;
+    //public (string Text, string EmailAddress) EmailId { get; set; }
     public string EmailId { get; set; } = null!;
     public string? Address { get; set; }
     public string ZipCode { get; set; } = null!;
@@ -47,8 +48,13 @@ public class GenericPerson
     public double? ScientificFourDecimal { get; set; }
     public string FileName { get; set; } = null!;
 
+    //public (string, Uri) LinkText { get; set; }// = null!;
+    //public Uri Link { get; set; } = null!;
+    //public (string Text, string CellReference) LinkToCell { get; set; }
+    //public string LinkToCell { get; set; } = null!;
+
     public override string ToString()
     {
-        return JsonSerializer.Serialize(this);
+        return JsonSerializer.Serialize(this, new JsonSerializerOptions { IncludeFields = true, WriteIndented = true });
     }
 }

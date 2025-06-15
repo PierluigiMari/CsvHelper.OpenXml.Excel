@@ -15,7 +15,7 @@ public class ExcelDateOnlyConverter : DefaultTypeConverter
     /// <param name="text">The string to convert.</param>
     /// <param name="row">The <see cref="IReaderRow"/> for the current record.</param>
     /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
-    /// <returns>A <see cref="DateOnly"/> object if the conversion was successful; otherwise, null.</returns>
+    /// <returns>A <see cref="DateOnly"/> object if the conversion was successful; otherwise, null, or null if <paramref name="text"/> is null or consists only of whitespace.</returns>
     public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData) => string.IsNullOrWhiteSpace(text) ? null : DateOnly.FromDateTime(DateTime.FromOADate(double.Parse(text.Replace('.', ','))));
 
     /// <summary>
@@ -23,7 +23,7 @@ public class ExcelDateOnlyConverter : DefaultTypeConverter
     /// </summary>
     /// <param name="value">The <see cref="DateOnly"/> object to convert.</param>
     /// <param name="row">The <see cref="IWriterRow"/> for the current record.</param>
-    /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
-    /// <returns>A string representation of the <see cref="DateOnly"/> object if the conversion was successful; otherwise, null.</returns>
+    /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being written.</param>
+    /// <returns>A string representation of the <see cref="DateOnly"/> object if the conversion was successful; otherwise, null if the <paramref name="value"/> is null.</returns>
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData) => value is null ? null : ((DateOnly)value).ToDateTime(new TimeOnly()).ToOADate().ToString().Replace(',', '.');
 }

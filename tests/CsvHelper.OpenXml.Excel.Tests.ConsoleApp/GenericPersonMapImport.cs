@@ -9,6 +9,10 @@ public class GenericPersonMapImport : ClassMap<GenericPerson>
     public GenericPersonMapImport()
     {
         AutoMap(CultureInfo.CurrentCulture);
+
+        //Map(m => m.EmailId).TypeConverter(new ExcelValueTupleConverter());
+        //Map(m => m.EmailId).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.Email, ExcelHyperlinkResultantValueTypes.TupleStringString));
+        Map(m => m.EmailId).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.Email, ExcelHyperlinkResultantValueTypes.SingleString));
         Map(x => x.ZipCode).Convert(args => args.Row.GetField("ZipCode") is null ? string.Empty : args.Row.GetField("ZipCode")!.PadLeft(5, '0'));
         Map(x => x.DateDefault).TypeConverter<ExcelDateOnlyConverter>();
         Map(x => x.DateExtendedDefault).TypeConverter<ExcelDateOnlyConverter>();
@@ -32,5 +36,12 @@ public class GenericPersonMapImport : ClassMap<GenericPerson>
 
         Map(m => m.DateTimeOffsetLocal).TypeConverter(new ExcelDateTimeOffsetConverter(DateTimeKind.Local, new TimeSpan(1, 0, 0)));
         Map(m => m.DateTimeOffsetLocalAsText).TypeConverter(new ExcelDateTimeOffsetTextConverter());
+
+        //Map(m => m.LinkText).TypeConverter(new ExcelValueTupleConverter());
+        //Map(m => m.LinkText).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.WebUrl, ExcelHyperlinkResultantValueTypes.TupleStringUri));
+        //Map(m => m.Link).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.WebUrl, ExcelHyperlinkResultantValueTypes.SingleUri));
+        //Map(m => m.LinkToCell).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.InternalLink, ExcelHyperlinkResultantValueTypes.TupleStringString));
+        //Map(m => m.LinkToCell).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.InternalLink, ExcelHyperlinkResultantValueTypes.SingleString));
+        //Map(m => m.LinkToCell).TypeConverter(new ExcelValueTupleConverter());
     }
 }

@@ -3,6 +3,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.OpenXml.Excel;
 using CsvHelper.OpenXml.Excel.Tests.ConsoleApp;
+using CsvHelper.OpenXml.Excel.TypeConversion;
 using System.Globalization;
 using System.Text.Json;
 
@@ -238,11 +239,21 @@ async Task<bool> SaxImportExcelFileDynamicAsyncEnumerable()
 bool DomExportExcelFile()
 {
     IEnumerable<GenericPerson> People = ImportGenericPersonExcelFileForExport("InputTestFiles/CsvHelperOpenXmlInputTest.xlsx", "Foglio1");
+    //foreach (GenericPerson person in People)
+    //{
+    //    person.LinkToCell = (person.LinkToCell.Text, person.LinkToCell.CellReference.Replace("Foglio1", "People"));
+    //}
 
     using MemoryStream ExcelStream = new MemoryStream();
+
     using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CsvConfiguration(CultureInfo.CurrentCulture)))
     {
+        //ExcelWriter.Context.TypeConverterCache.AddConverter<ValueTuple<string,string>>(new ExcelValueTupleConverter());
+        //ExcelWriter.Context.TypeConverterCache.AddConverter<ValueTuple<string, Uri>>(new ExcelValueTupleConverter());
+
         ExcelWriter.Context.RegisterClassMap<GenericPersonMapExport>();
+
+        //ExcelWriter.Context.RegisterClassMap(new GenericPersonMapExport(ExcelWriter.Context));
 
         ExcelWriter.WriteRecords<GenericPerson>(People, "People");
     }

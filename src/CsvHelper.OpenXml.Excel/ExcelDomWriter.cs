@@ -287,11 +287,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <summary>
     /// Writes a single record to the specified sheet.
     /// </summary>
-    /// <typeparam name="T">The type of the record.</typeparam>
+    /// <typeparam name="T">The type of the record. This can be a strongly typed object or a dynamic object.</typeparam>
     /// <param name="record">The record to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to. If null, the default sheet is used.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If <c>null</c> or not specified, the default sheet is used. If specified, the sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     public void WriteRecord<T>(T? record, string? sheetname = null)
     {
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         if (ExcelRowIndex == 1)
         {
             InitializeWritingNewWorksheet<T>(sheetname);
@@ -311,9 +314,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// Writes multiple records to the specified sheet.
     /// </summary>
     /// <param name="records">The records to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to. If null, the default sheet is used.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If <c>null</c> or not specified, the default sheet is used. If specified, the sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     public void WriteRecords(IEnumerable records, string? sheetname = null)
     {
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         IEnumerator Enumerator = records.GetEnumerator();
 
         Type type;
@@ -361,11 +367,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// Asynchronously writes multiple records to the specified sheet.
     /// </summary>
     /// <param name="records">The records to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to. If null, the default sheet is used.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If <c>null</c> or not specified, the default sheet is used. If specified, the sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous write operation.</returns>
     public async Task WriteRecordsAsync(IEnumerable records, string? sheetname = null, CancellationToken cancellationToken = default)
     {
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         IEnumerator Enumerator = records.GetEnumerator();
 
         Type type;
@@ -398,7 +407,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             }
         }
 
-
         LastSheetName = sheetname;
 
         await base.WriteRecordsAsync(records, cancellationToken);
@@ -416,9 +424,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// </summary>
     /// <typeparam name="T">The type of the records.</typeparam>
     /// <param name="records">The records to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If <c>null</c> or not specified, the default sheet is used. If specified, the sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     public void WriteRecords<T>(IEnumerable<T> records, string? sheetname = null)
     {
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         if (ExcelRowIndex == 1)
         {
             InitializeWritingNewWorksheet<T>(sheetname);
@@ -437,7 +448,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 NextRecord();
             }
         }
-
 
         LastSheetName = sheetname;
 
@@ -455,11 +465,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// </summary>
     /// <typeparam name="T">The type of the records.</typeparam>
     /// <param name="records">The records to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If <c>null</c> or not specified, the default sheet is used. If specified, the sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous write operation.</returns>
     public async Task WriteRecordsAsync<T>(IEnumerable<T> records, string? sheetname = null, CancellationToken cancellationToken = default)
     {
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         if (ExcelRowIndex == 1)
         {
             InitializeWritingNewWorksheet<T>(sheetname);
@@ -478,7 +491,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 NextRecord();
             }
         }
-
 
         LastSheetName = sheetname;
 
@@ -497,11 +509,14 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// </summary>
     /// <typeparam name="T">The type of the records.</typeparam>
     /// <param name="records">The asynchronous enumerable of records to write.</param>
-    /// <param name="sheetname">The name of the sheet to write to.</param>
+    /// <param name="sheetname">The name of the sheet to write to. If <c>null</c> or not specified, the default sheet is used. If specified, the sheet name must not exceed 31 characters (as per Excel's limitations), otherwise, an <see cref="ArgumentOutOfRangeException"/> is thrown.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous write operation.</returns>
     public async Task WriteRecordsAsync<T>(IAsyncEnumerable<T> records, string? sheetname = null, CancellationToken cancellationToken = default)
     {
+        if (sheetname is not null)
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(sheetname.Length, 31, nameof(sheetname.Length));
+
         if (ExcelRowIndex == 1)
         {
             InitializeWritingNewWorksheet<T>(sheetname);
@@ -520,7 +535,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 NextRecord();
             }
         }
-
 
         LastSheetName = sheetname;
 
@@ -586,9 +600,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             return;
         }
 
-        if (ExcelCellMemberMapDetails.Count > 0 && ExcelCellMemberMapDetails[ExcelColumnIndex].CellLength < value.Length)
-            ExcelCellMemberMapDetails[ExcelColumnIndex] = (ExcelCellMemberMapDetails[ExcelColumnIndex].FieldTypeName, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat, value.Length);
-
         Cell Cell = new Cell() { CellReference = $"{OpenXmlHelper.GetColumnLetters(ExcelColumnIndex)}{ExcelRowIndex}" };
         WritingRow.Append(Cell);
 
@@ -612,7 +623,6 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void WriteSpecificTypeInCell(string value, Cell cell)
     {
-        //ExcelCellFormats? ExcelCellFormat =ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat;
         ExcelCellFormats? ExcelCellFormat = ExcelCellMemberMapDetails.Count > 0 ? ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat : null;
 
 
@@ -650,6 +660,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                     WriteTimeOnlyToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 else if (WritingFieldType == typeof(DateTimeOffset))
                     WriteDateTimeToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
+                else if (WritingFieldType == typeof(Uri))
+                    WriteWebHyperlinkToCell(value, cell, ExcelCellFormat);
+                else if (WritingFieldType == typeof(ValueTuple<string, string>))
+                    WritHyperlinkToCell(value, cell, ExcelCellFormat);
+                else if (WritingFieldType == typeof(ValueTuple<string, Uri>))
+                    WriteWebHyperlinkToCell(value, cell, ExcelCellFormat);
                 else
                     throw new NotImplementedException($"Writing of the specific type {WritingFieldType!.Name} not yet implemented!");
                 break;
@@ -666,6 +682,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     //[MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void WriteStringOrGuidToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat, bool isheadercell = false)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         int index;
         if (int.TryParse(value, out _))
         {
@@ -705,6 +723,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteDateOnlyToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         if (DateOnly.TryParse(value, Configuration.CultureInfo, out DateOnly dateonlyvalue))
         {
             int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
@@ -731,6 +751,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteTimeOnlyToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         if (TimeOnly.TryParse(value, Configuration.CultureInfo, out TimeOnly timeonlyvalue))
         {
             int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
@@ -753,25 +775,175 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// Writes a DateTime value to a cell.
     /// </summary>
     /// <param name="value">The DateTime value to write.</param>
-    /// <param name="Cell">The cell to write the value to.</param>
-    /// <param name="ExcelCellFormat">The format to apply to the cell.</param>
-    private void WriteDateTimeToCellWithUseSharedStrings(string value, Cell Cell, ExcelCellFormats? ExcelCellFormat)
+    /// <param name="cell">The cell to write the value to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WriteDateTimeToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         if (DateTime.TryParse(value, Configuration.CultureInfo, out DateTime datetimevalue))
         {
             int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
-            Cell.CellValue = new CellValue(index.ToString());
-            Cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+            cell.CellValue = new CellValue(index.ToString());
+            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
         }
         else
         {
-            Cell.DataType = new EnumValue<CellValues>(CellValues.Number);
-            Cell.CellValue = new CellValue(value);
-            if (ExcelCellFormat is null)
-                Cell.StyleIndex = (uint)ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault;
+            cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+            cell.CellValue = new CellValue(value);
+            if (excelcellformat is null)
+                cell.StyleIndex = (uint)ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault;
             else
-                Cell.StyleIndex = (uint)ExcelCellFormat;
+                cell.StyleIndex = (uint)excelcellformat;
+        }
+    }
+
+    /// <summary>
+    /// Writes a web hyperlink or text value to a cell.
+    /// </summary>
+    /// <param name="value">The string value containing the web hyperlink information to write.</param>
+    /// <param name="cell">The cell to write the web hyperlink to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WriteWebHyperlinkToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
+    {
+        if (value.Contains("(|->)", StringComparison.Ordinal))
+        {
+            string[] ValueComponents = value.Split("(|->)", StringSplitOptions.TrimEntries);
+
+            if (Uri.TryCreate(ValueComponents[1], UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+            {
+                UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+
+                HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
+
+                Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+                if (Hyperlinks is null)
+                {
+                    Hyperlinks = new Hyperlinks();
+                    WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+                }
+
+                Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
+
+                int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
+
+                cell.CellValue = new CellValue(index.ToString());
+                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+                if (excelcellformat is not null)
+                    cell.StyleIndex = (uint)excelcellformat;
+            }
+            else
+            {
+                UpdateExcelCellMemberMapDetails(value);
+
+                WriteStringOrGuidToCellWithUseSharedStrings($"({ValueComponents[1]}, {ValueComponents[2]})", cell, excelcellformat);
+            }
+        }
+        else
+        {
+            UpdateExcelCellMemberMapDetails(value);
+
+            if (Uri.TryCreate(value, UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+            {
+                HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
+
+                Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+                if (Hyperlinks is null)
+                {
+                    Hyperlinks = new Hyperlinks();
+                    WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+                }
+
+                Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
+
+                int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+                cell.CellValue = new CellValue(index.ToString());
+                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+                if (excelcellformat is not null)
+                    cell.StyleIndex = (uint)excelcellformat;
+            }
+            else
+            {
+                WriteStringOrGuidToCellWithUseSharedStrings(value, cell, excelcellformat);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Writes a hyperlink or text value to a cell.
+    /// </summary>
+    /// <param name="value">The string value containing the hyperlink information to write.</param>
+    /// <param name="cell">The cell to write the hyperlink to.</param>
+    /// <param name="excelcellformat">The format to apply to the cell.</param>
+    private void WritHyperlinkToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
+    {
+        if (value.Contains("(|->)", StringComparison.Ordinal))
+        {
+            string[] ValueComponents = value.Split("(|->)", StringSplitOptions.TrimEntries);
+
+            if (ValueComponents[1].StartsWith("mailto:"))
+            {
+                if (Uri.TryCreate(ValueComponents[1], UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+                {
+                    UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+
+                    HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
+
+                    Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+                    if (Hyperlinks is null)
+                    {
+                        Hyperlinks = new Hyperlinks();
+                        WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+                    }
+
+                    Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
+
+                    int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
+
+                    cell.CellValue = new CellValue(index.ToString());
+                    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+                    if (excelcellformat is not null)
+                        cell.StyleIndex = (uint)excelcellformat;
+                }
+                else
+                {
+                    UpdateExcelCellMemberMapDetails(value);
+
+                    WriteStringOrGuidToCellWithUseSharedStrings($"({ValueComponents[1]}, {ValueComponents[2]})", cell, excelcellformat);
+                }
+            }
+            else
+            {
+                UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+
+                Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+                if (Hyperlinks is null)
+                {
+                    Hyperlinks = new Hyperlinks();
+                    WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+                }
+
+                Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Location = ValueComponents[1] });
+
+                int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
+
+                cell.CellValue = new CellValue(index.ToString());
+                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+                if (excelcellformat is not null)
+                    cell.StyleIndex = (uint)excelcellformat;
+            }
+        }
+        else
+        {
+            UpdateExcelCellMemberMapDetails(value);
+
+            WriteStringOrGuidToCellWithUseSharedStrings(value, cell, excelcellformat);
         }
     }
 
@@ -782,6 +954,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="cell">The cell to write the value to.</param>
     private void WriteIntToCell(string value, Cell cell)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         cell.CellValue = new CellValue(value);
         cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         cell.StyleIndex = (uint)ExcelCellFormats.NumberIntegerDefault;
@@ -795,6 +969,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteDecimalToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         cell.CellValue = new CellValue(decimal.Parse(value, Configuration.CultureInfo));
         cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         if (excelcellformat is null)
@@ -811,6 +987,8 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteDoubleToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         cell.CellValue = new CellValue(double.Parse(value, Configuration.CultureInfo));
         cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         if (excelcellformat is null)
@@ -826,8 +1004,20 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="cell">The cell to write the value to.</param>
     private void WriteBoolToCell(string value, Cell cell)
     {
+        UpdateExcelCellMemberMapDetails(value);
+
         cell.CellValue = new CellValue((bool.Parse(value) ? 1 : 0).ToString());
         cell.DataType = new EnumValue<CellValues>(CellValues.Boolean);
+    }
+
+    /// <summary>
+    /// Updates the details of the Excel cell member map for the current column index based on the provided value's length if the lenght exceed the already present value.
+    /// </summary>
+    /// <param name="value">Valore stringa della cell.</param>
+    private void UpdateExcelCellMemberMapDetails(string value)
+    {
+        if (ExcelCellMemberMapDetails.Count > 0 && ExcelCellMemberMapDetails[ExcelColumnIndex].CellLength < value.Length)
+            ExcelCellMemberMapDetails[ExcelColumnIndex] = (ExcelCellMemberMapDetails[ExcelColumnIndex].FieldTypeName, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat, value.Length);
     }
 
     /// <summary>

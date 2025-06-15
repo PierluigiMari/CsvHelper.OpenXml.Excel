@@ -7,9 +7,6 @@
 
 The ultimate goal is to obtain versatility of use and accuracy in import and export results; especially with regard to export, the file obtained, although always in simple tabular form, still has all the characteristics expected for an Excel file, with the columns having the cells formatted in an adequate way and not as simple text.
 
-### Version 1.2.0
-With this release, a new console project has been added to the source code that can be used both to see possible examples of use, but above all to quickly make checks against the expected base scenario. This is the link to the project [CsvHelper.OpenXml.Excel.Tests.ConsoleApp](https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel/tree/main/tests/CsvHelper.OpenXml.Excel.Tests.ConsoleApp).
-
 ## Prerequisites
 Knowledge of [CsvHelper](https://github.com/JoshClose/CsvHelper) and its documentation.
 
@@ -71,7 +68,7 @@ public class FooMap : ClassMap<Foo>
 }
 ```
 
-A separate discussion must be made for the following converters, introduced with version 1.2.0, which allow, for Excel files having columns with specific cell formats **(Custom (Date and Time)**, **Custom (Date and Time) in text format or Custom (Date and Time) in text format with the information of the offset with respect to UTC time**), to define the mappings to the **DateTimeOffset** type.
+A separate discussion must be made for the following converters, which allow, for Excel files having columns with specific cell formats **(Custom (Date and Time)**, **Custom (Date and Time) in text format** or **Custom (Date and Time) in text format with the information of the offset with respect to UTC time**), to define the mappings to the **DateTimeOffset** type.
 
 - ExcelDateTimeOffsetConverter
 - ExcelDateTimeOffsetTextConverter
@@ -113,6 +110,27 @@ using var ExcelReader = new CsvReader(ExcelParser);
 ExcelReader.Context.RegisterClassMap<FooMap>();
 
 IEnumerable<Foo> FooCollection = ExcelReader.GetRecords<Foo>().ToArray();
+```
+
+The library, also, provides specific implementations that can be used in the definition of `ClassMap` and that allow, for Excel files having columns with specific Hyperlink cell formats or columns with specific text cell formats attributable to a ValueTuple, to define the mapping to the ValueTuple type.
+
+- ExcelValueTupleConverter
+- ExcelHyperlink Converter
+
+Because CsvHelper doesn't have a DefaultTypeConverter for the ValueTuple type, we had to define an ExcelValueTupleConverter, and then we defined the hyperlink-specific converter, ExcelHyperlinkConverter.
+
+```csharp
+public class FooMap : ClassMap<Foo>
+{
+    public FooMap()
+    {
+        AutoMap(CultureInfo.CurrentCulture);
+        Map(m => m.Hyperlink).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.WebUrl, ExcelHyperlinkResultantValueTypes.SingleUri));
+        Map(m => m.HyperlinkWithText).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.WebUrl, ExcelHyperlinkResultantValueTypes.TupleStringUri));
+        Map(m => m.HyperlinkEmail).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.Email, ExcelHyperlinkResultantValueTypes.TupleStringString));
+        Map(m => m.HyperlinkToAnotherCell).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.InternalLink, ExcelHyperlinkResultantValueTypes.TupleStringString));
+    }
+}
 ```
 
 >Regarding import, always keep in mind that it's the value of the cell that is imported, regardless of its formatting; in Excel you can have a cell formatted **Currency (2 decimals)**, but its value could be with 4 decimals, so, in this specific case, assuming that the destination type is **Decimal**, the imported data would be with 4 decimals. If it's necessary to obtain an imported data in the destination type that is more faithful to what is displayed on Excel, it will be necessary to intervene in the definition of the `ClassMap` by specifying in the mapping the type of conversion with rounding that is to be applied for that specific Excel column.
@@ -251,6 +269,48 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 >Map(x => x.Date).TypeConverter<ExcelDateOnlyConverter>()
 >    .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateDefault };
 >```
+
+For the following converters, in addition to a separate discussion, a slightly different approach must also be used with regard to the definition of the ClassMap and as regards the use, we are talking about the converters that allow, for Excel files having columns with specific Hyperlink cell formats or columns with specific Text cell formats attributable to a ValueTuple, to define the mapping to the ValueTuple type.
+
+- ExcelValueTupleConverter
+- ExcelHyperlinkConverter
+
+Since CsvHelper not have a DefaultTypeConverter for the ValueTuple type, it was necessary to define an ExcelValueTupleConverter, so the specific converter for Hyperlinks, the ExcelHyperlinkConverter, was defined.
+
+```csharp
+public class FooMap : ClassMap<Foo>
+{
+    public FooMap(CsvContext csvcontext)
+    {
+        AutoMap(csvcontext);
+        Map(x => x.Hyperlink).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.WebUrl, ExcelHyperlinkResultantValueTypes.TupleStringUri)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.Hyperlink };
+        Map(x => x.HyperlinkWithText).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.WebUrl, ExcelHyperlinkResultantValueTypes.TupleStringUri)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.Hyperlink };
+        Map(x => x.HyperlinkEmail).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.Email, ExcelHyperlinkResultantValueTypes.TupleStringString)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.Hyperlink };
+        Map(x => x.HyperlinkToAnotherCell).TypeConverter(new ExcelHyperlinkConverter(ExcelHyperlinkTypes.InternalLink, ExcelHyperlinkResultantValueTypes.TupleStringString)).Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.Hyperlink };
+
+        //Or if you want to obtain a string representation of the ValueTuple in the cell.
+        Map(x => x.HyperlinkWithText).TypeConverter(new ExcelValueTupleConverter());
+    }
+}
+```
+```csharp
+using MemoryStream ExcelStream = new MemoryStream();
+using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CsvConfiguration(CultureInfo.CurrentCulture)))
+{
+    //The following AddConverters are required to enable the recognition of the ValueTuple type by CsvHelper which otherwise would not recognize them,
+    //also causing the incorrect placement of the specific columns in the Excel file.
+    ExcelWriter.Context.TypeConverterCache.AddConverter<ValueTuple<string, Uri>>(new ExcelValueTupleConverter());
+    ExcelWriter.Context.TypeConverterCache.AddConverter<ValueTuple<string, string>>(new ExcelValueTupleConverter());
+
+    //This differentiation is necessary to force CsvHelper to maintain context, which otherwise would not be considered by him.
+    ExcelWriter.Context.RegisterClassMap(new FooMap(ExcelWriter.Context));
+    ExcelWriter.WriteRecords(FooCollection);
+}
+
+byte[] Bytes = ExcelStream.ToArray();
+
+File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
+```
 
 The library, also, allows the export of **Enumeration types**, by default for Enum type properties the named constants are exported (the names to be clear), if you want to export the value you have to proceed by specifying it in the definition of the ClassMap.
 

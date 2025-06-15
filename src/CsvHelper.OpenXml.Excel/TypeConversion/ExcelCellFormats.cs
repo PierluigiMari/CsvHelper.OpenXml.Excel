@@ -156,5 +156,9 @@ public enum ExcelCellFormats : int
     /// <summary>
     /// Cell format for special zip codes.
     /// </summary>
-    SpecialZipCode = 37
+    SpecialZipCode = 37,
+    /// <summary>
+    /// Cell format for hyperlinks.
+    /// </summary>
+    Hyperlink = 38
 }

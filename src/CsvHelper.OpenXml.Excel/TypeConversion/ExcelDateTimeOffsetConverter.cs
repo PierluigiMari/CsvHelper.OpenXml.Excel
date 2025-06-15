@@ -27,16 +27,29 @@ public class ExcelDateTimeOffsetConverter(DateTimeKind datetimekind = DateTimeKi
     /// <param name="text">The string to convert.</param>
     /// <param name="row">The <see cref="IReaderRow"/> for the current record.</param>
     /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
-    /// <returns>A <see cref="DateTimeOffset"/> object if the conversion succeeded; otherwise, null, or null if the value is null.</returns>
-    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData) => string.IsNullOrWhiteSpace(text) ? null : new DateTimeOffset(DateTime.SpecifyKind(DateTime.FromOADate(double.Parse(text.Replace('.', ','))), DateTimeKind), OffsetFromUtc);
+    /// <returns>A <see cref="DateTimeOffset"/> object if the conversion succeeded; otherwise, null, or null if <paramref name="text"/> is null or consists only of whitespace.</returns>
+    public override object? ConvertFromString(string? text, IReaderRow row, MemberMapData memberMapData)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return null;
+        }
+
+        TimeSpan OffsetFromUtcForLocal = TimeZoneInfo.Local.GetUtcOffset(DateTime.FromOADate(double.Parse(text.Replace('.', ','))));
+
+        if (DateTimeKind == DateTimeKind.Local && OffsetFromUtcForLocal != OffsetFromUtc)
+            return string.IsNullOrWhiteSpace(text) ? null : new DateTimeOffset(DateTime.SpecifyKind(DateTime.FromOADate(double.Parse(text.Replace('.', ','))), DateTimeKind), OffsetFromUtcForLocal);
+        else
+            return string.IsNullOrWhiteSpace(text) ? null : new DateTimeOffset(DateTime.SpecifyKind(DateTime.FromOADate(double.Parse(text.Replace('.', ','))), DateTimeKind), OffsetFromUtc);
+    }
 
     /// <summary>
     /// Converts the specified <see cref="DateTimeOffset"/> object to a string.
     /// </summary>
     /// <param name="value">The <see cref="DateTimeOffset"/> object to convert.</param>
     /// <param name="row">The <see cref="IWriterRow"/> for the current record.</param>
-    /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being mapped.</param>
-    /// <returns>A string representation of the <see cref="DateTimeOffset"/> object if the conversion was successful; otherwise, null, or null if the value is null.</returns>
+    /// <param name="memberMapData">The <see cref="MemberMapData"/> for the member being written.</param>
+    /// <returns>A string representation of the <see cref="DateTimeOffset"/> object if the conversion was successful; otherwise, null, or null if the <paramref name="value"/> is null.</returns>
     public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData) => value is null ? null : DateTimeKind switch
     {
         DateTimeKind.Utc => ((DateTimeOffset)value).UtcDateTime.ToOADate().ToString().Replace(',', '.'),

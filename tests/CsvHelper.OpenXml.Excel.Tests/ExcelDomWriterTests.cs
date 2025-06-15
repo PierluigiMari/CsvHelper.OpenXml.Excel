@@ -1877,7 +1877,7 @@ public class ExcelDomWriterTests
     [Fact]
     public void Dispose_ShouldDisposeResourcesTest()
     {
-        MemoryStream ExcelStream = new MemoryStream();
+        using MemoryStream ExcelStream = new MemoryStream();
         ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
 
         ExcelWriter.Dispose();
@@ -1889,7 +1889,7 @@ public class ExcelDomWriterTests
     [Fact]
     public async Task DisposeAsync_ShouldDisposeResourcesTest()
     {
-        MemoryStream ExcelStream = new MemoryStream();
+        using MemoryStream ExcelStream = new MemoryStream();
         ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, CultureInfo.InvariantCulture);
 
         await ExcelWriter.DisposeAsync();

@@ -270,7 +270,7 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 >    .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateDefault };
 >```
 
-For the following converters, in addition to a separate discussion, a slightly different approach must also be used with regard to the definition of the ClassMap and as regards the use, we are talking about the converters that allow, for Excel files having columns with specific Hyperlink cell formats or columns with specific Text cell formats attributable to a ValueTuple, to define the mapping to the ValueTuple type.
+For the following converters, in addition to a separate discussion, a slightly different approach must also be used with regard to the definition of the ```ClassMap``` and as regards the use, we are talking about the converters that allow, for ValueTuple type properties to define the mapping to obtain Excel files having columns with specific Hyperlink cell formats or columns with specific Text cell formats attributable to a ValueTuple.
 
 - ExcelValueTupleConverter
 - ExcelHyperlinkConverter

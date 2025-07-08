@@ -552,7 +552,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     #region Private Methods
 
     /// <summary>
-    /// Initializes a new worksheet for writing.
+    /// Initializes a new worksheet for writing and prepare the necessary mappings for the class and its members.
     /// </summary>
     /// <param name="type">The type of the records.</param>
     /// <param name="sheetname">The name of the sheet.</param>
@@ -565,11 +565,34 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
         ClassMap? ClassMap = Context.Maps[type];
         if (ClassMap is not null)
         {
-            IEnumerable<MemberMapData> MemberMapData = ClassMap.MemberMaps.Select(x => x.Data);
+            MemberMapCollection MemberMaps = ClassMap.MemberMaps;
 
-            foreach (MemberMapData MemberMapDataItem in MemberMapData)
+            int MemberMapsCount = MemberMaps.Count;
+
+            for (int i = 0; i < MemberMapsCount; i++)
             {
+                MemberMapData MemberMapDataItem = MemberMaps[i].Data;
                 ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null, 0));
+            }
+
+
+            MemberReferenceMapCollection MemberReferenceMaps = ClassMap.ReferenceMaps;
+
+            int MemberReferenceMapsCount = MemberReferenceMaps.Count;
+
+            for (int i = 0; i < MemberReferenceMapsCount; i++)
+            {
+                MemberReferenceMapData MemberReferenceMapDataItem = MemberReferenceMaps[i].Data;
+
+                MemberMapCollection MemberReferenceMapDataItemMemberMaps = MemberReferenceMapDataItem.Mapping.MemberMaps;
+
+                int MemberReferenceMapDataItemMemberMapsCount = MemberReferenceMapDataItemMemberMaps.Count;
+
+                for (int j = 0; j < MemberReferenceMapDataItemMemberMapsCount; j++)
+                {
+                    MemberMapData MemberMapDataItem = MemberReferenceMapDataItemMemberMaps[j].Data;
+                    ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null, 0));
+                }
             }
         }
 

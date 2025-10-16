@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-		<VersionPrefix>1.4.1</VersionPrefix>
+		<VersionPrefix>1.5.0</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -21,7 +21,7 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes></PackageReleaseNotes>
+		<PackageReleaseNotes>Fixing ExcelCellFormats.DefaultBoldCentered for int, string and bool types. Added ExcelCellHeaderFormats for define format of header cell. Performance enhancements.</PackageReleaseNotes>
 		<PackageProjectUrl>https://github.com/PierluigiMari/CsvHelper.OpenXml.Excel</PackageProjectUrl>
 	</PropertyGroup>
 

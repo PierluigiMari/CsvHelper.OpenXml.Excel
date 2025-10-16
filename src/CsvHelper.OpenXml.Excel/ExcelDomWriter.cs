@@ -82,7 +82,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <summary>
     /// Details of the Excel cell member map.
     /// </summary>
-    private readonly Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)> ExcelCellMemberMapDetails = new Dictionary<int, (string FieldTypeName, ExcelCellFormats? ExcelCellFormat, double CellLength)>();
+    private readonly Dictionary<int, (string FieldTypeName, ExcelCellHeaderFormats? ExcelCellHeaderFormat, ExcelCellFormats? ExcelCellFormat, double CellLength)> ExcelCellMemberMapDetails = new Dictionary<int, (string FieldTypeName, ExcelCellHeaderFormats? ExcelCellHeaderFormat, ExcelCellFormats? ExcelCellFormat, double CellLength)>();
 
     /// <summary>
     /// The name of the last sheet written to.
@@ -572,7 +572,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             for (int i = 0; i < MemberMapsCount; i++)
             {
                 MemberMapData MemberMapDataItem = MemberMaps[i].Data;
-                ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null, 0));
+
+                ExcelCellHeaderFormats? ExcelCellHeaderFormat = MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelHeaderTypeConverterOption ? ExcelHeaderTypeConverterOption.ExcelCellHeaderFormat : null;
+                ExcelCellFormats? ExcelCellFormat = MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null;
+
+                ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, ExcelCellHeaderFormat, ExcelCellFormat: null, 0));
             }
 
 
@@ -591,7 +595,11 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 for (int j = 0; j < MemberReferenceMapDataItemMemberMapsCount; j++)
                 {
                     MemberMapData MemberMapDataItem = MemberReferenceMapDataItemMemberMaps[j].Data;
-                    ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null, 0));
+
+                    ExcelCellHeaderFormats? ExcelCellHeaderFormat = MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelHeaderTypeConverterOption ? ExcelHeaderTypeConverterOption.ExcelCellHeaderFormat : null;
+                    ExcelCellFormats? ExcelCellFormat = MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null;
+
+                    ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, ExcelCellHeaderFormat, ExcelCellFormat, 0));
                 }
             }
         }
@@ -628,7 +636,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
 
         if (WritingFieldType is null)
         {
-            WriteStringOrGuidToCellWithUseSharedStrings(value, Cell, null, true);
+            WriteStringToHeaderCellWithUseSharedStrings(value, Cell, ExcelCellMemberMapDetails.Count > 0 ? ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellHeaderFormat : null);
         }
         else
         {
@@ -660,12 +668,12 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 break;
             case TypeCode.Int32 when WritingFieldType is not null && WritingFieldType.IsEnum:
                 if (int.TryParse(value, out _))
-                    WriteIntToCell(value, cell);
+                    WriteIntToCell(value, cell, ExcelCellFormat);
                 else
                     WriteStringOrGuidToCellWithUseSharedStrings(value, cell, ExcelCellFormat);
                 break;
             case TypeCode.Int32:
-                WriteIntToCell(value, cell);
+                WriteIntToCell(value, cell, ExcelCellFormat);
                 break;
             case TypeCode.Decimal:
                 WriteDecimalToCell(value, cell, ExcelCellFormat);
@@ -674,7 +682,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 WriteDoubleToCell(value, cell, ExcelCellFormat);
                 break;
             case TypeCode.Boolean:
-                WriteBoolToCell(value, cell);
+                WriteBoolToCell(value, cell, ExcelCellFormat);
                 break;
             default:
                 if (WritingFieldType == typeof(DateOnly))
@@ -696,46 +704,125 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     }
 
     /// <summary>
+    /// Writes a string value to a header cell.
+    /// </summary>
+    /// <param name="value">The string value to write.</param>
+    /// <param name="cell">The header cell to write the value to.</param>
+    /// <param name="excelcellheaderformat">The format to apply to the header cell.</param>
+    private void WriteStringToHeaderCellWithUseSharedStrings(string value, Cell cell, ExcelCellHeaderFormats? excelcellheaderformat)
+    {
+        UpdateExcelCellMemberMapDetails(value);
+
+        int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+        cell.CellValue = new CellValue(SharedStringIndex.ToString());
+        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        if (excelcellheaderformat is not null)
+            cell.StyleIndex = (uint)excelcellheaderformat.Value;
+        else
+            cell.StyleIndex = (uint)ExcelCellHeaderFormats.DefaultBoldCentered;
+    }
+
+    ///// <summary>
+    ///// Writes a string or GUID value to a cell.
+    ///// </summary>
+    ///// <param name="value">The value to write.</param>
+    ///// <param name="cell">The cell to write the value to.</param>
+    ///// <param name="excelcellformat">The format to apply to the cell.</param>
+    ///// <param name="isheadercell">Indicates whether the cell is a header cell.</param>
+    ////[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //private void WriteStringOrGuidToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat, bool isheadercell = false)
+    //{
+    //    UpdateExcelCellMemberMapDetails(value);
+
+    //    if (excelcellformat != ExcelCellFormats.Text && int.TryParse(value, out _))
+    //    {
+    //        cell.CellValue = new CellValue(value);
+
+    //        if (excelcellformat is not null)
+    //            cell.StyleIndex = (uint)excelcellformat;
+
+    //        return;
+    //    }
+
+    //    int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+    //    cell.CellValue = new CellValue(SharedStringIndex.ToString());
+    //    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+    //    if (isheadercell)
+    //    {
+    //        cell.StyleIndex = (uint)ExcelCellFormats.DefaultBoldCentered;
+    //    }
+    //    else
+    //    {
+    //        if (excelcellformat is not null)
+    //            cell.StyleIndex = (uint)excelcellformat;
+    //    }
+
+    //    //int index;
+    //    //if (int.TryParse(value, out _))
+    //    //{
+    //    //    if (excelcellformat is not null && excelcellformat == ExcelCellFormats.Text)
+    //    //    {
+    //    //        index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+    //    //        cell.CellValue = new CellValue(index.ToString());
+    //    //        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+    //    //        cell.StyleIndex = (uint)excelcellformat;
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        cell.CellValue = new CellValue(value);
+
+    //    //        if (excelcellformat is not null)
+    //    //            cell.StyleIndex = (uint)excelcellformat;
+    //    //    }
+    //    //}
+    //    //else
+    //    //{
+    //    //    index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+    //    //    cell.CellValue = new CellValue(index.ToString());
+    //    //    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+    //    //    if (isheadercell)
+    //    //    {
+    //    //        cell.StyleIndex = (uint)ExcelCellFormats.DefaultBoldCentered;
+    //    //    }
+    //    //    else
+    //    //    {
+    //    //        if (excelcellformat is not null)
+    //    //            cell.StyleIndex = (uint)excelcellformat;
+    //    //    }
+    //    //}
+    //}
+
+    /// <summary>
     /// Writes a string or GUID value to a cell.
     /// </summary>
     /// <param name="value">The value to write.</param>
     /// <param name="cell">The cell to write the value to.</param>
     /// <param name="excelcellformat">The format to apply to the cell.</param>
-    /// <param name="isheadercell">Indicates whether the cell is a header cell.</param>
-    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void WriteStringOrGuidToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat, bool isheadercell = false)
+    private void WriteStringOrGuidToCellWithUseSharedStrings(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
         UpdateExcelCellMemberMapDetails(value);
 
-        int index;
-        if (int.TryParse(value, out _))
+        if (excelcellformat != ExcelCellFormats.Text && int.TryParse(value, out _))
         {
-            if (excelcellformat is not null && excelcellformat == ExcelCellFormats.Text)
-            {
-                index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+            cell.CellValue = new CellValue(value);
 
-                cell.CellValue = new CellValue(index.ToString());
-                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+            if (excelcellformat is not null)
                 cell.StyleIndex = (uint)excelcellformat;
-            }
-            else
-            {
-                cell.CellValue = new CellValue(value);
 
-                if (excelcellformat is not null)
-                    cell.StyleIndex = (uint)excelcellformat;
-            }
+            return;
         }
-        else
-        {
-            index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
 
-            cell.CellValue = new CellValue(index.ToString());
-            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+        cell.CellValue = new CellValue(SharedStringIndex.ToString());
+        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
 
-            if (isheadercell)
-                cell.StyleIndex = (uint)ExcelCellFormats.DefaultBoldCentered;
-        }
+        if (excelcellformat is not null)
+            cell.StyleIndex = (uint)excelcellformat;
     }
 
     /// <summary>
@@ -748,22 +835,39 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     {
         UpdateExcelCellMemberMapDetails(value);
 
-        if (DateOnly.TryParse(value, Configuration.CultureInfo, out DateOnly dateonlyvalue))
-        {
-            int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
-
-            cell.CellValue = new CellValue(index.ToString());
-            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-        }
-        else
+        if (!DateOnly.TryParse(value, Configuration.CultureInfo, out _))
         {
             cell.DataType = new EnumValue<CellValues>(CellValues.Number);
             cell.CellValue = new CellValue(value);
-            if (excelcellformat is null)
-                cell.StyleIndex = (uint)ExcelCellFormats.DateDefault;
-            else
-                cell.StyleIndex = (uint)excelcellformat;
+            cell.StyleIndex = (uint)(excelcellformat ?? ExcelCellFormats.DateDefault);
+
+            return;
         }
+
+        int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+        cell.CellValue = new CellValue(SharedStringIndex.ToString());
+        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        if (excelcellformat.HasValue)
+            cell.StyleIndex = (uint)excelcellformat.Value;
+
+
+        //if (DateOnly.TryParse(value, Configuration.CultureInfo, out DateOnly dateonlyvalue))
+        //{
+        //    int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+        //    cell.CellValue = new CellValue(index.ToString());
+        //    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        //}
+        //else
+        //{
+        //    cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        //    cell.CellValue = new CellValue(value);
+        //    if (excelcellformat is null)
+        //        cell.StyleIndex = (uint)ExcelCellFormats.DateDefault;
+        //    else
+        //        cell.StyleIndex = (uint)excelcellformat;
+        //}
     }
 
     /// <summary>
@@ -776,22 +880,40 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     {
         UpdateExcelCellMemberMapDetails(value);
 
-        if (TimeOnly.TryParse(value, Configuration.CultureInfo, out TimeOnly timeonlyvalue))
-        {
-            int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
-
-            cell.CellValue = new CellValue(index.ToString());
-            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-        }
-        else
+        if (!TimeOnly.TryParse(value, Configuration.CultureInfo, out _))
         {
             cell.DataType = new EnumValue<CellValues>(CellValues.Number);
             cell.CellValue = new CellValue(value);
-            if (excelcellformat is null)
-                cell.StyleIndex = (uint)ExcelCellFormats.TimeWithHoursMinutesSecondsDefault;
-            else
-                cell.StyleIndex = (uint)excelcellformat;
+            cell.StyleIndex = (uint)ExcelCellFormats.TimeWithHoursMinutesSecondsDefault;
+
+            return;
         }
+
+        int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+        cell.CellValue = new CellValue(SharedStringIndex.ToString());
+        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        if (excelcellformat.HasValue)
+            cell.StyleIndex = (uint)excelcellformat.Value;
+
+
+        //if (TimeOnly.TryParse(value, Configuration.CultureInfo, out TimeOnly timeonlyvalue))
+        //{
+        //    int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+        //    cell.CellValue = new CellValue(index.ToString());
+        //    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        //}
+        //else
+        //{
+        //    cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        //    cell.CellValue = new CellValue(value);
+        //    if (excelcellformat is null)
+        //        cell.StyleIndex = (uint)ExcelCellFormats.TimeWithHoursMinutesSecondsDefault;
+        //    else
+        //        cell.StyleIndex = (uint)excelcellformat;
+        //}
     }
 
     /// <summary>
@@ -804,22 +926,40 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     {
         UpdateExcelCellMemberMapDetails(value);
 
-        if (DateTime.TryParse(value, Configuration.CultureInfo, out DateTime datetimevalue))
-        {
-            int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
-
-            cell.CellValue = new CellValue(index.ToString());
-            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-        }
-        else
+        if (!DateTime.TryParse(value, Configuration.CultureInfo, out _))
         {
             cell.DataType = new EnumValue<CellValues>(CellValues.Number);
             cell.CellValue = new CellValue(value);
-            if (excelcellformat is null)
-                cell.StyleIndex = (uint)ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault;
-            else
-                cell.StyleIndex = (uint)excelcellformat;
+            cell.StyleIndex = (uint)(excelcellformat ?? ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault);
+
+            return;
         }
+
+        int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+        cell.CellValue = new CellValue(SharedStringIndex.ToString());
+        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        if (excelcellformat.HasValue)
+            cell.StyleIndex = (uint)excelcellformat.Value;
+
+
+        //if (DateTime.TryParse(value, Configuration.CultureInfo, out DateTime datetimevalue))
+        //{
+        //    int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+        //    cell.CellValue = new CellValue(index.ToString());
+        //    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        //}
+        //else
+        //{
+        //    cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+        //    cell.CellValue = new CellValue(value);
+        //    if (excelcellformat is null)
+        //        cell.StyleIndex = (uint)ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault;
+        //    else
+        //        cell.StyleIndex = (uint)excelcellformat;
+        //}
     }
 
     /// <summary>
@@ -830,70 +970,142 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WriteWebHyperlinkToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
-        if (value.Contains("(|->)", StringComparison.Ordinal))
-        {
-            string[] ValueComponents = value.Split("(|->)", StringSplitOptions.TrimEntries);
+        const string Delimiter = "(|->)";
 
-            if (Uri.TryCreate(ValueComponents[1], UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
-            {
-                UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+        int DisplayTextEndIndex = value.IndexOf(Delimiter, StringComparison.Ordinal);
 
-                HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
-
-                Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
-                if (Hyperlinks is null)
-                {
-                    Hyperlinks = new Hyperlinks();
-                    WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
-                }
-
-                Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
-
-                int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
-
-                cell.CellValue = new CellValue(index.ToString());
-                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                if (excelcellformat is not null)
-                    cell.StyleIndex = (uint)excelcellformat;
-            }
-            else
-            {
-                UpdateExcelCellMemberMapDetails(value);
-
-                WriteStringOrGuidToCellWithUseSharedStrings($"({ValueComponents[1]}, {ValueComponents[2]})", cell, excelcellformat);
-            }
-        }
-        else
+        if (DisplayTextEndIndex < 0)
         {
             UpdateExcelCellMemberMapDetails(value);
 
-            if (Uri.TryCreate(value, UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+            if (Uri.TryCreate(value, UriKind.Absolute, out Uri? DirectUri) && DirectUri.IsAbsoluteUri)
             {
-                HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
-
-                Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
-                if (Hyperlinks is null)
-                {
-                    Hyperlinks = new Hyperlinks();
-                    WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
-                }
-
-                Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
-
-                int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
-
-                cell.CellValue = new CellValue(index.ToString());
-                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                if (excelcellformat is not null)
-                    cell.StyleIndex = (uint)excelcellformat;
+                AddExternalHyperlink(cell, DirectUri);
+                WriteSharedString(value, cell, excelcellformat);
             }
             else
             {
                 WriteStringOrGuidToCellWithUseSharedStrings(value, cell, excelcellformat);
             }
+
+            return;
         }
+
+        int AddressTextStartIndex = DisplayTextEndIndex + Delimiter.Length;
+
+        string DisplayTextValue = value[..DisplayTextEndIndex].Trim();
+
+        string AddressTextValue = value[AddressTextStartIndex..].Trim();
+
+        if (Uri.TryCreate(AddressTextValue, UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+        {
+            UpdateExcelCellMemberMapDetails(DisplayTextValue);
+
+            AddExternalHyperlink(cell, uri);
+            WriteSharedString(DisplayTextValue, cell, excelcellformat);
+        }
+        else
+        {
+            UpdateExcelCellMemberMapDetails(value);
+
+            WriteStringOrGuidToCellWithUseSharedStrings($"({DisplayTextValue}, {AddressTextValue})", cell, excelcellformat);
+        }
+
+
+
+        void AddExternalHyperlink(Cell targetcell, Uri hyperlinkuri)
+        {
+            HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(hyperlinkuri, true);
+            Worksheet Worksheet = WorksheetPart.Worksheet;
+            Hyperlinks? Hyperlinks = Worksheet.GetFirstChild<Hyperlinks>();
+
+            if (Hyperlinks is null)
+            {
+                Hyperlinks = new Hyperlinks();
+
+                Worksheet.InsertAfter(Hyperlinks, Worksheet.GetFirstChild<SheetData>());
+            }
+
+            Hyperlinks.Append(new Hyperlink { Reference = targetcell.CellReference, Id = HyperlinkRelationship.Id });
+        }
+
+        void WriteSharedString(string text, Cell targetcell, ExcelCellFormats? excelcellformat)
+        {
+            int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(text, SharedStringPart, SharedStringDictionary);
+
+            targetcell.CellValue = new CellValue(SharedStringIndex.ToString());
+            targetcell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+            if (excelcellformat.HasValue)
+                targetcell.StyleIndex = (uint)excelcellformat.Value;
+        }
+
+
+        //First implementation before refactoring above
+        //if (value.Contains("(|->)", StringComparison.Ordinal))
+        //{
+        //    string[] ValueComponents = value.Split("(|->)", StringSplitOptions.TrimEntries);
+
+        //    if (Uri.TryCreate(ValueComponents[1], UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+        //    {
+        //        UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+
+        //        HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
+
+        //        Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+        //        if (Hyperlinks is null)
+        //        {
+        //            Hyperlinks = new Hyperlinks();
+        //            WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+        //        }
+
+        //        Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
+
+        //        int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
+
+        //        cell.CellValue = new CellValue(index.ToString());
+        //        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        //        if (excelcellformat is not null)
+        //            cell.StyleIndex = (uint)excelcellformat;
+        //    }
+        //    else
+        //    {
+        //        UpdateExcelCellMemberMapDetails(value);
+
+        //        WriteStringOrGuidToCellWithUseSharedStrings($"({ValueComponents[1]}, {ValueComponents[2]})", cell, excelcellformat);
+        //    }
+        //}
+        //else
+        //{
+        //    UpdateExcelCellMemberMapDetails(value);
+
+        //    if (Uri.TryCreate(value, UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+        //    {
+        //        HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
+
+        //        Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+        //        if (Hyperlinks is null)
+        //        {
+        //            Hyperlinks = new Hyperlinks();
+        //            WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+        //        }
+
+        //        Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
+
+        //        int index = OpenXmlHelper.InsertSharedStringItem(value, SharedStringPart, SharedStringDictionary);
+
+        //        cell.CellValue = new CellValue(index.ToString());
+        //        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        //        if (excelcellformat is not null)
+        //            cell.StyleIndex = (uint)excelcellformat;
+        //    }
+        //    else
+        //    {
+        //        WriteStringOrGuidToCellWithUseSharedStrings(value, cell, excelcellformat);
+        //    }
+        //}
     }
 
     /// <summary>
@@ -904,70 +1116,160 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// <param name="excelcellformat">The format to apply to the cell.</param>
     private void WritHyperlinkToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
-        if (value.Contains("(|->)", StringComparison.Ordinal))
-        {
-            string[] ValueComponents = value.Split("(|->)", StringSplitOptions.TrimEntries);
+        const string Delimiter = "(|->)";
 
-            if (ValueComponents[1].StartsWith("mailto:"))
-            {
-                if (Uri.TryCreate(ValueComponents[1], UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
-                {
-                    UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+        int DisplayTextEndIndex = value.IndexOf(Delimiter, StringComparison.Ordinal);
 
-                    HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
-
-                    Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
-                    if (Hyperlinks is null)
-                    {
-                        Hyperlinks = new Hyperlinks();
-                        WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
-                    }
-
-                    Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
-
-                    int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
-
-                    cell.CellValue = new CellValue(index.ToString());
-                    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                    if (excelcellformat is not null)
-                        cell.StyleIndex = (uint)excelcellformat;
-                }
-                else
-                {
-                    UpdateExcelCellMemberMapDetails(value);
-
-                    WriteStringOrGuidToCellWithUseSharedStrings($"({ValueComponents[1]}, {ValueComponents[2]})", cell, excelcellformat);
-                }
-            }
-            else
-            {
-                UpdateExcelCellMemberMapDetails(ValueComponents[0]);
-
-                Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
-                if (Hyperlinks is null)
-                {
-                    Hyperlinks = new Hyperlinks();
-                    WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
-                }
-
-                Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Location = ValueComponents[1] });
-
-                int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
-
-                cell.CellValue = new CellValue(index.ToString());
-                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                if (excelcellformat is not null)
-                    cell.StyleIndex = (uint)excelcellformat;
-            }
-        }
-        else
+        if (DisplayTextEndIndex < 0)
         {
             UpdateExcelCellMemberMapDetails(value);
 
             WriteStringOrGuidToCellWithUseSharedStrings(value, cell, excelcellformat);
+
+            return;
         }
+
+        int AddressTextStartIndex = DisplayTextEndIndex + Delimiter.Length;
+
+        string DisplayTextValue = value[..DisplayTextEndIndex].Trim();
+
+        string AddressTextValue = value[AddressTextStartIndex..].Trim();
+
+        if (AddressTextValue.StartsWith("mailto:", StringComparison.Ordinal))
+        {
+            if (Uri.TryCreate(AddressTextValue, UriKind.Absolute, out Uri? mailtouri) && mailtouri.IsAbsoluteUri)
+            {
+                UpdateExcelCellMemberMapDetails(DisplayTextValue);
+
+                AddExternalHyperlink(cell, mailtouri);
+                WriteSharedString(DisplayTextValue, cell, excelcellformat);
+            }
+            else
+            {
+                UpdateExcelCellMemberMapDetails(value);
+
+                WriteStringOrGuidToCellWithUseSharedStrings($"({DisplayTextValue}, {AddressTextValue})", cell, excelcellformat);
+            }
+
+            return;
+        }
+
+        UpdateExcelCellMemberMapDetails(DisplayTextValue);
+
+        AddInternalLocationHyperlink(cell, AddressTextValue);
+
+        WriteSharedString(DisplayTextValue, cell, excelcellformat);
+
+
+        void AddExternalHyperlink(Cell targetcell, Uri hyperlinkuri)
+        {
+            HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(hyperlinkuri, true);
+            Worksheet Worksheet = WorksheetPart.Worksheet;
+            Hyperlinks? Hyperlinks = Worksheet.GetFirstChild<Hyperlinks>();
+
+            if (Hyperlinks is null)
+            {
+                Hyperlinks = new Hyperlinks();
+
+                Worksheet.InsertAfter(Hyperlinks, Worksheet.GetFirstChild<SheetData>());
+            }
+
+            Hyperlinks.Append(new Hyperlink { Reference = targetcell.CellReference, Id = HyperlinkRelationship.Id });
+        }
+
+        void AddInternalLocationHyperlink(Cell targetCell, string location)
+        {
+            Worksheet Worksheet = WorksheetPart.Worksheet;
+
+            Hyperlinks? Hyperlinks = Worksheet.GetFirstChild<Hyperlinks>();
+
+            if (Hyperlinks is null)
+            {
+                Hyperlinks = new Hyperlinks();
+
+                Worksheet.InsertAfter(Hyperlinks, Worksheet.GetFirstChild<SheetData>());
+            }
+
+            Hyperlinks.Append(new Hyperlink { Reference = targetCell.CellReference, Location = location });
+        }
+
+        void WriteSharedString(string text, Cell targetcell, ExcelCellFormats? excelcellformat)
+        {
+            int SharedStringIndex = OpenXmlHelper.InsertSharedStringItem(text, SharedStringPart, SharedStringDictionary);
+
+            targetcell.CellValue = new CellValue(SharedStringIndex.ToString());
+            targetcell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+            if (excelcellformat.HasValue)
+                targetcell.StyleIndex = (uint)excelcellformat.Value;
+        }
+
+
+        //First implementation before refactoring above
+        //if (value.Contains("(|->)", StringComparison.Ordinal))
+        //{
+        //    string[] ValueComponents = value.Split("(|->)", StringSplitOptions.TrimEntries);
+
+        //    if (ValueComponents[1].StartsWith("mailto:"))
+        //    {
+        //        if (Uri.TryCreate(ValueComponents[1], UriKind.Absolute, out Uri? uri) && uri.IsAbsoluteUri)
+        //        {
+        //            UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+
+        //            HyperlinkRelationship HyperlinkRelationship = WorksheetPart.AddHyperlinkRelationship(uri, true);
+
+        //            Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+        //            if (Hyperlinks is null)
+        //            {
+        //                Hyperlinks = new Hyperlinks();
+        //                WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+        //            }
+
+        //            Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Id = HyperlinkRelationship.Id });
+
+        //            int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
+
+        //            cell.CellValue = new CellValue(index.ToString());
+        //            cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        //            if (excelcellformat is not null)
+        //                cell.StyleIndex = (uint)excelcellformat;
+        //        }
+        //        else
+        //        {
+        //            UpdateExcelCellMemberMapDetails(value);
+
+        //            WriteStringOrGuidToCellWithUseSharedStrings($"({ValueComponents[0]}, {ValueComponents[1]})", cell, excelcellformat);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        UpdateExcelCellMemberMapDetails(ValueComponents[0]);
+
+        //        Hyperlinks? Hyperlinks = WorksheetPart.Worksheet.GetFirstChild<Hyperlinks>();
+        //        if (Hyperlinks is null)
+        //        {
+        //            Hyperlinks = new Hyperlinks();
+        //            WorksheetPart.Worksheet.InsertAfter(Hyperlinks, WorksheetPart.Worksheet.GetFirstChild<SheetData>());
+        //        }
+
+        //        Hyperlinks.Append(new Hyperlink() { Reference = cell.CellReference, Location = ValueComponents[1] });
+
+        //        int index = OpenXmlHelper.InsertSharedStringItem(ValueComponents[0], SharedStringPart, SharedStringDictionary);
+
+        //        cell.CellValue = new CellValue(index.ToString());
+        //        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+
+        //        if (excelcellformat is not null)
+        //            cell.StyleIndex = (uint)excelcellformat;
+        //    }
+        //}
+        //else
+        //{
+        //    UpdateExcelCellMemberMapDetails(value);
+
+        //    WriteStringOrGuidToCellWithUseSharedStrings(value, cell, excelcellformat);
+        //}
     }
 
     /// <summary>
@@ -975,13 +1277,16 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
     /// </summary>
     /// <param name="value">The integer value to write.</param>
     /// <param name="cell">The cell to write the value to.</param>
-    private void WriteIntToCell(string value, Cell cell)
+    /// <param name="excelcellformat">An optional cell format to apply to the cell. If <see langword="null"/>, a default integer format is used.</param>
+    private void WriteIntToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
         UpdateExcelCellMemberMapDetails(value);
 
         cell.CellValue = new CellValue(value);
         cell.DataType = new EnumValue<CellValues>(CellValues.Number);
         cell.StyleIndex = (uint)ExcelCellFormats.NumberIntegerDefault;
+        if (excelcellformat is not null)
+            cell.StyleIndex = (uint)excelcellformat;
     }
 
     /// <summary>
@@ -1020,81 +1325,213 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
             cell.StyleIndex = (uint)excelcellformat;
     }
 
+
     /// <summary>
     /// Writes a boolean value to a cell.
     /// </summary>
     /// <param name="value">The boolean value to write, represented as a string.</param>
     /// <param name="cell">The cell to write the value to.</param>
-    private void WriteBoolToCell(string value, Cell cell)
+    /// <param name="excelcellformat">An optional parameter specifying the Excel cell format to apply. Can be <see langword="null"/> if no specific format is required.</param>
+    private void WriteBoolToCell(string value, Cell cell, ExcelCellFormats? excelcellformat)
     {
         UpdateExcelCellMemberMapDetails(value);
 
         cell.CellValue = new CellValue((bool.Parse(value) ? 1 : 0).ToString());
         cell.DataType = new EnumValue<CellValues>(CellValues.Boolean);
+        if (excelcellformat is not null)
+            cell.StyleIndex = (uint)excelcellformat;
     }
 
     /// <summary>
     /// Updates the details of the Excel cell member map for the current column index based on the provided value's length if the lenght exceed the already present value.
     /// </summary>
     /// <param name="value">Valore stringa della cell.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void UpdateExcelCellMemberMapDetails(string value)
     {
         if (ExcelCellMemberMapDetails.Count > 0 && ExcelCellMemberMapDetails[ExcelColumnIndex].CellLength < value.Length)
-            ExcelCellMemberMapDetails[ExcelColumnIndex] = (ExcelCellMemberMapDetails[ExcelColumnIndex].FieldTypeName, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat, value.Length);
+            ExcelCellMemberMapDetails[ExcelColumnIndex] = (ExcelCellMemberMapDetails[ExcelColumnIndex].FieldTypeName, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellHeaderFormat, ExcelCellMemberMapDetails[ExcelColumnIndex].ExcelCellFormat, value.Length);
     }
+
+    ///// <summary>
+    ///// Adjusts the column widths to fit the content.
+    ///// </summary>
+    //private void AutoFitColumns()
+    //{
+    //    if (ExcelCellMemberMapDetails.Count == 0)
+    //        return;
+
+    //    Columns columns = WorksheetPart.Worksheet.GetFirstChild<Columns>() ?? WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
+
+    //    for (int ColumnIndex = 0; ColumnIndex < ExcelColumnCount; ColumnIndex++)
+    //    {
+    //        double ColumnWidth = ExcelCellMemberMapDetails[ColumnIndex] switch
+    //        {
+    //            (nameof(DateOnly), _, null, <= 10) => 12,
+    //            (nameof(DateOnly), _, ExcelCellFormats.DateDefault, <= 10) => 12,
+    //            (nameof(DateOnly), _, ExcelCellFormats.DateExtended, <= 27) => 29,
+    //            (nameof(DateOnly), _, ExcelCellFormats.DateWithDash, <= 10) => 12,
+    //            (nameof(DateOnly), _, null, > 10) or (nameof(DateOnly), _, ExcelCellFormats.DateDefault, > 10) or (nameof(DateOnly), _, ExcelCellFormats.DateWithDash, > 10) or (nameof(DateOnly), _, ExcelCellFormats.DateExtended, > 27) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
+
+    //            (nameof(TimeOnly), _, null, <= 8) => 10,
+    //            (nameof(TimeOnly), _, ExcelCellFormats.TimeWithHoursMinutesSecondsDefault, <= 8) => 10,
+    //            (nameof(TimeOnly), _, ExcelCellFormats.TimeWithHoursMinutes, <= 5) => 7,
+    //            (nameof(TimeOnly), _, ExcelCellFormats.Time12HourWithHoursMinutesSeconds, <= 11) => 13,
+    //            (nameof(TimeOnly), _, ExcelCellFormats.Time12HourWithHoursMinutes, <= 8) => 10,
+    //            (nameof(TimeOnly), _, null, > 8) or (nameof(TimeOnly), _, ExcelCellFormats.TimeWithHoursMinutesSecondsDefault, > 8) or (nameof(TimeOnly), _, ExcelCellFormats.TimeWithHoursMinutes, > 5) or (nameof(TimeOnly), _, ExcelCellFormats.Time12HourWithHoursMinutesSeconds, > 11) or (nameof(TimeOnly), _, ExcelCellFormats.Time12HourWithHoursMinutes, > 8) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
+
+    //            (nameof(DateTime), _, null, <= 19) => 21,
+    //            (nameof(DateTime), _, ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault, <= 19) => 21,
+    //            (nameof(DateTime), _, ExcelCellFormats.DateTimeWithHoursMinutes, <= 16) => 18,
+    //            (nameof(DateTime), _, ExcelCellFormats.DateTime12HourWithHoursMinutesSeconds, <= 22) => 24,
+    //            (nameof(DateTime), _, ExcelCellFormats.DateTime12HourWithHoursMinutes, <= 19) => 21,
+    //            (nameof(DateTime), _, null, > 19) or (nameof(DateTime), _, ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault, > 19) or (nameof(DateTime), _, ExcelCellFormats.DateTimeWithHoursMinutes, > 16) or (nameof(DateTime), _, ExcelCellFormats.DateTime12HourWithHoursMinutesSeconds, > 22) or (nameof(DateTime), _, ExcelCellFormats.DateTime12HourWithHoursMinutes, > 19) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
+
+    //            (nameof(Double), _, null, <= 8) => 10,
+    //            (nameof(Double), _, ExcelCellFormats.ScientificWithTwoDecimalsDefault, <= 8) => 10,
+    //            (nameof(Double), _, ExcelCellFormats.ScientificWithFourDecimals, <= 10) => 12,
+    //            (nameof(Double), _, null, > 8) or (nameof(Double), _, ExcelCellFormats.ScientificWithTwoDecimalsDefault, > 8) or (nameof(Double), _, ExcelCellFormats.ScientificWithFourDecimals, > 10) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 1,
+
+    //            (_, _, null, < 10) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
+    //            (_, _, _, >= 10 and <= 20) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 4,
+    //            (_, _, null, _) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 1,
+
+    //            _ => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
+    //        };
+
+    //        Column column = new Column() { Min = Convert.ToUInt32(ColumnIndex + 1), Max = Convert.ToUInt32(ColumnIndex + 1), Width = ColumnWidth, CustomWidth = true, BestFit = true };
+
+    //        columns.Append(column);
+    //    }
+
+    //    WorksheetPart.Worksheet.Save();
+    //}
 
     /// <summary>
     /// Adjusts the column widths to fit the content.
     /// </summary>
     private void AutoFitColumns()
     {
-        if (ExcelCellMemberMapDetails.Count == 0)
+        if (ExcelCellMemberMapDetails.Count == 0 || ExcelColumnCount == 0)
             return;
 
-        Columns columns = WorksheetPart.Worksheet.GetFirstChild<Columns>() ?? WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
+        Columns? columns = WorksheetPart.Worksheet.GetFirstChild<Columns>();
+        if (columns is null)
+            columns = WorksheetPart.Worksheet.InsertAt(new Columns(), 0);
+        else
+            columns.RemoveAllChildren<Column>();
 
         for (int ColumnIndex = 0; ColumnIndex < ExcelColumnCount; ColumnIndex++)
         {
-            double ColumnWidth = ExcelCellMemberMapDetails[ColumnIndex] switch
+            (string FieldTypeName, ExcelCellHeaderFormats? ExcelCellHeaderFormat, ExcelCellFormats? ExcelCellFormat, double CellLength) ExcelCellMemberMapDetail = ExcelCellMemberMapDetails[ColumnIndex];
+
+            string FieldTypeName = ExcelCellMemberMapDetail.FieldTypeName;
+            ExcelCellFormats? ExcelCellFormat = ExcelCellMemberMapDetail.ExcelCellFormat;
+            double CellLength = ExcelCellMemberMapDetail.CellLength;
+            double ColumnWidth;
+
+            switch (FieldTypeName)
             {
-                (nameof(DateOnly), null, <= 10) => 12,
-                (nameof(DateOnly), ExcelCellFormats.DateDefault, <= 10) => 12,
-                (nameof(DateOnly), ExcelCellFormats.DateExtended, <= 27) => 29,
-                (nameof(DateOnly), ExcelCellFormats.DateWithDash, <= 10) => 12,
-                (nameof(DateOnly), null, > 10) or (nameof(DateOnly), ExcelCellFormats.DateDefault, > 10) or (nameof(DateOnly), ExcelCellFormats.DateWithDash, > 10) or (nameof(DateOnly), ExcelCellFormats.DateExtended, > 27) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
+                case nameof(DateOnly):
+                    ColumnWidth = ComputeWidthForDateOnly(ExcelCellFormat, CellLength);
+                    break;
+                case nameof(TimeOnly):
+                    ColumnWidth = ComputeWidthForTimeOnly(ExcelCellFormat, CellLength);
+                    break;
+                case nameof(DateTime):
+                    ColumnWidth = ComputeWidthForDateTime(ExcelCellFormat, CellLength);
+                    break;
+                case nameof(Double):
+                    ColumnWidth = ComputeWidthForDouble(ExcelCellFormat, CellLength);
+                    break;
+                default:
+                    ColumnWidth = ComputeWidthForOtherTypes(ExcelCellFormat, CellLength);
+                    break;
+            }
 
-                (nameof(TimeOnly), null, <= 8) => 10,
-                (nameof(TimeOnly), ExcelCellFormats.TimeWithHoursMinutesSecondsDefault, <= 8) => 10,
-                (nameof(TimeOnly), ExcelCellFormats.TimeWithHoursMinutes, <= 5) => 7,
-                (nameof(TimeOnly), ExcelCellFormats.Time12HourWithHoursMinutesSeconds, <= 11) => 13,
-                (nameof(TimeOnly), ExcelCellFormats.Time12HourWithHoursMinutes, <= 8) => 10,
-                (nameof(TimeOnly), null, > 8) or (nameof(DateTime), ExcelCellFormats.TimeWithHoursMinutesSecondsDefault, > 8) or (nameof(DateTime), ExcelCellFormats.TimeWithHoursMinutes, > 5) or (nameof(DateTime), ExcelCellFormats.Time12HourWithHoursMinutesSeconds, > 11) or (nameof(DateTime), ExcelCellFormats.Time12HourWithHoursMinutes, > 8) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
-
-                (nameof(DateTime), null, <= 19) => 21,
-                (nameof(DateTime), ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault, <= 19) => 21,
-                (nameof(DateTime), ExcelCellFormats.DateTimeWithHoursMinutes, <= 16) => 18,
-                (nameof(DateTime), ExcelCellFormats.DateTime12HourWithHoursMinutesSeconds, <= 22) => 24,
-                (nameof(DateTime), ExcelCellFormats.DateTime12HourWithHoursMinutes, <= 19) => 21,
-                (nameof(DateTime), null, > 19) or (nameof(DateTime), ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault, > 19) or (nameof(DateTime), ExcelCellFormats.DateTimeWithHoursMinutes, > 16) or (nameof(DateTime), ExcelCellFormats.DateTime12HourWithHoursMinutesSeconds, > 22) or (nameof(DateTime), ExcelCellFormats.DateTime12HourWithHoursMinutes, > 19) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
-
-                (nameof(Double), null, <= 8) => 10,
-                (nameof(Double), ExcelCellFormats.ScientificWithTwoDecimalsDefault, <= 8) => 10,
-                (nameof(Double), ExcelCellFormats.ScientificWithFourDecimals, <= 10) => 12,
-                (nameof(Double), null, > 8) or (nameof(Double), ExcelCellFormats.ScientificWithTwoDecimalsDefault, > 8) or (nameof(Double), ExcelCellFormats.ScientificWithFourDecimals, > 10) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 1,
-
-                (_, null, < 10) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
-                (_, _, >= 10 and <= 20) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 4,
-                (_, null, _) => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 1,
-
-                _ => ExcelCellMemberMapDetails[ColumnIndex].CellLength + 2,
-            };
-
-            Column column = new Column() { Min = Convert.ToUInt32(ColumnIndex + 1), Max = Convert.ToUInt32(ColumnIndex + 1), Width = ColumnWidth, CustomWidth = true, BestFit = true };
-
-            columns.Append(column);
+            uint CurrentColumnIndex = (uint)(ColumnIndex + 1);
+            columns!.Append(new Column() { Min = CurrentColumnIndex, Max = CurrentColumnIndex, Width = ColumnWidth, CustomWidth = true, BestFit = true });
         }
 
         WorksheetPart.Worksheet.Save();
+
+
+        static double ComputeWidthForDateOnly(ExcelCellFormats? ExcelCellFormat, double CellLength)
+        {
+            if (ExcelCellFormat is null || ExcelCellFormat == ExcelCellFormats.DateDefault || ExcelCellFormat == ExcelCellFormats.DateWithDash)
+                return CellLength <= 10 ? 12 : CellLength + 2;
+
+            if (ExcelCellFormat == ExcelCellFormats.DateExtended)
+                return CellLength <= 27 ? 29 : CellLength + 2;
+
+            return CellLength + 2;
+        }
+
+        static double ComputeWidthForTimeOnly(ExcelCellFormats? ExcelCellFormat, double CellLength)
+        {
+            if (ExcelCellFormat is null || ExcelCellFormat == ExcelCellFormats.TimeWithHoursMinutesSecondsDefault)
+                return CellLength <= 8 ? 10 : CellLength + 2;
+
+            if (ExcelCellFormat == ExcelCellFormats.TimeWithHoursMinutes)
+                return CellLength <= 5 ? 7 : CellLength + 2;
+
+            if (ExcelCellFormat == ExcelCellFormats.Time12HourWithHoursMinutesSeconds)
+                return CellLength <= 11 ? 13 : CellLength + 2;
+
+            if (ExcelCellFormat == ExcelCellFormats.Time12HourWithHoursMinutes)
+                return CellLength <= 8 ? 10 : CellLength + 2;
+
+            return CellLength + 2;
+        }
+
+        static double ComputeWidthForDateTime(ExcelCellFormats? ExcelCellFormat, double CellLength)
+        {
+            if (ExcelCellFormat is null || ExcelCellFormat == ExcelCellFormats.DateTimeWithHoursMinutesSecondsDefault)
+                return CellLength <= 19 ? 21 : CellLength + 3;
+
+            if (ExcelCellFormat == ExcelCellFormats.DateTimeWithHoursMinutes)
+                return CellLength <= 16 ? 18 : CellLength + 3;
+
+            if (ExcelCellFormat == ExcelCellFormats.DateTime12HourWithHoursMinutesSeconds)
+                return CellLength <= 22 ? 24 : CellLength + 3;
+
+            if (ExcelCellFormat == ExcelCellFormats.DateTime12HourWithHoursMinutes)
+                return CellLength <= 19 ? 21 : CellLength + 3;
+
+            return CellLength + 3;
+        }
+
+        static double ComputeWidthForDouble(ExcelCellFormats? ExcelCellFormat, double CellLength)
+        {
+            if (ExcelCellFormat is null || ExcelCellFormat == ExcelCellFormats.ScientificWithTwoDecimalsDefault)
+                return CellLength <= 8 ? 10 : CellLength + 1;
+
+            if (ExcelCellFormat == ExcelCellFormats.ScientificWithFourDecimals)
+                return CellLength <= 10 ? 12 : CellLength + 1;
+
+            return CellLength + 1;
+        }
+
+        static double ComputeWidthForOtherTypes(ExcelCellFormats? ExcelCellFormat, double CellLength)
+        {
+            if (ExcelCellFormat is null)
+            {
+                if (CellLength < 10)
+                    return CellLength + 2;
+
+                if (CellLength <= 20)
+                    return CellLength + 4;
+
+                return CellLength + 3;
+            }
+            else
+            {
+                if (CellLength >= 10 && CellLength <= 20)
+                    return CellLength + 4;
+
+                return CellLength + 3;
+            }
+        }
     }
 
     private Type GetGenericType<T>(IEnumerable<T> enumerable)

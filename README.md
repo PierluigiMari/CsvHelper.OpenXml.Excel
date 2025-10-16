@@ -162,15 +162,19 @@ File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 
 >The constructor has an optional parameter, **configuration**, for which the instance of a `CsvConfiguration` is used. In case the  configuration is not specified, a configuration with InvariantCulture is used by default.
 
-Like with import, you can use the specific implementations of the `DefaultTypeConverter` to the definition of `ClassMap`. The library, also, provides both an enumeration:
+Like with import, you can use the specific implementations of the `DefaultTypeConverter` to the definition of `ClassMap`. The library, also, provides an enumeration:
+
+- ExcelCellHeaderFormats
+
+which allows you to specify the Excel header cell format to be applied to column of the generated worksheet. Also, provides an enumeration:
 
 - ExcelCellFormats
 
-which allows you to specify the Excel cell format to be applied to the column of the generated worksheet, and a specific implementation of `TypeConverterOptions`:
+that allows you to specify the Excel cell format to be applied to the column of the generated worksheet, and a specific implementation of `TypeConverterOptions`:
 
 - ExcelTypeConverterOptions
 
-that adds the Excel cell format, to the options that can be used to define the type conversion.
+which adds the Excel cell header format and the Excel cell format, to the options that can be used to define the type conversion.
 
 ```csharp
 public class FooMap : ClassMap<Foo>
@@ -179,9 +183,9 @@ public class FooMap : ClassMap<Foo>
     {
         AutoMap(CultureInfo.CurrentCulture);
         Map(x => x.Date).TypeConverter<ExcelDateOnlyConverter>()
-            .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateDefault };
+            .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellHeaderFormat = ExcelCellHeaderFormats.DefaultBold, ExcelCellFormat = ExcelCellFormats.DateDefault };
         Map(x => x.Time).TypeConverter<ExcelTimeOnlyConverter>()
-            .TypeConverter<ExcelTimeOnlyConverter>().Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.TimeHoursMinutesSecondsDefault };
+            .TypeConverter<ExcelTimeOnlyConverter>().Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellHeaderFormat = ExcelCellHeaderFormats.DefaultBoldCentered, ExcelCellFormat = ExcelCellFormats.TimeHoursMinutesSecondsDefault };
         Map(x => x.DateTime).TypeConverter<ExcelDateTimeConverter>()
             .Data.TypeConverterOptions = new ExcelTypeConverterOptions { ExcelCellFormat = ExcelCellFormats.DateTimeDefault };
 
@@ -205,6 +209,9 @@ public class FooMap : ClassMap<Foo>
     }
 }
 ```
+
+>In the `ExcelTypeConverterOptions` definition, the `ExcelCellHeaderFormat` can be omitted and the default `ExcelCellFormats.DefaultBoldCentered` value will be used.
+
 ```csharp
 using MemoryStream ExcelStream = new MemoryStream();
 using (ExcelDomWriter ExcelWriter = new ExcelDomWriter(ExcelStream, new CsvConfiguration(CultureInfo.CurrentCulture)))
@@ -217,6 +224,12 @@ byte[] Bytes = ExcelStream.ToArray();
 
 File.WriteAllBytes("path/subpath/file.xlsx", Bytes);
 ```
+
+**ExcelCellHeaderFormats** enumeration, the following are the details of the defined named constant members:
+
+0. **Default** :arrow_right: Default format
+0. **DefaultBold** :arrow_right: Format with Bold text
+0. **DefaultBoldCentered** :arrow_right: Format with Bold text with horizontal aligment centered
 
 **ExcelCellFormats** enumeration, the following are the details of the defined named constant members:
 

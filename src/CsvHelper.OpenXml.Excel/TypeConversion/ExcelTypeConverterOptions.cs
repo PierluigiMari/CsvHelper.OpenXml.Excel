@@ -9,6 +9,11 @@ using CsvHelper.TypeConversion;
 public class ExcelTypeConverterOptions : TypeConverterOptions
 {
     /// <summary>
+    /// Gets or sets the Excel cell header format <see cref="ExcelCellHeaderFormats"/>.
+    /// </summary>
+    public ExcelCellHeaderFormats ExcelCellHeaderFormat { get; set; } = ExcelCellHeaderFormats.DefaultBoldCentered;
+
+    /// <summary>
     /// Gets or sets the Excel cell format <see cref="ExcelCellFormats"/>.
     /// </summary>
     public ExcelCellFormats ExcelCellFormat { get; set; }

@@ -576,7 +576,7 @@ public sealed class ExcelDomWriter : CsvWriter, IExcelWriter
                 ExcelCellHeaderFormats? ExcelCellHeaderFormat = MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelHeaderTypeConverterOption ? ExcelHeaderTypeConverterOption.ExcelCellHeaderFormat : null;
                 ExcelCellFormats? ExcelCellFormat = MemberMapDataItem.TypeConverterOptions is ExcelTypeConverterOptions ExcelTypeConverterOption ? ExcelTypeConverterOption.ExcelCellFormat : null;
 
-                ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, ExcelCellHeaderFormat, ExcelCellFormat: null, 0));
+                ExcelCellMemberMapDetails.Add(MemberMapDataItem.Index, (MemberMapDataItem.Type.Name, ExcelCellHeaderFormat, ExcelCellFormat, 0));
             }
 
 
